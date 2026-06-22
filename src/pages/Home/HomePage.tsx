@@ -77,10 +77,7 @@ const BOOKING_TABS: BookingTab[] = [
   "Daily Service",
 ];
 
-const FLEET_CLASS_OPTIONS = [
-  "First Class",
-  "Economy Class",
-];
+const FLEET_CLASS_OPTIONS = ["First Class", "Economy Class"];
 
 function GoldHeading({
   before,
@@ -621,7 +618,7 @@ export function HomePage() {
         passengers: "",
         childs: "0",
       });
-      navigate("/booking");
+      // navigate("/booking");
     } catch (error) {
       setBookingError(
         error instanceof Error ? error.message : "Booking failed. Try again.",
@@ -815,9 +812,7 @@ export function HomePage() {
                         hasError={!!errors.dateTime}
                       >
                         <DatePicker
-                          selected={
-                            field.value ? new Date(field.value) : null
-                          }
+                          selected={field.value ? new Date(field.value) : null}
                           onChange={(date: Date | null) => {
                             field.onChange(date ? date.toISOString() : "");
                           }}
