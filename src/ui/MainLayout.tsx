@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { logoutAsync } from "src/store/actions/auth/auth.actions";
+import { signOut } from "src/api/auth";
+import { clearSession } from "src/store/slices/auth";
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import {
   selectAuthDisplayName,
@@ -108,7 +109,8 @@ export function MainLayout() {
   const handleLogout = async () => {
     setIsLoggingOut(true);
     try {
-      await dispatch(logoutAsync());
+      await signOut();
+      dispatch(clearSession());
     } catch {
       // Local session is cleared even if API logout fails.
     } finally {

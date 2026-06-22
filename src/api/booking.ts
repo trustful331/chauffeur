@@ -1,4 +1,6 @@
-export interface CreateBookingParams {
+import { apiPost, getErrorMessage } from "src/config/axios";
+
+export type CreateBookingParams = {
   service_type: string;
   pick_up_location: string;
   drop_off_location: string;
@@ -10,19 +12,13 @@ export interface CreateBookingParams {
   date_and_time: string;
   passengers: number;
   childs: number;
-}
+};
 
-export interface BookingLocation {
+export type BookingLocation = {
   address: string;
   latitude: number | null;
   longitude: number | null;
-}
-
-export interface ApiBookingEnvelope {
-  success?: boolean;
-  message?: string;
-  data?: Record<string, unknown>;
-}
+};
 
 export const BOOKING_SERVICE_TYPE_MAP = {
   "Airport Transfer": "airport_transfer",
@@ -32,3 +28,23 @@ export const BOOKING_SERVICE_TYPE_MAP = {
 } as const;
 
 export type BookingServiceTab = keyof typeof BOOKING_SERVICE_TYPE_MAP;
+
+type BookingApiResponse = {
+  success?: boolean;
+  message?: string;
+  data?: Record<string, unknown>;
+};
+
+export async function createBooking(params: CreateBookingParams) {
+  try {
+    const result = await apiPost<BookingApiResponse>("booking/create", params);
+
+    if (result.success === false) {
+      throw new Error(result.message || "Booking failed");
+    }
+
+    return result;
+  } catch (error) {
+    throw new Error(getErrorMessage(error, "Booking failed"));
+  }
+}

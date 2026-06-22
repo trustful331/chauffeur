@@ -15,13 +15,12 @@ import { GoldOffsetImage } from "../../ui/GoldOffsetImage";
 import { HeroBackground } from "../../ui/HeroBackground";
 import { LocationMapField } from "../../ui/LocationMapField";
 import { LoadingButton } from "../../ui/Spinner";
-import { createBookingAsync } from "src/store/actions/booking/booking.actions";
 import {
   BOOKING_SERVICE_TYPE_MAP,
+  createBooking,
   type BookingLocation,
   type BookingServiceTab,
-} from "src/store/actions/booking/types";
-import { useAppDispatch } from "src/store/hooks";
+} from "src/api/booking";
 import { ContactCallbackForm } from "./ContactCallbackForm";
 
 const SlickSlider =
@@ -79,11 +78,7 @@ const BOOKING_TABS: BookingTab[] = [
 ];
 
 const FLEET_CLASS_OPTIONS = [
-  "Business Class",
   "First Class",
-  "Luxury SUV",
-  "Business Van",
-  "VIP Business Class",
   "Economy Class",
 ];
 
@@ -542,7 +537,6 @@ function FaqChevron({ open }: { open: boolean }) {
 }
 
 export function HomePage() {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [bookingTab, setBookingTab] = useState<BookingTab>("Airport Transfer");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
@@ -616,7 +610,7 @@ export function HomePage() {
 
       console.log("Booking payload:", payload);
 
-      const result = await dispatch(createBookingAsync(payload));
+      const result = await createBooking(payload);
 
       setBookingSuccess(result.message || "Booking created successfully.");
       reset({
@@ -788,8 +782,7 @@ export function HomePage() {
                           </BookingInput>
                           <ListboxOptions
                             anchor="bottom start"
-                            transition
-                            className="z-50 mt-1 max-h-60 w-[var(--button-width)] overflow-auto rounded-xl border border-[#e5e7eb] bg-white py-1 shadow-lg [--anchor-gap:4px] focus:outline-none data-[closed]:scale-95 data-[closed]:opacity-0 data-[leave]:duration-100 data-[leave]:ease-in data-[enter]:duration-100 data-[enter]:ease-out"
+                            className="z-50 mt-1 max-h-60 w-[var(--button-width)] overflow-auto rounded-xl border border-[#e5e7eb] bg-white py-1 shadow-lg [--anchor-gap:4px] focus:outline-none"
                           >
                             {FLEET_CLASS_OPTIONS.map((opt) => (
                               <ListboxOption

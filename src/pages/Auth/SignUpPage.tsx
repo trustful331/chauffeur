@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import { signUpAsync } from "src/store/actions/auth/auth.actions";
+import { signUp } from "src/api/auth";
+import { setSession } from "src/store/slices/auth";
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import { selectIsAuthenticated } from "src/store/slices/auth/selectors";
 import {
@@ -54,14 +55,13 @@ export function SignUpPage() {
     setIsSubmitting(true);
 
     try {
-      await dispatch(
-        signUpAsync({
-          full_name: data.fullName.trim(),
-          email: data.email.trim(),
-          password: data.password,
-          phone_number: data.phone.trim(),
-        }),
-      );
+      const session = await signUp({
+        full_name: data.fullName.trim(),
+        email: data.email.trim(),
+        password: data.password,
+        phone_number: data.phone.trim(),
+      });
+      dispatch(setSession(session));
       navigate("/", { replace: true });
     } catch (error) {
       setSubmitError(

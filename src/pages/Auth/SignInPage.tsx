@@ -6,7 +6,8 @@ import {
   useNavigate,
   useSearchParams,
 } from "react-router-dom";
-import { signInAsync } from "src/store/actions/auth/auth.actions";
+import { signIn } from "src/api/auth";
+import { setSession } from "src/store/slices/auth";
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import { selectIsAuthenticated } from "src/store/slices/auth/selectors";
 import {
@@ -62,13 +63,8 @@ export function SignInPage() {
     setIsSubmitting(true);
 
     try {
-      await dispatch(
-        signInAsync({
-          email: data.email.trim(),
-          password: data.password,
-          is_remembered: data.rememberMe ? "1" : undefined,
-        }),
-      );
+      const session = await signIn(data.email.trim(), data.password);
+      dispatch(setSession(session));
       navigate(redirectTo, { replace: true });
     } catch (error) {
       setSubmitError(

@@ -4,7 +4,7 @@ import L from "leaflet";
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
-import type { BookingLocation } from "src/store/actions/booking/types";
+import type { BookingLocation } from "src/api/booking";
 import { Spinner } from "./Spinner";
 import "leaflet/dist/leaflet.css";
 
