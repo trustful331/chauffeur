@@ -1,0 +1,264 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;700;900&family=Playfair+Display:wght@500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: Lato, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+    background-color: #ffffff;
+    color: #002703;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: 'Playfair Display', Georgia, serif;
+    letter-spacing: -0.02em;
+  }
+
+  p,
+  li,
+  button,
+  a,
+  input,
+  textarea,
+  select {
+    font-family: Lato, system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  /* Figma frame: 1440px canvas, 116px horizontal gutter */
+  .page-container {
+    @apply mx-auto w-full max-w-figma px-6 sm:px-10 xl:px-gutter;
+  }
+
+  .section-pad {
+    @apply py-16 xl:py-[100px];
+  }
+
+  .section-pad-sm {
+    @apply py-12 xl:py-16;
+  }
+
+  .eyebrow {
+    @apply text-xs font-bold uppercase tracking-[0.12em] text-maseer-gold;
+  }
+
+  .figma-heading {
+    @apply font-serif text-figma-h3 font-semibold text-[#1a1a1a];
+  }
+
+  .figma-heading-lg {
+    @apply font-serif text-figma-h2 font-medium text-maseer-green-text;
+  }
+
+  .figma-heading-xl {
+    @apply font-serif text-figma-hero font-semibold text-white;
+  }
+
+  .card {
+    @apply rounded-figma-lg border border-maseer-line/80 bg-white p-6 shadow-soft;
+  }
+
+  .card-flat {
+    @apply rounded-figma-lg bg-maseer-surface-card p-[31px];
+  }
+
+  .card-image {
+    @apply relative overflow-hidden rounded-figma bg-cover bg-center;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-maseer-green px-8 py-3.5 text-sm font-bold text-white transition hover:bg-maseer-green-deep;
+  }
+
+  .btn-gold {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-maseer-gold px-8 py-3.5 text-sm font-bold text-maseer-green transition hover:bg-maseer-gold-light;
+  }
+
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-white px-8 py-3.5 text-sm font-semibold text-white transition hover:bg-white/10;
+  }
+
+  .btn-pill {
+    @apply rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-wide transition-all duration-200;
+  }
+
+  .input-field {
+    @apply w-full rounded-figma border border-maseer-line bg-white px-4 py-3.5 text-sm text-[#1a2e1f] outline-none transition-colors placeholder:text-maseer-muted/60 focus:border-maseer-gold focus:ring-2 focus:ring-maseer-gold/20;
+  }
+
+  .auth-social-btn {
+    @apply flex w-full items-center justify-center gap-3 rounded-xl border border-maseer-line bg-white px-4 py-3.5 font-lato text-[14px] font-semibold text-maseer-green-text transition hover:border-maseer-gold/50 hover:bg-[#fffdf8];
+  }
+
+  .input-shell {
+    @apply flex items-center gap-3 rounded-figma border border-[#e0e0e0] bg-white px-3.5 py-3 transition-all focus-within:border-maseer-gold;
+  }
+
+  .heading-xl {
+    @apply font-serif text-figma-hero font-semibold text-maseer-green;
+  }
+
+  .heading-lg {
+    @apply font-serif text-figma-h2 font-medium text-maseer-green-text;
+  }
+
+  .heading-md {
+    @apply font-serif text-2xl font-semibold text-maseer-green-text;
+  }
+
+  .body-text {
+    @apply text-figma-sm leading-relaxed text-maseer-muted;
+  }
+
+  .link-arrow {
+    @apply inline-flex items-center gap-1 border-b border-[#333]/30 pb-0.5 text-figma-xs font-semibold text-[#333] transition-colors hover:border-maseer-gold hover:text-maseer-gold;
+  }
+
+  .nav-link {
+    @apply relative pb-1 text-sm font-medium transition-colors duration-200;
+  }
+
+  .filter-pill {
+    @apply rounded-full px-5 py-2.5 text-xs font-semibold uppercase tracking-wide transition-all duration-200;
+  }
+
+  .filter-pill-active {
+    @apply bg-maseer-gold text-white;
+  }
+
+  .filter-pill-inactive {
+    @apply border border-maseer-line bg-white text-maseer-muted hover:border-maseer-gold/50 hover:text-maseer-green;
+  }
+
+  .filter-pill-inactive-grid {
+    @apply bg-[#EFEFEF] text-[#4B5563] hover:bg-[#E5E5E5];
+  }
+
+  .coverage-overlay {
+    background: linear-gradient(180deg, rgba(0, 0, 0, 0) 54.21%, rgba(0, 0, 0, 0.84) 100%);
+  }
+
+  .hero-bg {
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .fleet-carousel .slick-list {
+    margin: 0;
+    overflow: hidden;
+  }
+
+  .fleet-carousel .slick-track {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .fleet-carousel .slick-slide {
+    height: auto;
+  }
+
+  .fleet-carousel .slick-slide > div {
+    height: 100%;
+  }
+}
+
+/* Maseer-themed react-datepicker */
+.maseer-datepicker-popper {
+  z-index: 60 !important;
+}
+
+.maseer-datepicker {
+  @apply overflow-hidden rounded-2xl border border-[#e5e7eb] font-lato shadow-[0_16px_48px_rgba(7,58,11,0.18)];
+}
+
+.maseer-datepicker .react-datepicker__header {
+  @apply border-0 bg-maseer-green p-0;
+}
+
+.maseer-datepicker .react-datepicker__day-names {
+  @apply bg-[#FFF9EB] px-2 pb-2 pt-1;
+}
+
+.maseer-datepicker .react-datepicker__day-name {
+  @apply m-0.5 w-9 font-lato text-[11px] font-bold uppercase tracking-wide text-maseer-green;
+}
+
+.maseer-datepicker .react-datepicker__month {
+  @apply m-0 bg-white px-2 py-2;
+}
+
+.maseer-datepicker .react-datepicker__day {
+  @apply m-0.5 inline-flex h-9 w-9 items-center justify-center rounded-full font-lato text-[13px] text-[#333] transition hover:bg-[#FFF9EB];
+}
+
+.maseer-datepicker .react-datepicker__day--selected,
+.maseer-datepicker .react-datepicker__day--keyboard-selected {
+  @apply bg-primary font-semibold text-maseer-green-deep hover:bg-primary;
+}
+
+.maseer-datepicker .react-datepicker__day--today {
+  @apply font-bold text-maseer-green ring-1 ring-maseer-gold/40;
+}
+
+.maseer-datepicker .react-datepicker__day--disabled {
+  @apply cursor-not-allowed text-[#d1d5db] hover:bg-transparent;
+}
+
+.maseer-datepicker .react-datepicker__time-container {
+  @apply border-l border-[#e5e7eb] bg-[#FFF9EB];
+}
+
+.maseer-datepicker .react-datepicker__time-container .react-datepicker__time {
+  @apply bg-transparent;
+}
+
+.maseer-datepicker .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box {
+  @apply w-[100px];
+}
+
+.maseer-datepicker .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list {
+  @apply max-h-[220px] p-1;
+}
+
+.maseer-datepicker .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list li.react-datepicker__time-list-item {
+  @apply rounded-lg px-2 py-2 font-lato text-[12px] text-[#333] transition;
+}
+
+.maseer-datepicker .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list li.react-datepicker__time-list-item--selected {
+  @apply bg-maseer-green font-semibold text-white;
+}
+
+.maseer-datepicker .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list li.react-datepicker__time-list-item:hover {
+  @apply bg-white text-maseer-green;
+}
+
+.maseer-datepicker .react-datepicker__time-container .react-datepicker__header--time {
+  @apply border-0 bg-maseer-green pb-2 pt-3;
+}
+
+.maseer-datepicker .react-datepicker__time-container .react-datepicker__header--time .react-datepicker-time__header {
+  @apply font-lato text-xs font-bold uppercase tracking-wide text-white;
+}
+
+.maseer-datepicker .react-datepicker__triangle {
+  display: none;
+}

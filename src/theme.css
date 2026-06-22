@@ -1,0 +1,13 @@
+/* Custom overrides — Tailwind v3 colors live in tailwind.config.js */
+
+.opacity-1 {
+  opacity: 100% !important;
+}
+
+button[type="submit"] {
+  cursor: pointer !important;
+}
+
+body {
+  padding-right: 0 !important;
+}
