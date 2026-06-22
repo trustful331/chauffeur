@@ -68,6 +68,24 @@ function MapClickHandler({
   return null;
 }
 
+function MapPinIcon() {
+  return (
+    <svg
+      className="h-[18px] w-[18px] shrink-0 text-primary"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden
+    >
+      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+      <circle cx="12" cy="10" r="3" />
+    </svg>
+  );
+}
+
 export function LocationMapField({
   label,
   value,
@@ -139,26 +157,31 @@ export function LocationMapField({
         {required ? <span className="text-red-500"> *</span> : null}
       </label>
 
-      <input
-        type="text"
-        value={value.address}
-        onFocus={() => setIsOpen(true)}
-        onChange={(event) => {
-          setIsOpen(true);
-          onChange({
-            ...value,
-            address: event.target.value,
-            latitude: null,
-            longitude: null,
-          });
-        }}
-        placeholder={placeholder}
-        autoComplete="off"
-        className={[
-          "w-full rounded-xl border bg-white px-4 py-3.5 font-lato text-[13px] text-[#333] outline-none placeholder:text-[#b0b0b0] focus:border-primary/60",
-          error ? "border-red-400" : "border-[#e5e7eb]",
-        ].join(" ")}
-      />
+      <div className="relative flex items-center">
+        <input
+          type="text"
+          value={value.address}
+          onFocus={() => setIsOpen(true)}
+          onChange={(event) => {
+            setIsOpen(true);
+            onChange({
+              ...value,
+              address: event.target.value,
+              latitude: null,
+              longitude: null,
+            });
+          }}
+          placeholder={placeholder}
+          autoComplete="off"
+          className={[
+            "w-full rounded-xl border bg-white pl-4 pr-10 py-3.5 font-lato text-[13px] text-[#333] outline-none placeholder:text-[#b0b0b0] focus:border-primary/60",
+            error ? "border-red-400" : "border-[#e5e7eb]",
+          ].join(" ")}
+        />
+        <div className="absolute right-3.5 pointer-events-none">
+          <MapPinIcon />
+        </div>
+      </div>
 
       {value.latitude != null && value.longitude != null && !showDropdown ? (
         <p className="mt-1.5 font-lato text-[11px] text-maseer-muted">

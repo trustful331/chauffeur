@@ -20,7 +20,7 @@ function FieldError({ message }: { message?: string }) {
 }
 
 function fieldClass(hasError: boolean) {
-  return ["input-field font-lato", hasError ? "!border-red-400" : ""].join(" ");
+  return ["input-field font-lato !py-1.5", hasError ? "!border-red-400" : ""].join(" ");
 }
 
 export function ContactCallbackForm() {
@@ -161,7 +161,7 @@ export function ContactCallbackForm() {
         type="submit"
         loading={isSubmitting}
         loadingText="Sending..."
-        className="mt-6 w-full rounded-xl bg-maseer-green py-3.5 font-lato text-sm font-semibold text-white transition hover:bg-maseer-green-deep disabled:cursor-not-allowed disabled:opacity-70"
+        className="mt-6 w-full rounded-xl bg-maseer-green py-2.5 font-lato text-sm font-semibold text-white transition hover:bg-maseer-green-deep disabled:cursor-not-allowed disabled:opacity-70"
       >
         Request Callback
       </LoadingButton>

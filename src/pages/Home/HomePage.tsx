@@ -317,12 +317,12 @@ function ServiceCardIcon({
 }
 
 const hospitalityFeatures = [
-  "Punctual & Professional",
-  "Luxury Fleet",
-  "24/7 Support",
-  "Safe and Secure",
-  "Bilingual Chauffeurs",
-  "Discreet Privacy",
+  "HOSPITALITY-TRAINED CHAUFFEURS",
+  "VEHICLES UNDER 18 MONTHS OLD",
+  "REAL-TIME FLIGHT TRACKING",
+  "BILINGUAL CONCIERGE, 24/7",
+  "DISCREET PRIVACY PARTITIONS",
+  "REFRESHMENTS CURATED DAILY",
 ];
 
 const coverageLarge = [
@@ -332,26 +332,26 @@ const coverageLarge = [
     image: images.services.coverage[0],
   },
   {
-    title: "Hourly Service",
-    subtitle: "Travel in luxury with our VIP hourly chauffeur service.",
+    title: "Limousine Service",
+    subtitle: "Travel in Luxury with our VIP limousine service.",
     image: images.services.coverage[1],
   },
 ];
 
 const coverageSmall = [
   {
-    title: "Point To Point",
-    subtitle: "Travel between destinations with comfort.",
+    title: "Intercity Travel service",
+    subtitle: "Travel Between cities with comfort.",
     image: images.services.coverage[2],
   },
   {
-    title: "Intercity",
-    subtitle: "Book the hour for flexible intercity rides.",
+    title: "Hire by the Hour",
+    subtitle: "Book the hour for flexible rides.",
     image: images.services.coverage[3],
   },
   {
-    title: "Event Services",
-    subtitle: "Luxury chauffeur service for any occasion.",
+    title: "Event transport",
+    subtitle: "Luxury Chauffeur service for any occasion.",
     image: images.services.coverage[4],
   },
 ];
@@ -479,19 +479,40 @@ const fleetCards = [
 
 const reviews = [
   {
+    rating: 5,
+    title: "It is always a pleasure",
     quote:
-      '"Absolutely fantastic service! The driver was professional, the car was spotless, and they handled my luggage with care."',
+      '"Absolutely fantastic service! The driver was professional, the car was spotless, and they handled my luggage with care. Will definitely use again for airport transfers."',
     name: "Emily Rodriguez",
+    avatar:
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80",
   },
   {
+    rating: 5,
+    title: "Highly recommended",
     quote:
-      '"Best chauffeur experience in Riyadh. On time, courteous, and the S-Class was immaculate. Highly recommended."',
+      '"Best chauffeur experience in Riyadh. On time, courteous, and the S-Class was immaculate. Will definitely use again for airport transfers and corporate travel."',
     name: "James Al-Farsi",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80",
   },
   {
+    rating: 5,
+    title: "Flawless coordination",
     quote:
-      '"Used Maseer for corporate events multiple times. Flawless coordination and VIP treatment every single trip."',
+      '"Used Maseer for corporate events multiple times. Flawless coordination and VIP treatment every single trip. Will definitely use again for airport transfers."',
     name: "Sarah Mitchell",
+    avatar:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&h=150&q=80",
+  },
+  {
+    rating: 5,
+    title: "Flawless coordination",
+    quote:
+      '"Used Maseer for corporate events multiple times. Flawless coordination and VIP treatment every single trip. Will definitely use again for airport transfers."',
+    name: "Sarah Mitchell",
+    avatar:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&h=150&q=80",
   },
 ];
 
@@ -644,13 +665,26 @@ export function HomePage() {
     ],
   };
 
+  const reviewsSettings = {
+    dots: false,
+    arrows: false,
+    infinite: false,
+    speed: 500,
+    slidesToShow: 3.15,
+    slidesToScroll: 1,
+    responsive: [
+      { breakpoint: 1280, settings: { slidesToShow: 2.15 } },
+      { breakpoint: 768, settings: { slidesToShow: 1.1 } },
+    ],
+  };
+
   return (
     <div className="overflow-hidden bg-white">
       {/* Hero + Booking — Figma node 201-203 */}
       <section className="relative w-full min-h-[640px] bg-maseer-green-deep">
         <HeroBackground
           image={images.home.hero}
-          gradient="linear-gradient(90deg, rgba(7,58,11,0.88) 0%, rgba(7,58,11,0.45) 45%, rgba(7,58,11,0.15) 100%)"
+          gradient="linear-gradient(90deg, rgba(7,18,11,0.88) 0%, rgba(7,18,11,0.45) 35%, rgba(7,58,11,0.15) 100%)"
         />
         <div className="page-container relative pb-[200px] pt-16">
           <h1 className="max-w-[650px] font-serif text-[44px] font-semibold leading-[1.5] text-white">
@@ -688,7 +722,7 @@ export function HomePage() {
                       isActive
                         ? [
                             "bg-maseer-green text-white",
-                            index === 0 ? "rounded-tl-[32px]" : "",
+                            index === 0 ? "rounded-tl-[16px]" : "",
                             index === BOOKING_TABS.length - 1
                               ? "rounded-tr-[32px]"
                               : "",
@@ -1061,8 +1095,14 @@ export function HomePage() {
 
       {/* Service Coverage */}
       <section className="page-container py-16">
+        <div className="mb-4 flex items-center gap-2">
+          <span className="h-0.5 w-9 bg-primary" aria-hidden />
+          <p className="font-lato text-xs font-bold uppercase tracking-[0.12em] text-primary">
+            Features
+          </p>
+        </div>
         <GoldHeading before="Our, " accent="Service Coverage" />
-        <p className="mt-3 text-[14px] text-maseer-muted">
+        <p className="mt-3 text-[14px] text-maseer-green ">
           From the door of your residence to the door of your private jet —
           every detail attended to.
         </p>
@@ -1071,7 +1111,7 @@ export function HomePage() {
             {coverageLarge.map((item) => (
               <div
                 key={item.title}
-                className="card-image h-[280px]"
+                className="card-image h-[290px]"
                 style={{
                   backgroundImage: `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.75) 100%), url(${item.image})`,
                 }}
@@ -1121,7 +1161,7 @@ export function HomePage() {
         <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text">
           Our, <span className="text-primary">Best Feature.</span>
         </h2>
-        <p className="mt-4 max-w-[520px] font-lato text-[14px] leading-[22px] text-maseer-green-text/80">
+        <p className="mt-4 max-w-[550px] font-lato text-[14px] leading-[22px] text-maseer-green-text/80">
           From the door of your residence to the door of your private jet —
           every detail attended to.
         </p>
@@ -1159,78 +1199,111 @@ export function HomePage() {
             Explore our,{" "}
             <span className="text-maseer-gold">Exquisite Fleet</span>
           </h2>
-          <p className="mt-4 max-w-[560px] font-lato text-[14px] leading-[22px] text-maseer-muted">
+          <p className="mt-4 max-w-[580px] font-lato text-[14px] leading-[22px] text-maseer-green">
             Chauffeur-driven sedans, executive SUVs and electric flagships —
             pristine, private, immaculate.
           </p>
+        </div>
 
-          <div className="fleet-carousel mt-12 overflow-hidden">
-            <SlickSlider {...fleetSettings}>
-              {fleetCards.map((car, index) => (
-                <div key={`${car.id}-${index}`}>
-                  <article
-                    className={[
-                      "h-full px-6 lg:px-8",
-                      index > 0 ? "border-l border-maseer-gold/55" : "",
-                    ].join(" ")}
-                  >
-                    <img
-                      src={car.image}
-                      alt={car.title}
-                      className="mx-auto h-[200px] w-full max-w-[340px] object-contain"
-                    />
-                    <p className="mt-8 font-lato text-[10px] font-bold uppercase tracking-[0.14em] text-maseer-muted">
-                      {car.category} • {car.guests} GUESTS
-                    </p>
-                    <div className="mt-3 flex items-end justify-between gap-4">
-                      <h3 className="font-serif text-[22px] font-medium leading-tight text-maseer-green-text">
-                        {car.title}
-                      </h3>
-                      <Link
-                        to={`/fleet/${car.id}`}
-                        className="link-arrow shrink-0 whitespace-nowrap pb-1"
-                      >
-                        View Details <span aria-hidden>↗</span>
-                      </Link>
-                    </div>
-                  </article>
-                </div>
-              ))}
-            </SlickSlider>
-          </div>
+        <div className="fleet-carousel mt-12 w-full overflow-hidden pl-6 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] pr-0">
+          <SlickSlider {...fleetSettings}>
+            {fleetCards.map((car, index) => (
+              <div key={`${car.id}-${index}`}>
+                <article
+                  className={[
+                    "h-full px-6 lg:px-8",
+                    index > 0 ? "border-l border-maseer-gold/55" : "",
+                  ].join(" ")}
+                >
+                  <img
+                    src={car.image}
+                    alt={car.title}
+                    className="mx-auto h-[200px] w-full max-w-[340px] object-contain"
+                  />
+                  <p className="mt-8 font-lato text-[10px] font-bold uppercase tracking-[0.14em] text-maseer-muted">
+                    {car.category} • {car.guests} GUESTS
+                  </p>
+                  <div className="mt-3 flex items-end justify-between gap-4">
+                    <h3 className="font-serif text-[16px] font-medium leading-tight text-maseer-green-text">
+                      {car.title}
+                    </h3>
+                    <Link
+                      to={`/fleet/${car.id}`}
+                      className="link-arrow shrink-0 whitespace-nowrap pb-1"
+                    >
+                      View Details <span aria-hidden>↗</span>
+                    </Link>
+                  </div>
+                </article>
+              </div>
+            ))}
+          </SlickSlider>
         </div>
       </section>
 
       {/* Reviews */}
       <section className="bg-maseer-surface py-16">
         <div className="page-container">
+          <div className="mb-4 flex items-center gap-2">
+            <span className="h-0.5 w-9 bg-primary" aria-hidden />
+            <p className="font-lato text-xs font-bold uppercase tracking-[0.12em] text-primary">
+              Ratings and reviews
+            </p>
+          </div>
           <GoldHeading before="What our, " accent="Customers Say" />
-          <p className="mt-3 text-[14px] text-maseer-muted">
+          <p className="mt-3 text-[14px] text-maseer-green">
             Trusted by hundreds of happy customers
           </p>
-          <div className="mt-10 grid grid-cols-3 gap-6">
+        </div>
+
+        <div className="fleet-carousel mt-10 w-full overflow-hidden pl-6 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] pr-0">
+          <SlickSlider {...reviewsSettings}>
             {reviews.map((r) => (
-              <article
-                key={r.name}
-                className="rounded-xl border border-[#ebebeb] bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.05)]"
-              >
-                <div className="text-[#e6b422]">★★★★★</div>
-                <p className="mt-4 text-[14px] italic leading-[22px] text-[#444]">
-                  {r.quote}
-                </p>
-                <div className="mt-6 flex items-center gap-3 border-t border-[#eee] pt-5">
-                  <img
-                    src={images.home.fleet[0]}
-                    alt={r.name}
-                    className="h-10 w-10 rounded-full object-cover"
-                  />
-                  <span className="text-[14px] font-semibold text-[#1a1a1a]">
-                    {r.name}
-                  </span>
-                </div>
-              </article>
+              <div key={r.name} className="pr-6 pb-6">
+                <article className="rounded-2xl border border-maseer-line/80 bg-white p-8 shadow-soft">
+                  <div className="flex items-center justify-between">
+                    <div className="flex gap-1 text-primary text-[14px]">
+                      {"★".repeat(r.rating || 5)}
+                    </div>
+                    <svg
+                      width="48"
+                      height="31"
+                      viewBox="0 0 48 31"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M20.6738 0.916992V20.0439C20.6738 25.0396 15.4753 29.4403 8.62695 29.4404H4.79199V23.9336H8.62695C10.9869 23.9335 13.2803 22.3737 13.2803 20.0439V16.2588H0.916992V0.916992H20.6738Z"
+                        stroke="#002703"
+                        stroke-width="1.83317"
+                      />
+                      <path
+                        d="M46.3223 0.916992V20.0439C46.3223 25.0396 41.1237 29.4403 34.2754 29.4404H30.4404V23.9336H34.2754C36.6353 23.9335 38.9287 22.3737 38.9287 20.0439V16.2588H26.5654V0.916992H46.3223Z"
+                        stroke="#002703"
+                        stroke-width="1.83317"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="mt-4 font-serif text-[20px] font-semibold leading-tight text-maseer-green-text">
+                    {r.title}
+                  </h3>
+                  <p className="mt-4 font-lato text-[13px] leading-[22px] text-maseer-muted">
+                    {r.quote}
+                  </p>
+                  <div className="mt-6 flex items-center gap-3 border-t-2 border-maseer-line/80 pt-6">
+                    <img
+                      src={r.avatar}
+                      alt={r.name}
+                      className="h-10 w-10 rounded-full object-cover"
+                    />
+                    <span className="font-lato text-[14px] font-semibold text-maseer-green-text">
+                      {r.name}
+                    </span>
+                  </div>
+                </article>
+              </div>
             ))}
-          </div>
+          </SlickSlider>
         </div>
       </section>
 
@@ -1247,7 +1320,7 @@ export function HomePage() {
             <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text">
               Get in, <span className="text-primary">Touch</span>
             </h2>
-            <p className="mt-4 font-lato text-[14px] text-maseer-muted">
+            <p className="mt-4 font-lato text-[14px] text-maseer-green">
               Need help or having questions
             </p>
           </div>
