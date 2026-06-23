@@ -1,58 +1,171 @@
-import { images } from '../../assets/images'
-import { HeroBackground } from '../../ui/HeroBackground'
-import { GoldOffsetImage } from '../../ui/GoldOffsetImage'
+import { images } from "../../assets/images";
+import { HeroBackground } from "../../ui/HeroBackground";
+import { GoldOffsetImage } from "../../ui/GoldOffsetImage";
 
 const STATS = [
-  { value: '50K+', label: 'Happy customers', icon: (
-    <svg className="h-8 w-8" viewBox="0 0 32 32" fill="none" aria-hidden>
-      <circle cx="11" cy="10" r="4" stroke="#073a0b" strokeWidth="1.6" />
-      <circle cx="21" cy="10" r="4" stroke="#073a0b" strokeWidth="1.6" />
-      <path d="M4 26c0-5 3.5-8 7-8s7 3 7 8M14 26c0-5 3.5-8 7-8s7 3 7 8" stroke="#073a0b" strokeWidth="1.6" />
-    </svg>
-  )},
-  { value: '200+', label: 'Professional Drivers', icon: (
-    <svg className="h-8 w-8" viewBox="0 0 32 32" fill="none" aria-hidden>
-      <circle cx="16" cy="8" r="4" stroke="#073a0b" strokeWidth="1.6" />
-      <path d="M8 28v-4c0-3 2.5-5 8-5s8 2 8 5v4" stroke="#073a0b" strokeWidth="1.6" />
-      <path d="M22 14l4 2v4h-3" stroke="#073a0b" strokeWidth="1.6" />
-    </svg>
-  )},
-  { value: '24/7', label: 'Service Hours', icon: (
-    <svg className="h-8 w-8" viewBox="0 0 32 32" fill="none" aria-hidden>
-      <circle cx="16" cy="16" r="10" stroke="#073a0b" strokeWidth="1.6" />
-      <path d="M16 10v6l4 2" stroke="#073a0b" strokeWidth="1.6" strokeLinecap="round" />
-    </svg>
-  )},
-  { value: '99.8%', label: 'Safety Record', icon: (
-    <svg className="h-8 w-8" viewBox="0 0 32 32" fill="none" aria-hidden>
-      <path d="M16 4L6 8v8c0 6.5 4.3 12.5 10 14 5.7-1.5 10-7.5 10-14V8l-10-4z" stroke="#073a0b" strokeWidth="1.6" />
-    </svg>
-  )},
-]
+  {
+    value: "50K+",
+    label: "Happy customers",
+    icon: (
+      <svg
+        width="30"
+        height="35"
+        viewBox="0 0 40 35"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M19.6213 13.3364C23.3041 13.3364 26.2895 10.3509 26.2895 6.66819C26.2895 2.98545 23.3041 0 19.6213 0C15.9386 0 12.9531 2.98545 12.9531 6.66819C12.9531 10.3509 15.9386 13.3364 19.6213 13.3364Z"
+          fill="#002703"
+        />
+        <path
+          d="M33.114 13.3363C35.4421 13.3363 37.3295 11.449 37.3295 9.1208C37.3295 6.79263 35.4421 4.90527 33.114 4.90527C30.7858 4.90527 28.8984 6.79263 28.8984 9.1208C28.8984 11.449 30.7858 13.3363 33.114 13.3363Z"
+          fill="#002703"
+        />
+        <path
+          d="M6.12959 13.3363C8.45776 13.3363 10.3451 11.449 10.3451 9.1208C10.3451 6.79263 8.45776 4.90527 6.12959 4.90527C3.80142 4.90527 1.91406 6.79263 1.91406 9.1208C1.91406 11.449 3.80142 13.3363 6.12959 13.3363Z"
+          fill="#002703"
+        />
+        <path
+          d="M10.2851 17.1219C8.62573 15.7624 7.12293 15.9423 5.20426 15.9423C2.33463 15.9423 0 18.2632 0 21.1152V29.4857C0 30.7243 1.01096 31.7314 2.25416 31.7314C7.62136 31.7314 6.97478 31.8285 6.97478 31.4999C6.97478 25.5686 6.27224 21.2189 10.2851 17.1219Z"
+          fill="#002703"
+        />
+        <path
+          d="M21.4456 15.9729C18.0943 15.6934 15.1814 15.9761 12.6689 18.05C8.46429 21.4178 9.27344 25.9524 9.27344 31.4998C9.27344 32.9675 10.4676 34.184 11.9576 34.184C28.1361 34.184 28.78 34.7058 29.7394 32.5813C30.0541 31.8628 29.9678 32.0911 29.9678 25.2179C29.9678 19.7587 25.2408 15.9729 21.4456 15.9729Z"
+          fill="#002703"
+        />
+        <path
+          d="M34.034 15.9423C32.1048 15.9423 30.6103 15.7641 28.9531 17.1218C32.936 21.1884 32.2635 25.2413 32.2635 31.4998C32.2635 31.8305 31.7267 31.7313 36.9036 31.7313C38.1913 31.7313 39.2382 30.6882 39.2382 29.4059V21.1151C39.2382 18.2631 36.9036 15.9423 34.034 15.9423Z"
+          fill="#002703"
+        />
+      </svg>
+    ),
+  },
+  {
+    value: "200+",
+    label: "Professional Drivers",
+    icon: (
+      <svg
+        width="24"
+        height="39"
+        viewBox="0 0 34 39"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M33.0665 32.2674L33.0647 32.2969C32.9486 34.2213 31.6483 35.8655 29.8068 36.436C25.7846 37.6821 21.2991 38.3771 16.5696 38.3771C11.8412 38.3771 7.35707 37.6813 3.33452 36.4363C1.4924 35.8661 0.192053 34.2209 0.077427 32.296L0.0727492 32.2174C0.0272741 31.5765 0 30.931 0 30.29C0 28.8399 0.118197 27.3943 0.336388 25.9441C0.545507 24.6349 1.4865 23.4849 2.74116 23.0166C4.10036 22.4939 5.50957 22.0211 6.76877 21.2892L9.80085 19.6163C10.4782 19.6163 11.0555 20.0846 11.2101 20.7119L14.568 28.0848C14.6799 28.3304 15.0446 28.2701 15.0715 28.0016L15.4968 23.7485C14.924 23.5394 14.5058 23.0166 14.5058 22.3893V21.7074C14.5058 21.3392 14.6104 21.0801 14.8195 20.8164C15.3922 20.9755 16.0196 21.0801 16.5969 21.0801C17.1697 21.0801 17.797 20.9755 18.3743 20.8164C18.5834 21.0801 18.688 21.3937 18.688 21.7074V22.3893C18.688 23.0166 18.2698 23.5394 17.6924 23.7485L18.1178 28.0016C18.1446 28.2701 18.5094 28.3304 18.6212 28.0848L21.9792 20.7119C22.1383 20.0846 22.7111 19.6163 23.3929 19.6163L26.425 21.2892C27.6797 22.0211 29.0934 22.4939 30.4526 23.0166C31.7073 23.4849 32.5937 24.6349 32.8029 25.9942C33.1165 28.0853 33.2211 30.1763 33.0665 32.2674Z"
+          fill="#002703"
+        />
+        <path
+          d="M9.443 10.7617C9.65229 10.9871 9.79133 11.2686 9.84269 11.5718C10.6022 16.0563 13.8648 18.5589 16.5974 18.5589C19.3369 18.5589 22.609 16.0437 23.3578 11.5817C23.4048 11.3013 23.5225 11.0342 23.7135 10.8237C23.9623 10.5494 24.0759 9.88113 24.0759 9.1544C24.0759 8.30399 24.2702 7.10341 23.8817 6.75325C23.736 6.6532 23.5903 6.6532 23.3475 6.70322C22.7162 2.60125 20.6766 0 16.5974 0C12.5182 0 10.4786 2.60125 9.8473 6.70322C9.60449 6.60317 9.41024 6.6532 9.31312 6.75325C8.92463 7.10342 9.11887 8.25397 9.11887 9.1544C9.0823 9.83249 9.18343 10.4822 9.443 10.7617Z"
+          fill="#002703"
+        />
+      </svg>
+    ),
+  },
+  {
+    value: "24/7",
+    label: "Service Hours",
+    icon: (
+      <svg
+        width="28"
+        height="38"
+        viewBox="0 0 38 38"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M18.9349 5.68079C16.3133 5.68079 13.7505 6.45819 11.5707 7.9147C9.3909 9.3712 7.69195 11.4414 6.68869 13.8635C5.68543 16.2855 5.42293 18.9507 5.93439 21.522C6.44585 24.0932 7.70828 26.4551 9.56206 28.3089C11.4158 30.1627 13.7777 31.4251 16.349 31.9366C18.9202 32.448 21.5854 32.1855 24.0075 31.1823C26.4296 30.179 28.4997 28.48 29.9562 26.3002C31.4128 24.1204 32.1902 21.5577 32.1902 18.936C32.1863 15.4217 30.7886 12.0524 28.3036 9.56739C25.8185 7.08238 22.4493 5.68462 18.9349 5.68079ZM24.9692 23.5059C24.8517 23.6548 24.7022 23.7752 24.5317 23.8583C24.3612 23.9413 24.1742 23.9849 23.9845 23.9856C23.6991 23.9879 23.4219 23.8896 23.2017 23.7079L18.1521 19.9207C18.0034 19.8031 17.8831 19.6535 17.8001 19.483C17.717 19.3126 17.6735 19.1256 17.6725 18.936V10.0992C17.6725 9.76439 17.8055 9.44329 18.0423 9.20654C18.279 8.9698 18.6001 8.83679 18.9349 8.83679C19.2697 8.83679 19.5908 8.9698 19.8276 9.20654C20.0643 9.44329 20.1973 9.76439 20.1973 10.0992V18.3301L24.7674 21.7386C24.8988 21.8398 25.0085 21.9664 25.0901 22.1109C25.1716 22.2554 25.2233 22.4147 25.2422 22.5795C25.261 22.7444 25.2465 22.9113 25.1996 23.0704C25.1527 23.2295 25.0744 23.3776 24.9692 23.5059Z"
+          fill="#002703"
+        />
+        <path
+          d="M18.9361 0C15.1909 0 11.5298 1.11058 8.41575 3.1913C5.30173 5.27202 2.87465 8.22943 1.44143 11.6895C0.00820487 15.1496 -0.366792 18.9571 0.363859 22.6303C1.09451 26.3035 2.89799 29.6776 5.54625 32.3259C8.1945 34.9741 11.5686 36.7776 15.2418 37.5082C18.915 38.2389 22.7225 37.8639 26.1826 36.4307C29.6427 34.9974 32.6001 32.5704 34.6808 29.4564C36.7615 26.3423 37.8721 22.6812 37.8721 18.936C37.866 13.9158 35.869 9.10286 32.3191 5.55298C28.7692 2.00311 23.9563 0.00610689 18.9361 0ZM18.9361 34.8002C15.7984 34.8002 12.7312 33.8698 10.1224 32.1266C7.51354 30.3835 5.48019 27.9058 4.27947 25.007C3.07874 22.1082 2.76458 18.9184 3.3767 15.8411C3.98883 12.7638 5.49974 9.93702 7.71839 7.71838C9.93703 5.49973 12.7638 3.98882 15.8411 3.37669C18.9185 2.76457 22.1082 3.07874 25.007 4.27946C27.9058 5.48018 30.3835 7.51353 32.1266 10.1224C33.8698 12.7312 34.8002 15.7984 34.8002 18.936C34.7962 23.1422 33.1235 27.175 30.1492 30.1492C27.175 33.1235 23.1423 34.7962 18.9361 34.8002Z"
+          fill="#002703"
+        />
+      </svg>
+    ),
+  },
+  {
+    value: "99.8%",
+    label: "Safety Record",
+    icon: (
+      <svg
+        width="25"
+        height="41"
+        viewBox="0 0 35 41"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M34.36 10.9607L34.3588 10.9293C34.3412 10.5412 34.3295 10.1307 34.3224 9.67396C34.2894 7.44658 32.5188 5.60414 30.2911 5.47962C25.6465 5.22042 22.0535 3.70591 18.9835 0.713568L18.9573 0.688603C17.9559 -0.229534 16.4454 -0.229534 15.4437 0.688603L15.4175 0.713568C12.3475 3.70591 8.7545 5.22042 4.10988 5.47993C1.88249 5.60414 0.111555 7.44658 0.0785775 9.67427C0.071797 10.1279 0.059777 10.5385 0.0422095 10.9293L0.0403603 11.0023C-0.0499433 15.7385 -0.162129 21.6329 1.80976 26.983C2.89401 29.9251 4.53612 32.4825 6.69015 34.5848C9.14345 36.9789 12.3568 38.8796 16.2408 40.2339C16.3671 40.2779 16.4984 40.3137 16.6322 40.3405C16.8208 40.3781 17.0106 40.3969 17.2005 40.3969C17.3904 40.3969 17.5805 40.3781 17.7688 40.3405C17.9026 40.3137 18.0348 40.2776 18.1618 40.2332C22.0411 38.8765 25.2511 36.9749 27.7022 34.5811C29.8553 32.4782 31.4974 29.9201 32.5826 26.9774C34.5619 21.6113 34.45 15.7058 34.36 10.9607Z"
+          fill="#002703"
+        />
+      </svg>
+    ),
+  },
+];
 
 const VALUES = [
-  { title: 'Safety First', text: 'We prioritize the safety and security of our passengers and drivers above everything else.', icon: (
-    <svg className="h-7 w-7" viewBox="0 0 28 28" fill="none" aria-hidden>
-      <path d="M14 3L5 7v6c0 5.5 3.8 10.6 9 12 5.2-1.4 9-6.5 9-12V7l-9-4z" stroke="#073a0b" strokeWidth="1.5" />
-    </svg>
-  )},
-  { title: 'Customer Focus', text: 'Every decision we make is centered around delivering exceptional customer experiences.', icon: (
-    <svg className="h-7 w-7" viewBox="0 0 28 28" fill="none" aria-hidden>
-      <path d="M14 23s-8-5-8-11a5 5 0 0110 0c0 6-8 11-8 11z" stroke="#073a0b" strokeWidth="1.5" />
-    </svg>
-  )},
-  { title: 'Reliability', text: 'Dependable service you can count on, whether it is day or night, rain or shine.', icon: (
-    <svg className="h-7 w-7" viewBox="0 0 28 28" fill="none" aria-hidden>
-      <path d="M15 3L7 16h7l-1.5 9 9-14h-7l2.5-8z" stroke="#073a0b" strokeWidth="1.5" />
-    </svg>
-  )},
-  { title: 'Innovation', text: 'Continuously improving our technology and services to better serve our community.', icon: (
-    <svg className="h-7 w-7" viewBox="0 0 28 28" fill="none" aria-hidden>
-      <circle cx="14" cy="14" r="4" stroke="#073a0b" strokeWidth="1.5" />
-      <path d="M14 4v3M14 21v3M4 14h3M21 14h3" stroke="#073a0b" strokeWidth="1.5" />
-    </svg>
-  )},
-]
+  {
+    title: "Safety First",
+    text: "We prioritize the safety and security of our passengers and drivers above everything else.",
+    icon: (
+      <svg
+        width="35"
+        height="41"
+        viewBox="0 0 35 41"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M34.36 10.9607L34.3588 10.9293C34.3412 10.5412 34.3295 10.1307 34.3224 9.67396C34.2895 7.44658 32.5188 5.60414 30.2911 5.47962C25.6465 5.22042 22.0535 3.70591 18.9835 0.713568L18.9573 0.688603C17.9559 -0.229534 16.4454 -0.229534 15.4437 0.688603L15.4175 0.713568C12.3475 3.70591 8.7545 5.22042 4.10988 5.47993C1.88249 5.60414 0.111555 7.44658 0.0785775 9.67427C0.071797 10.1279 0.059777 10.5385 0.0422095 10.9293L0.0403603 11.0023C-0.0499433 15.7385 -0.162129 21.6329 1.80976 26.983C2.89401 29.9251 4.53612 32.4825 6.69016 34.5848C9.14345 36.9789 12.3568 38.8796 16.2408 40.2339C16.3671 40.2779 16.4984 40.3137 16.6322 40.3405C16.8208 40.3781 17.0107 40.3969 17.2005 40.3969C17.3904 40.3969 17.5805 40.3781 17.7688 40.3405C17.9026 40.3137 18.0348 40.2776 18.1618 40.2332C22.0411 38.8765 25.2511 36.9749 27.7022 34.5811C29.8553 32.4782 31.4974 29.9201 32.5826 26.9774C34.5619 21.6113 34.45 15.7058 34.36 10.9607Z"
+          fill="#002703"
+        />
+      </svg>
+    ),
+  },
+  {
+    title: "Customer Focus",
+    text: "Every decision we make is centered around delivering exceptional customer experiences.",
+    icon: (
+      <svg
+        width="40"
+        height="36"
+        viewBox="0 0 40 36"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M29.375 0C27.2045 0 25.2145 0.687812 23.4604 2.04437C21.7787 3.34492 20.6591 5.00141 20 6.20594C19.3409 5.00133 18.2213 3.34492 16.5396 2.04437C14.7855 0.687812 12.7955 0 10.625 0C4.56781 0 0 4.95445 0 11.5245C0 18.6225 5.69867 23.4788 14.3257 30.8306C15.7907 32.0791 17.4513 33.4943 19.1772 35.0036C19.4047 35.2028 19.6969 35.3125 20 35.3125C20.3031 35.3125 20.5953 35.2028 20.8228 35.0037C22.5489 33.4941 24.2094 32.0791 25.6752 30.8298C34.3013 23.4788 40 18.6225 40 11.5245C40 4.95445 35.4322 0 29.375 0Z"
+          fill="#002703"
+        />
+      </svg>
+    ),
+  },
+  {
+    title: "Reliability",
+    text: "Dependable service you can count on, whether it is day or night, rain or shine.",
+    icon: (
+<svg width="21" height="42" viewBox="0 0 21 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.8 17.3337H13.8668V0L0 24.2674H6.93316V41.6L20.8 17.3337Z" fill="#002703"/>
+</svg>
+
+    ),
+  },
+  {
+    title: "Innovation",
+    text: "Continuously improving our technology and services to better serve our community.",
+    icon: (
+<svg width="28" height="41" viewBox="0 0 28 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M19.4775 14.8956L17.1569 17.2162C18.4506 19.7186 16.5257 22.8414 13.6958 22.8036C11.5638 22.8036 9.82932 21.0691 9.82932 18.9371C9.79175 16.1074 12.9143 14.1821 15.4167 15.4761L18.0977 12.795C18.3284 12.5642 18.6414 12.4345 18.9678 12.4345H27.3915C25.4846 -4.15091 1.90086 -4.13877 0 12.4345H7.91419L10.2348 10.1139C8.94107 7.61159 10.866 4.48877 13.6959 4.52659C15.8279 4.52659 17.5624 6.26108 17.5624 8.39303C17.5999 11.2227 14.4774 13.1481 11.975 11.854L9.29397 14.5351C9.0633 14.7658 8.75026 14.8955 8.42394 14.8955H0.00090249C0.311068 18.3329 1.91046 21.5395 4.49802 23.8375C5.90717 25.1401 6.82126 26.8904 7.10149 28.7693C7.10452 28.7689 20.2856 28.7689 20.2902 28.7693C20.5703 26.8908 21.4844 25.1403 22.8938 23.8375C25.4813 21.5396 27.0808 18.3329 27.3909 14.8955H19.4775V14.8956Z" fill="#002703"/>
+<path d="M7.19531 32.6358C7.19531 35.8005 9.46836 38.4429 12.4673 39.0199C12.345 40.9264 15.0511 40.9253 14.9283 39.0199C17.9272 38.4429 20.2003 35.8005 20.2003 32.6358V31.2302H7.19531V32.6358Z" fill="#002703"/>
+<path d="M15.0987 8.39307C15.0987 7.61812 14.4682 6.98755 13.6932 6.98755C11.8312 7.05826 11.8317 9.72813 13.6932 9.7986C14.4682 9.79851 15.0987 9.16802 15.0987 8.39307Z" fill="#002703"/>
+<path d="M12.2891 18.9372C12.2891 19.7121 12.9196 20.3427 13.6946 20.3427C15.5566 20.272 15.5561 17.6021 13.6946 17.5317C12.9196 17.5317 12.2891 18.1622 12.2891 18.9372Z" fill="#002703"/>
+</svg>
+
+    ),
+  },
+];
 
 export function AboutPage() {
   return (
@@ -60,14 +173,17 @@ export function AboutPage() {
       <section className="relative w-full min-h-[520px] overflow-hidden bg-maseer-green-deep">
         <HeroBackground
           image={images.about.hero}
-          gradient="linear-gradient(180deg, rgba(7,58,11,0.25) 0%, rgba(7,58,11,0.6) 55%, rgba(7,58,11,0.9) 100%)"
+          gradient="linear-gradient(90deg, rgba(7,18,11,0.88) 0%, rgba(7,18,11,0.45) 35%, rgba(7,58,11,0.15) 100%)"
         />
         <div className="page-container relative flex min-h-[520px] flex-col justify-end pb-16 pt-8">
           <p className="eyebrow">UNMATCHED LUXURY</p>
-          <h1 className="mt-3 font-serif text-figma-hero text-white">About US</h1>
+          <h1 className="mt-3 font-serif text-figma-hero text-white">
+            About US
+          </h1>
           <p className="mt-4 max-w-[580px] text-figma-body text-white/90">
-            Maseer is a premium chauffeur and mobility company in Saudi Arabia offering luxury transportation
-            services with a strong focus on comfort, reliability, and professionalism.
+            Maseer is a premium chauffeur and mobility company in Saudi Arabia
+            offering luxury transportation services with a strong focus on
+            comfort, reliability, and professionalism.
           </p>
         </div>
       </section>
@@ -76,9 +192,13 @@ export function AboutPage() {
         <div className="page-container grid grid-cols-4 gap-8">
           {STATS.map((stat) => (
             <article key={stat.label} className="text-center">
-              <div className="mx-auto flex h-14 w-14 items-center justify-center">{stat.icon}</div>
-              <p className="mt-5 font-serif text-[36px] font-semibold leading-none text-maseer-green-text">{stat.value}</p>
-              <p className="mt-2 text-[14px] text-maseer-muted">{stat.label}</p>
+              <div className="mx-auto flex h-14 w-14 items-center justify-center">
+                {stat.icon}
+              </div>
+              <p className="mt-2 font-serif text-[23px] font-semibold leading-none text-maseer-green-text">
+                {stat.value}
+              </p>
+              <p className="mt-2 text-[18px] text-maseer-muted">{stat.label}</p>
             </article>
           ))}
         </div>
@@ -87,8 +207,12 @@ export function AboutPage() {
       <section className="bg-[#f5f5f5] py-[88px]">
         <div className="page-container grid items-center gap-[97px] lg:grid-cols-2">
           <div className="relative">
-            <GoldOffsetImage src={images.about.hospitality} alt="Chauffeur greeting guest" offset="right" />
-            <span className="absolute bottom-6 right-0 z-20 rounded bg-maseer-gold-bright px-3 py-1.5 text-[11px] font-semibold text-maseer-green-text">
+            <GoldOffsetImage
+              src={images.about.hospitality}
+              alt="Chauffeur greeting guest"
+              offset="right"
+            />
+            <span className="absolute bottom-8 right-10 z-20 rounded bg-maseer-gold-bright px-3 py-1.5 text-[25px] font-semibold text-white">
               — Mr. Affan
             </span>
           </div>
@@ -98,17 +222,26 @@ export function AboutPage() {
               Hospitality on <span className="text-maseer-gold">wheels.</span>
             </h2>
             <p className="mt-5 text-[15.25px] leading-[25px] text-maseer-muted">
-              We specialize in airport transfers, executive transportation, city-to-city travel, chauffeur
-              services, and customized mobility solutions for corporates, hotels, travel management companies,
+              We specialize in airport transfers, executive transportation,
+              city-to-city travel, chauffeur services, and customized mobility
+              solutions for corporates, hotels, travel management companies,
               event organizers, and VIP guests.
             </p>
             <p className="mt-4 text-[15.25px] leading-[25px] text-maseer-muted">
-              At Maseer, we believe transportation is not just about moving people from one place to another.
-              It is about creating a seamless experience that reflects professionalism, comfort, safety, and luxury.
+              At Maseer, we believe transportation is not just about moving
+              people from one place to another. It is about creating a seamless
+              experience that reflects professionalism, comfort, safety, and
+              luxury.
             </p>
             <p className="mt-4 text-[15.25px] leading-[25px] text-maseer-muted">
-              Every journey is choreographed — chilled water, scented cabin, climate prepared, music to your
-              taste. The car is ready before you ever step out.
+              Our operations are designed to support business travelers,
+              tourists, families, and high-profile clients with personalized
+              service and premium transportation experiences across Saudi
+              Arabia.
+            </p>
+            <p className="mt-4 text-[15.25px] leading-[25px] text-maseer-muted">
+              climate prepared, music to your taste. The car is ready before you
+              ever step out.
             </p>
           </div>
         </div>
@@ -118,13 +251,19 @@ export function AboutPage() {
         <div className="page-container grid grid-cols-4 gap-8">
           {VALUES.map((item) => (
             <article key={item.title} className="text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center">{item.icon}</div>
-              <h3 className="mt-5 text-lg font-bold text-maseer-green">{item.title}</h3>
-              <p className="mx-auto mt-3 max-w-[220px] text-[13px] leading-5 text-maseer-muted">{item.text}</p>
+              <div className="mx-auto flex h-12 w-12 items-center justify-center">
+                {item.icon}
+              </div>
+              <h3 className="mt-5 text-lg font-bold text-maseer-green">
+                {item.title}
+              </h3>
+              <p className="mx-auto mt-3 max-w-[220px] text-[13px] leading-5 text-maseer-muted">
+                {item.text}
+              </p>
             </article>
           ))}
         </div>
       </section>
     </div>
-  )
+  );
 }

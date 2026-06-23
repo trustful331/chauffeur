@@ -1,14 +1,8 @@
-import { useState } from "react";
-import { Link, NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
-import { signOut } from "src/api/auth";
-import { clearSession } from "src/store/slices/auth";
-import { useAppDispatch, useAppSelector } from "src/store/hooks";
-import {
-  selectAuthDisplayName,
-  selectIsAuthenticated,
-} from "src/store/slices/auth/selectors";
-import { Spinner } from "./Spinner";
+import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
+import { useAppSelector } from "src/store/hooks";
+import { selectIsAuthenticated } from "src/store/slices/auth/selectors";
 import { MaseerLogo } from "./MaseerLogo";
+import { UserProfileDropdown } from "./UserProfileDropdown";
 
 /* Figma nav: Home, Services, Our Fleet, Corporate, Contact Us */
 const navItems = [
@@ -96,28 +90,10 @@ function WhatsAppIcon() {
 }
 
 export function MainLayout() {
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  const displayName = useAppSelector(selectAuthDisplayName);
   const { pathname } = useLocation();
   const contactPage = pathname === "/contact";
   const pageBg = contactPage ? "bg-maseer-cream" : "bg-white";
-
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  const handleLogout = async () => {
-    setIsLoggingOut(true);
-    try {
-      await signOut();
-      dispatch(clearSession());
-    } catch {
-      // Local session is cleared even if API logout fails.
-    } finally {
-      setIsLoggingOut(false);
-    }
-    navigate("/");
-  };
 
   return (
     <div className={`min-h-screen ${pageBg}`}>
@@ -151,20 +127,7 @@ export function MainLayout() {
 
           <div className="flex items-center gap-4 sm:gap-5">
             {isAuthenticated ? (
-              <>
-                <span className="hidden max-w-[140px] truncate font-lato text-sm font-semibold text-maseer-green sm:inline">
-                  {displayName}
-                </span>
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  disabled={isLoggingOut}
-                  className="inline-flex items-center gap-1.5 font-lato text-sm font-semibold text-maseer-muted transition hover:text-maseer-green disabled:cursor-not-allowed disabled:opacity-70"
-                >
-                  {isLoggingOut ? <Spinner size="sm" /> : null}
-                  {isLoggingOut ? "Logging out..." : "Logout"}
-                </button>
-              </>
+              <UserProfileDropdown />
             ) : (
               <Link
                 to="/signin"

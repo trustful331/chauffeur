@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { images } from "../../assets/images";
 import { HeroBackground } from "../../ui/HeroBackground";
 import { LoadingButton } from "../../ui/Spinner";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 type ContactForm = {
   name: string;
@@ -20,11 +21,16 @@ const CONTACT_CARDS = [
     note: "Available 24/7 for bookings and support",
     detailTone: "dark" as const,
     icon: (
-      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <svg
+        width="25"
+        height="35"
+        viewBox="0 0 35 35"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <path
-          d="M6.5 4h3l1.5 4-2 1.2a12 12 0 005.3 5.3L16.5 13l4 1.5v3a2 2 0 01-2.2 2 16 16 0 01-12-12A2 2 0 016.5 4z"
-          stroke="currentColor"
-          strokeWidth="1.6"
+          d="M32.1916 22.9735C30.0488 22.9735 27.9448 22.6383 25.951 21.9795C24.974 21.6462 23.7729 21.9519 23.1767 22.5643L19.2413 25.5351C14.6773 23.0989 11.866 20.2885 9.46303 15.7588L12.3464 11.926C13.0956 11.1779 13.3643 10.085 13.0423 9.05962C12.3806 7.05533 12.0445 4.95232 12.0445 2.80857C12.0446 1.25991 10.7846 0 9.23608 0H2.80848C1.25991 0 0 1.25991 0 2.80848C0 20.5591 14.441 35 32.1916 35C33.7402 35 35.0001 33.7401 35.0001 32.1915V25.7819C35 24.2334 33.7401 22.9735 32.1916 22.9735Z"
+          fill="white"
         />
       </svg>
     ),
@@ -36,17 +42,28 @@ const CONTACT_CARDS = [
     note: "For general inquiries and feedback",
     detailTone: "green" as const,
     icon: (
-      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden>
-        <rect
-          x="3"
-          y="5"
-          width="18"
-          height="14"
-          rx="2"
-          stroke="currentColor"
-          strokeWidth="1.6"
-        />
-        <path d="M3 7l9 6 9-6" stroke="currentColor" strokeWidth="1.6" />
+      <svg
+        width="25"
+        height="35"
+        viewBox="0 0 35 35"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g clip-path="url(#clip0_201_2920)">
+          <path
+            d="M20.425 20.944C19.5543 21.5245 18.5428 21.8313 17.5 21.8313C16.4572 21.8313 15.4458 21.5245 14.575 20.944L0.233037 11.3823C0.153467 11.3293 0.0759473 11.274 0 11.2171V26.8849C0 28.6812 1.45776 30.1069 3.22198 30.1069H31.7779C33.5743 30.1069 34.9999 28.6491 34.9999 26.8849V11.217C34.9238 11.2741 34.8462 11.3295 34.7664 11.3826L20.425 20.944Z"
+            fill="white"
+          />
+          <path
+            d="M1.37061 9.67585L15.7126 19.2375C16.2555 19.5995 16.8777 19.7805 17.4999 19.7805C18.1222 19.7805 18.7445 19.5994 19.2874 19.2375L33.6294 9.67585C34.4876 9.10402 35 8.14699 35 7.11408C35 5.33803 33.5551 3.89319 31.7791 3.89319H3.22089C1.44491 3.89326 0 5.3381 0 7.11579C0 8.14699 0.512422 9.10402 1.37061 9.67585Z"
+            fill="white"
+          />
+        </g>
+        <defs>
+          <clipPath id="clip0_201_2920">
+            <rect width="35" height="35" fill="white" />
+          </clipPath>
+        </defs>
       </svg>
     ),
   },
@@ -57,16 +74,17 @@ const CONTACT_CARDS = [
     note: "Fastest response time during business hours",
     detailTone: "dark" as const,
     icon: (
-      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <svg
+        width="25"
+        height="35"
+        viewBox="0 0 35 35"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <path
-          d="M4 5h16v10H8l-4 4V5z"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinejoin="round"
+          d="M0 31.1111V35H17.5C27.15 35 35 27.15 35 17.5C35 7.84998 27.15 0 17.5 0C7.84998 0 0 7.84998 0 17.5C0 21.4345 1.32157 25.236 3.73696 28.3103C3.26796 29.949 1.77165 31.1111 0 31.1111ZM23.3333 15.5556H27.2222V19.4444H23.3333V15.5556ZM15.5556 15.5556H19.4444V19.4444H15.5556V15.5556ZM7.77778 15.5556H11.6667V19.4444H7.77778V15.5556Z"
+          fill="white"
         />
-        <circle cx="9" cy="10" r="0.8" fill="currentColor" />
-        <circle cx="12" cy="10" r="0.8" fill="currentColor" />
-        <circle cx="15" cy="10" r="0.8" fill="currentColor" />
       </svg>
     ),
   },
@@ -77,14 +95,17 @@ const CONTACT_CARDS = [
     note: "24/7 emergency assistance",
     detailTone: "dark" as const,
     icon: (
-      <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <svg
+        width="30"
+        height="35"
+        viewBox="0 0 40 35"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
         <path
-          d="M4 14a8 8 0 0116 0v2H4v-2z"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
+          d="M36.4844 9.34015H34.0296C31.9418 4.40615 27.3445 0.820542 22.052 0.135735C16.8071 -0.560191 11.6538 1.44905 8.28242 5.49367C7.29133 6.68281 6.50516 7.97559 5.92953 9.34015H3.51562C1.57703 9.34015 0 10.9098 0 12.8392V17.5047C0 19.4341 1.57703 21.0037 3.51562 21.0037H8.3282L7.82469 19.474C6.35867 15.0181 7.18383 10.4655 10.0872 6.98349C12.9402 3.5607 17.297 1.867 21.7476 2.44792C26.4544 3.05816 30.5399 6.37116 32.1587 10.8903L32.1685 10.9165C32.4295 11.6068 32.6126 12.3164 32.7178 13.0465C33.0691 15.2278 32.8689 17.4386 32.1399 19.4399L32.1348 19.4538C30.3253 24.567 25.4586 28.0019 20.0229 28.0019C18.0716 28.0019 16.4844 29.5715 16.4844 31.5009C16.4844 33.4304 18.0614 35 20 35C21.9386 35 23.5156 33.4304 23.5156 31.5009V29.9279C28.1948 28.821 32.1252 25.5196 34.0143 21.0036H36.4844C38.423 21.0036 40 19.434 40 17.5046V12.8391C40 10.9097 38.423 9.34015 36.4844 9.34015Z"
+          fill="white"
         />
-        <path d="M8 18h8M12 6v2" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
       </svg>
     ),
   },
@@ -145,7 +166,7 @@ export function ContactPage() {
       <section className="relative w-full min-h-[480px] overflow-hidden bg-maseer-green-deep">
         <HeroBackground
           image={images.contact.hero}
-          gradient="linear-gradient(180deg, rgba(7,58,11,0.2) 0%, rgba(7,58,11,0.55) 55%, rgba(7,58,11,0.88) 100%)"
+          gradient="linear-gradient(90deg, rgba(7,18,11,0.88) 0%, rgba(7,18,11,0.45) 35%, rgba(7,58,11,0.15) 100%)"
         />
         <div className="page-container relative flex min-h-[480px] flex-col justify-end pb-14 pt-8">
           <p className="eyebrow">UNMATCHED LUXURY</p>
@@ -164,24 +185,26 @@ export function ContactPage() {
           <div className="grid grid-cols-4 gap-10">
             {CONTACT_CARDS.map((card) => (
               <article key={card.title} className="text-center">
-                <div className="mx-auto flex h-[52px] w-[52px] items-center justify-center rounded-full bg-maseer-green text-white">
+                <div className="mx-auto flex h-[56px] w-[56px] items-center justify-center rounded-full bg-maseer-green text-white">
                   {card.icon}
                 </div>
-                <h3 className="mt-5 font-lato text-[15px] font-bold text-[#1a1a1a]">
+                <h3 className="mt-5 font-lato text-[18px] font-bold text-[#1a1a1a]">
                   {card.title}
                 </h3>
-                <p className="mx-auto mt-2 max-w-[220px] font-lato text-[12px] leading-[18px] text-maseer-muted">
+                <p className="mx-auto mt-2 max-w-[220px] font-lato text-[14px] leading-[18px] text-maseer-muted">
                   {card.desc}
                 </p>
                 <p
                   className={[
-                    "mt-4 font-lato text-[15px] font-bold",
-                    card.detailTone === "green" ? "text-maseer-green" : "text-[#1a1a1a]",
+                    "mt-4 font-lato text-[18px] font-bold",
+                    card.detailTone === "green"
+                      ? "text-maseer-green"
+                      : "text-[#1a1a1a]",
                   ].join(" ")}
                 >
                   {card.detail}
                 </p>
-                <p className="mt-2 font-lato text-[11px] leading-[16px] text-[#9ca3af]">
+                <p className="mt-2 font-lato text-[14px] leading-[16px] text-black">
                   {card.note}
                 </p>
               </article>
@@ -194,7 +217,7 @@ export function ContactPage() {
         <div className="page-container">
           <div className="grid grid-cols-[1fr_1.15fr] items-start gap-14">
             <div className="pt-4">
-              <h2 className="max-w-[340px] font-lato text-[32px] font-bold leading-[1.25] text-maseer-green">
+              <h2 className="max-w-[420px] font-lato text-[28px] font-bold leading-[1.25] text-maseer-green">
                 We&apos;re Excited To Hear From You!
               </h2>
               <div className="mt-8">
@@ -312,7 +335,7 @@ export function ContactPage() {
                 type="submit"
                 loading={isSubmitting}
                 loadingText="Sending..."
-                className="btn-primary mt-6 !rounded-lg !px-7 disabled:cursor-not-allowed disabled:opacity-70"
+                className="btn-primary mt-6 !rounded-none !px-14 disabled:cursor-not-allowed disabled:opacity-70"
               >
                 <span className="inline-flex items-center gap-2">
                   Send message
@@ -348,7 +371,7 @@ export function ContactPage() {
                   )}
                 </div>
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-maseer-green text-maseer-green">
-                  {openFaq === i ? "˄" : "˅"}
+                  {openFaq === i ? <ChevronDown className="size-5" /> : <ChevronUp className="size-5" />}
                 </span>
               </button>
             </div>
