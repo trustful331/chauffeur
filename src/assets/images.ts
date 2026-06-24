@@ -41,7 +41,7 @@ export const images = {
     hero: servicesHero,
     coverage: [service1, service2, service3, service4, service5] as const,
     sync: servicesSync,
-  },
+  }, 
   corporate: {
     hero: corporateHero,
     partners: corporateGrid,

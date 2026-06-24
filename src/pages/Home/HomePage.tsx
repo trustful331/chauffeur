@@ -1097,7 +1097,7 @@ export function HomePage() {
         <GoldHeading before="Our, " accent="Service Coverage" />
         <p className="mt-3 text-[14px] text-maseer-green ">
           From the door of your residence to the door of your private jet —
-          every detail attended to.
+          every detail attended to. 
         </p>
         <div className="mt-10 space-y-3">
           <div className="grid grid-cols-[1.55fr_1fr] gap-3">
