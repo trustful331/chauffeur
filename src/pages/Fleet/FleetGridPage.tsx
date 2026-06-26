@@ -1,6 +1,22 @@
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
+  Wifi,
+  Snowflake,
+  Shield,
+  Music,
+  Droplets,
+  UserCheck,
+  Briefcase,
+  Zap,
+  Camera,
+  Sparkles,
+  Info,
+  Tv,
+  User,
+  Luggage,
+} from "lucide-react";
+import {
   FLEET_GRID_CATEGORIES,
   getFleetGridVehicles,
   type FleetGridCategory,
@@ -14,63 +30,77 @@ import {
 } from "./FleetShared";
 
 function PersonIcon() {
-  return (
-    <svg
-      className="h-3.5 w-3.5 text-maseer-gold"
-      viewBox="0 0 16 16"
-      fill="currentColor"
-      aria-hidden
-    >
-      <path d="M8 8a3 3 0 100-6 3 3 0 000 6zm-5 6a5 5 0 0110 0H3z" />
-    </svg>
-  );
+  return <User className="h-3.5 w-3.5 text-maseer-gold" />;
 }
 
 function LuggageIcon() {
-  return (
-    <svg
-      className="h-3.5 w-3.5 text-maseer-gold"
-      viewBox="0 0 16 16"
-      fill="none"
-      aria-hidden
-    >
-      <rect
-        x="3"
-        y="5"
-        width="10"
-        height="8"
-        rx="1"
-        stroke="currentColor"
-        strokeWidth="1.2"
-      />
-      <path
-        d="M6 5V4a2 2 0 014 0v1M8 8v3"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
+  return <Luggage className="h-3.5 w-3.5 text-maseer-gold" />;
 }
 
-function FeatureIcon() {
-  return (
-    <svg
-      className="h-3.5 w-3.5 shrink-0 text-maseer-gold"
-      viewBox="0 0 16 16"
-      fill="none"
-      aria-hidden
-    >
-      <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.2" />
-      <path
-        d="M5.5 8l2 2 3-3.5"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+function getFeatureIcon(feature: string) {
+  const feat = feature.toLowerCase();
+  const className = "h-3.5 w-3.5 shrink-0 text-maseer-gold";
+
+  if (feat.includes("wifi") || feat.includes("hotspot")) {
+    return <Wifi className={className} />;
+  }
+  if (
+    feat.includes("climate") ||
+    feat.includes("seats") ||
+    feat.includes("heated") ||
+    feat.includes("ventilated")
+  ) {
+    return <Snowflake className={className} />;
+  }
+  if (
+    feat.includes("privacy") ||
+    feat.includes("safety") ||
+    feat.includes("awd") ||
+    feat.includes("shield") ||
+    feat.includes("glass")
+  ) {
+    return <Shield className={className} />;
+  }
+  if (
+    feat.includes("sound") ||
+    feat.includes("audio") ||
+    feat.includes("music") ||
+    feat.includes("premium sound")
+  ) {
+    return <Music className={className} />;
+  }
+  if (feat.includes("water") || feat.includes("drink") || feat.includes("mineral")) {
+    return <Droplets className={className} />;
+  }
+  if (feat.includes("chauffeur") || feat.includes("driver") || feat.includes("professional")) {
+    return <UserCheck className={className} />;
+  }
+  if (feat.includes("table") || feat.includes("work") || feat.includes("lounge")) {
+    return <Briefcase className={className} />;
+  }
+  if (
+    feat.includes("charging") ||
+    feat.includes("ports") ||
+    feat.includes("power") ||
+    feat.includes("usb")
+  ) {
+    return <Zap className={className} />;
+  }
+  if (feat.includes("camera") || feat.includes("vision") || feat.includes("360")) {
+    return <Camera className={className} />;
+  }
+  if (
+    feat.includes("lighting") ||
+    feat.includes("led") ||
+    feat.includes("ambient") ||
+    feat.includes("mood")
+  ) {
+    return <Sparkles className={className} />;
+  }
+  if (feat.includes("tablet") || feat.includes("screen") || feat.includes("device")) {
+    return <Tv className={className} />;
+  }
+  return <Info className={className} />;
 }
 
 function VehicleCard({ vehicle }: { vehicle: FleetVehicle }) {
@@ -106,18 +136,18 @@ function VehicleCard({ vehicle }: { vehicle: FleetVehicle }) {
               key={feature}
               className="flex items-center gap-2 font-lato text-[12px] leading-[18px] text-maseer-green-text/85"
             >
-              <FeatureIcon />
+              {getFeatureIcon(feature)}
               {feature}
             </li>
           ))}
         </ul>
         <div className="mt-6 flex items-center gap-3">
-          <Link
+          {/* <Link
             to={`/fleet/${vehicle.id}`}
             className="link-arrow shrink-0 pb-1 font-lato text-xs font-semibold"
           >
             View Details <span aria-hidden>↗</span>
-          </Link>
+          </Link> */}
           <Link
             to={`/booking?vehicle=${vehicle.id}`}
             className="block flex-1 rounded-lg bg-primary py-3.5 text-center font-lato text-sm font-bold text-white transition hover:brightness-105"

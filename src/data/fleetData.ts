@@ -1,6 +1,9 @@
 export type FleetCategory =
   | 'All Vehicles'
-  | 'First Class'
+  | 'Green Class'
+  | 'Ultra Luxury'
+  | 'Business Van'
+  | 'VIP / Business Class'
   | 'Economy Class'
 
 import { images } from '../assets/images'
@@ -9,7 +12,10 @@ export type VehicleBodyType = 'SEDAN' | 'SUV' | 'VAN'
 
 export const FLEET_GRID_CATEGORIES = [
   'All Vehicles',
-  'First Class',
+  'Green Class',
+  'Ultra Luxury',
+  'Business Van',
+  'VIP / Business Class',
   'Economy Class',
 ] as const
 
@@ -33,7 +39,10 @@ export type FleetVehicle = {
 
 export const FLEET_CATEGORIES: FleetCategory[] = [
   'All Vehicles',
-  'First Class',
+  'Green Class',
+  'Ultra Luxury',
+  'Business Van',
+  'VIP / Business Class',
   'Economy Class',
 ]
 
@@ -56,7 +65,7 @@ export const FLEET_VEHICLES: FleetVehicle[] = [
   {
     id: 'mercedes-s',
     name: 'Mercedes S-Class',
-    category: 'First Class',
+    category: 'VIP / Business Class',
     bodyType: 'SEDAN',
     seats: 3,
     bags: 2,
@@ -65,13 +74,13 @@ export const FLEET_VEHICLES: FleetVehicle[] = [
     fuel: 'Petrol',
     features: ['High-speed WiFi', 'Chilled Mineral Water', 'Professional Chauffeur'],
     image: images.fleet.grid[0],
-    gridTags: ['First Class'],
+    gridTags: ['VIP / Business Class'],
     isNew: true,
   },
   {
     id: 'cadillac-escalade',
     name: 'Cadillac Escalade',
-    category: 'First Class',
+    category: 'Ultra Luxury',
     bodyType: 'SUV',
     seats: 6,
     bags: 4,
@@ -80,12 +89,12 @@ export const FLEET_VEHICLES: FleetVehicle[] = [
     fuel: 'Petrol',
     features: ['Complimentary Hotspot', 'Multi-zone Climate Control', 'Extended Privacy Glass'],
     image: images.fleet.grid[1],
-    gridTags: ['First Class'],
+    gridTags: ['Ultra Luxury'],
   },
   {
     id: 'bmw-7',
     name: 'BMW 7 Series',
-    category: 'First Class',
+    category: 'Green Class',
     bodyType: 'SEDAN',
     seats: 4,
     bags: 3,
@@ -94,12 +103,12 @@ export const FLEET_VEHICLES: FleetVehicle[] = [
     fuel: 'Hybrid',
     features: ['Ambient lighting', 'Executive lounge', 'WiFi hotspot'],
     image: images.home.fleet[1],
-    gridTags: ['First Class'],
+    gridTags: ['Green Class'],
   },
   {
     id: 'mercedes-v',
     name: 'Mercedes V-Class',
-    category: 'First Class',
+    category: 'Business Van',
     bodyType: 'VAN',
     seats: 7,
     bags: 6,
@@ -108,12 +117,12 @@ export const FLEET_VEHICLES: FleetVehicle[] = [
     fuel: 'Diesel',
     features: ['Executive Work Table', 'On-board Charging Ports', 'Silent Cabin Tech'],
     image: images.fleet.grid[2],
-    gridTags: ['First Class'],
+    gridTags: ['Business Van'],
   },
   {
     id: 'audi-a8',
     name: 'Audi A8 L',
-    category: 'First Class',
+    category: 'VIP / Business Class',
     bodyType: 'SEDAN',
     seats: 3,
     bags: 3,
@@ -122,7 +131,7 @@ export const FLEET_VEHICLES: FleetVehicle[] = [
     fuel: 'Petrol',
     features: ['Quattro AWD', 'Matrix LED', 'Rear tablet'],
     image: images.home.fleet[2],
-    gridTags: ['First Class'],
+    gridTags: ['VIP / Business Class'],
     isNew: true,
   },
   {

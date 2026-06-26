@@ -6,6 +6,7 @@ import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import type { BookingLocation } from "src/api/booking";
 import { Spinner } from "./Spinner";
+import { Send } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 
 const defaultIcon = L.icon({
@@ -179,7 +180,11 @@ export function LocationMapField({
           ].join(" ")}
         />
         <div className="absolute right-3.5 pointer-events-none">
-          <MapPinIcon />
+          {label.toLowerCase().includes("drop off") ? (
+            <Send className="h-[18px] w-[18px] shrink-0 text-primary" />
+          ) : (
+            <MapPinIcon />
+          )}
         </div>
       </div>
 
