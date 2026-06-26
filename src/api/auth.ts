@@ -54,7 +54,7 @@ export async function signIn(email: string, password: string) {
     });
     return parseAuthResponse(result, email);
   } catch (error) {
-    throw new Error(getErrorMessage(error, "Login failed"));
+    throw new Error(getErrorMessage(error, "Login failed"), { cause: error });
   }
 }
 
@@ -68,7 +68,7 @@ export async function signUp(data: {
     const result = await apiPost<AuthApiResponse>("auth/signup", data);
     return parseAuthResponse(result, data.email);
   } catch (error) {
-    throw new Error(getErrorMessage(error, "Sign up failed"));
+    throw new Error(getErrorMessage(error, "Sign up failed"), { cause: error });
   }
 }
 
