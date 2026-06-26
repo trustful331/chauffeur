@@ -28,6 +28,7 @@ import {
   FleetHero,
   FleetStandards,
 } from "./FleetShared";
+import { Link } from "react-router-dom";
 
 function PersonIcon() {
   return <User className="h-3.5 w-3.5 text-maseer-gold" />;
@@ -69,13 +70,25 @@ function getFeatureIcon(feature: string) {
   ) {
     return <Music className={className} />;
   }
-  if (feat.includes("water") || feat.includes("drink") || feat.includes("mineral")) {
+  if (
+    feat.includes("water") ||
+    feat.includes("drink") ||
+    feat.includes("mineral")
+  ) {
     return <Droplets className={className} />;
   }
-  if (feat.includes("chauffeur") || feat.includes("driver") || feat.includes("professional")) {
+  if (
+    feat.includes("chauffeur") ||
+    feat.includes("driver") ||
+    feat.includes("professional")
+  ) {
     return <UserCheck className={className} />;
   }
-  if (feat.includes("table") || feat.includes("work") || feat.includes("lounge")) {
+  if (
+    feat.includes("table") ||
+    feat.includes("work") ||
+    feat.includes("lounge")
+  ) {
     return <Briefcase className={className} />;
   }
   if (
@@ -86,7 +99,11 @@ function getFeatureIcon(feature: string) {
   ) {
     return <Zap className={className} />;
   }
-  if (feat.includes("camera") || feat.includes("vision") || feat.includes("360")) {
+  if (
+    feat.includes("camera") ||
+    feat.includes("vision") ||
+    feat.includes("360")
+  ) {
     return <Camera className={className} />;
   }
   if (
@@ -97,7 +114,11 @@ function getFeatureIcon(feature: string) {
   ) {
     return <Sparkles className={className} />;
   }
-  if (feat.includes("tablet") || feat.includes("screen") || feat.includes("device")) {
+  if (
+    feat.includes("tablet") ||
+    feat.includes("screen") ||
+    feat.includes("device")
+  ) {
     return <Tv className={className} />;
   }
   return <Info className={className} />;
@@ -144,13 +165,20 @@ function VehicleCard({ vehicle }: { vehicle: FleetVehicle }) {
               </li>
             ))}
           </ul>
+
           <div className="mt-6 flex items-center gap-3">
+            <Link
+              to={`/fleet/${vehicle.id}`}
+              className="link-arrow shrink-0 pb-1 font-lato text-xs font-semibold"
+            >
+              View Details <span aria-hidden>↗</span>
+            </Link>
             <button
               type="button"
               onClick={() => setModalOpen(true)}
               className="block flex-1 rounded-lg bg-primary py-3.5 text-center font-lato text-sm font-bold text-white transition hover:brightness-105"
             >
-              Book This Vehicle
+              Book This Vehicle 
             </button>
           </div>
         </div>

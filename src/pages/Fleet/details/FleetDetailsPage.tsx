@@ -14,7 +14,7 @@ function IconBooking() {
   return (
     <svg
       width="42"
-      height="23"
+      height="33"
       viewBox="0 0 42 33"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -43,7 +43,7 @@ function IconDiamond() {
   return (
     <svg
       width="38"
-      height="23"
+      height="33"
       viewBox="0 0 38 33"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -80,7 +80,7 @@ function IconChauffeur() {
   return (
     <svg
       width="36"
-      height="28"
+      height="38"
       viewBox="0 0 36 38"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -121,7 +121,7 @@ function IconSafety() {
   return (
     <svg
       width="45"
-      height="35"
+      height="45"
       viewBox="0 0 45 45"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -170,7 +170,7 @@ function IconQuality() {
   return (
     <svg
       width="40"
-      height="24"
+      height="34"
       viewBox="0 0 40 34"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -215,7 +215,7 @@ function IconClock24() {
   return (
     <svg
       width="32"
-      height="22"
+      height="32"
       viewBox="0 0 32 32"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
@@ -237,38 +237,38 @@ const FEATURES = [
   {
     label: "Secure booking\nin minutes",
     icon: <IconBooking />,
-    pos: " left-[24%]",
+    pos: "top-[7%] left-[20%]",
     side: "left" as const,
   },
   {
     label: "Professional drivers\nat your service",
     icon: <IconChauffeur />,
-    pos: "top-[26%] left-[6%]",
+    pos: "top-[26%] left-[1%]",
     side: "left" as const,
   },
   {
     label: "Price vs Quality",
     icon: <IconQuality />,
-    pos: "top-[55%] left-[3%]",
+    pos: "top-[55%] left-[-4%]", 
     side: "left" as const,
   },
   /* right column – label LEFT of icon */
   {
     label: "Multiple Luxury\nOption",
     icon: <IconDiamond />,
-    pos: "top-[1%] right-[20%]",
+    pos: "top-[5%]  right-[20%]",
     side: "right" as const,
   },
   {
     label: "We care about\nyour safety\non your journey",
     icon: <IconSafety />,
-    pos: "top-[26%] right-[7%]",
+    pos: "top-[26%] right-[4%]",
     side: "right" as const,
   },
   {
     label: "Available 24\nhours a day",
     icon: <IconClock24 />,
-    pos: "top-[55%] right-[5%]",
+    pos: "top-[55%] right-[-3%]",
     side: "right" as const,
   },
 ];
@@ -333,10 +333,10 @@ export function FleetDetailsPage() {
           <div
             className="absolute bottom-[120px] left-1/2 -translate-x-1/2"
             style={{
-              width: "880px",
-              height: "570px",
+              width: "992.89px",
+              height: "496.44px",
               background: "rgba(0, 39, 3, 0.2)",
-              borderRadius: "420px 420px 0 0",
+              borderRadius: "496.44px 496.44px 0 0",
             }}
             aria-hidden
           />
@@ -350,7 +350,7 @@ export function FleetDetailsPage() {
               {/* left side: label → icon */}
               {feat.side === "left" && (
                 <>
-                  <p className="max-w-[130px] text-right font-lato text-[12px] font-semibold leading-snug text-maseer-green-text">
+                  <p className="text-left font-lato text-[20px] font-semibold leading-snug text-maseer-green-text">
                     {feat.label.split("\n").map((line, i) => (
                       <span key={i}>
                         {line}
@@ -358,7 +358,7 @@ export function FleetDetailsPage() {
                       </span>
                     ))}
                   </p>
-                  <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full bg-maseer-green shadow-md">
+                  <div className="flex h-[82px] w-[82px] shrink-0 items-center justify-center rounded-full bg-[#002703] shadow-md">
                     {feat.icon}
                   </div>
                 </>
@@ -366,10 +366,10 @@ export function FleetDetailsPage() {
               {/* right side: icon → label */}
               {feat.side === "right" && (
                 <>
-                  <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full bg-maseer-green shadow-md">
+                  <div className="flex h-[82px] w-[82px] shrink-0 items-center justify-center rounded-full bg-[#002703] shadow-md">
                     {feat.icon}
                   </div>
-                  <p className="max-w-[130px] text-left font-lato text-[12px] font-semibold leading-snug text-maseer-green-text">
+                  <p className="text-left font-lato text-[20px] font-semibold leading-snug text-maseer-green-text">
                     {feat.label.split("\n").map((line, i) => (
                       <span key={i}>
                         {line}
@@ -394,7 +394,7 @@ export function FleetDetailsPage() {
           </div>
 
           {/* CTA + dots — absolute at bottom center, overlapping arch base */}
-          <div className="absolute bottom-7 left-1/2 -translate-x-1/2 text-center">
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-center">
             <button
               type="button"
               onClick={() => setBookingModalOpen(true)}

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { LoadingButton } from "../../ui/Spinner";
+import { createGetInTouch } from "src/api/getInTouch";
+import toast from "react-hot-toast";
 
 type ContactCallbackFormValues = {
   name: string;
@@ -47,17 +49,18 @@ export function ContactCallbackForm() {
     setIsSubmitting(true);
     try {
       const payload = {
-        name: data.name.trim(),
-        phone: data.phone.trim(),
-        email: data.email.trim(),
-        serviceNeeded: data.serviceNeeded.trim(),
-        message: data.message.trim(),
-        submittedAt: new Date().toISOString(),
+        full_name: data.name.trim(),
+        phone_number: data.phone.trim(),
+        email_address: data.email.trim(),
+        note: `Service Needed: ${data.serviceNeeded.trim()}\nMessage: ${data.message.trim()}`.trim(),
       };
 
-      await new Promise((resolve) => setTimeout(resolve, 600));
-      console.log("Contact callback payload:", payload);
+      await createGetInTouch(payload);
+      toast.success("Callback request submitted successfully! 🎉");
       reset();
+    } catch (error) {
+      const errMsg = error instanceof Error ? error.message : "Failed to submit request";
+      toast.error(errMsg);
     } finally {
       setIsSubmitting(false);
     }

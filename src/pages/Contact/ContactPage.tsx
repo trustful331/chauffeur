@@ -4,6 +4,8 @@ import { images } from "../../assets/images";
 import { HeroBackground } from "../../ui/HeroBackground";
 import { LoadingButton } from "../../ui/Spinner";
 import { ChevronDown, ChevronUp } from "lucide-react";
+import { createGetInTouch } from "src/api/getInTouch";
+import toast from "react-hot-toast";
 
 type ContactForm = {
   name: string;
@@ -153,9 +155,19 @@ export function ContactPage() {
   const onContactSubmit = async (data: ContactForm) => {
     setIsSubmitting(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 600));
-      console.log("Contact form payload:", data);
+      const payload = {
+        full_name: data.name.trim(),
+        phone_number: data.phone.trim(),
+        email_address: data.email.trim(),
+        note: `Subject: ${data.subject.trim()}\nMessage: ${(data.message || "").trim()}`.trim(),
+      };
+
+      await createGetInTouch(payload);
+      toast.success("Your message has been sent successfully! 🎉");
       reset();
+    } catch (error) {
+      const errMsg = error instanceof Error ? error.message : "Failed to send message";
+      toast.error(errMsg);
     } finally {
       setIsSubmitting(false);
     }

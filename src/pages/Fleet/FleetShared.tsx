@@ -201,7 +201,7 @@ export function FleetCta({
           <h2 className="font-serif text-[40px] font-semibold leading-[48px] text-white">
             Ready for an Unforgettable Journey?
           </h2>
-          <Link to="/booking" className="btn-gold mt-8 !rounded-lg">
+          <Link to="/booking" className="btn-gold mt-8 !rounded-lg text-white">
             {buttonLabel}
           </Link>
         </div>
