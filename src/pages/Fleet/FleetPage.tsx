@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { BookingModal } from "../../ui/BookingModal";
 import {
   FLEET_CATEGORIES,
   FLEET_VEHICLES,
@@ -31,6 +31,7 @@ function FeatureIcon() {
 export function FleetPage() {
   const [category, setCategory] = useState<FleetCategory>("All Vehicles");
   const [slide, setSlide] = useState(0);
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
 
   const filtered = useMemo(
     () =>
@@ -89,13 +90,14 @@ export function FleetPage() {
         </div>
 
         <div className="mt-4 text-center">
-          <Link
-            to="/booking"
+          <button
+            type="button"
+            onClick={() => setBookingModalOpen(true)}
             className="btn-gold !rounded-full !uppercase !tracking-wide"
           >
-            Book This Vehicle
+            Book This Vehicle 
             <span aria-hidden>→</span>
-          </Link>
+          </button>
 
           <div className="mt-6 flex items-center justify-center gap-2">
             {filtered.map((_, i) => (
@@ -120,6 +122,13 @@ export function FleetPage() {
 
       <FleetStandards />
       <FleetCta buttonLabel="Book Your Vehicle Now" />
+
+      <BookingModal
+        isOpen={bookingModalOpen}
+        onClose={() => setBookingModalOpen(false)}
+        vehicleId={current?.id}
+        vehicleName={current?.name}
+      />
     </div>
   );
 }

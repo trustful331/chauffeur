@@ -5,7 +5,8 @@ import {
   ListboxOption,
   ListboxOptions,
 } from "@headlessui/react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
+import toast from "react-hot-toast";
 import Slider from "react-slick";
 import { Controller, useForm } from "react-hook-form";
 import DatePicker from "react-datepicker";
@@ -150,11 +151,22 @@ function CalendarIcon() {
 
 function PersonIcon() {
   return (
-<svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M10.1625 5.08127C11.098 5.08127 11.8563 4.32294 11.8563 3.3875C11.8563 2.45205 11.098 1.69373 10.1625 1.69373C9.22708 1.69373 8.46875 2.45205 8.46875 3.3875C8.46875 4.32294 9.22708 5.08127 10.1625 5.08127Z" fill="#F9BB00"/>
-<path d="M13.4556 6.8682C13.1253 6.53791 12.5579 5.92815 11.4569 5.92815H9.30585C8.30973 5.92289 7.34705 5.56821 6.58562 4.92594C5.82418 4.28367 5.31229 3.39456 5.13918 2.41358C5.10931 2.21438 5.00928 2.03239 4.85712 1.90041C4.70495 1.76843 4.51065 1.69513 4.30923 1.69373C3.79263 1.69373 3.38612 2.15104 3.46234 2.65918C3.64678 3.75492 4.13388 4.77729 4.86865 5.61083C5.60343 6.44437 6.5566 7.05588 7.62055 7.37633V17.7846C7.62055 18.2503 8.00165 18.6314 8.46744 18.6314C8.93323 18.6314 9.31432 18.2503 9.31432 17.7846V13.5501H11.0081V17.7846C11.0081 18.2503 11.3892 18.6314 11.855 18.6314C12.3208 18.6314 12.7019 18.2503 12.7019 17.7846V8.51116L15.4458 11.2551C15.5242 11.3335 15.6173 11.3957 15.7197 11.4381C15.8222 11.4805 15.9319 11.5024 16.0428 11.5024C16.1537 11.5024 16.2635 11.4805 16.366 11.4381C16.4684 11.3957 16.5615 11.3335 16.6399 11.2551C16.7183 11.1767 16.7805 11.0836 16.8229 10.9811C16.8654 10.8787 16.8872 10.7689 16.8872 10.658C16.8872 10.5471 16.8654 10.4373 16.8229 10.3349C16.7805 10.2324 16.7183 10.1394 16.6399 10.061L13.4556 6.8682Z" fill="#F9BB00"/>
-</svg>
-
+    <svg
+      width="21"
+      height="21"
+      viewBox="0 0 21 21"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M10.1625 5.08127C11.098 5.08127 11.8563 4.32294 11.8563 3.3875C11.8563 2.45205 11.098 1.69373 10.1625 1.69373C9.22708 1.69373 8.46875 2.45205 8.46875 3.3875C8.46875 4.32294 9.22708 5.08127 10.1625 5.08127Z"
+        fill="#F9BB00"
+      />
+      <path
+        d="M13.4556 6.8682C13.1253 6.53791 12.5579 5.92815 11.4569 5.92815H9.30585C8.30973 5.92289 7.34705 5.56821 6.58562 4.92594C5.82418 4.28367 5.31229 3.39456 5.13918 2.41358C5.10931 2.21438 5.00928 2.03239 4.85712 1.90041C4.70495 1.76843 4.51065 1.69513 4.30923 1.69373C3.79263 1.69373 3.38612 2.15104 3.46234 2.65918C3.64678 3.75492 4.13388 4.77729 4.86865 5.61083C5.60343 6.44437 6.5566 7.05588 7.62055 7.37633V17.7846C7.62055 18.2503 8.00165 18.6314 8.46744 18.6314C8.93323 18.6314 9.31432 18.2503 9.31432 17.7846V13.5501H11.0081V17.7846C11.0081 18.2503 11.3892 18.6314 11.855 18.6314C12.3208 18.6314 12.7019 18.2503 12.7019 17.7846V8.51116L15.4458 11.2551C15.5242 11.3335 15.6173 11.3957 15.7197 11.4381C15.8222 11.4805 15.9319 11.5024 16.0428 11.5024C16.1537 11.5024 16.2635 11.4805 16.366 11.4381C16.4684 11.3957 16.5615 11.3335 16.6399 11.2551C16.7183 11.1767 16.7805 11.0836 16.8229 10.9811C16.8654 10.8787 16.8872 10.7689 16.8872 10.658C16.8872 10.5471 16.8654 10.4373 16.8229 10.3349C16.7805 10.2324 16.7183 10.1394 16.6399 10.061L13.4556 6.8682Z"
+        fill="#F9BB00"
+      />
+    </svg>
   );
 }
 
@@ -553,7 +565,6 @@ function FaqChevron({ open }: { open: boolean }) {
 }
 
 export function HomePage() {
-  const navigate = useNavigate();
   const [bookingTab, setBookingTab] = useState<BookingTab>("Airport Transfer");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [bookingError, setBookingError] = useState<string | null>(null);
@@ -584,13 +595,10 @@ export function HomePage() {
     setBookingError(null);
     setBookingSuccess(null);
 
-    // if (!isAuthenticated) {
-    //   navigate("/signin", { state: { from: "/" } });
-    //   return;
-    // }
-
     if (data.pickup.latitude == null || data.pickup.longitude == null) {
-      setBookingError("Please set pick up location on the map.");
+      const msg = "Please set pick up location on the map.";
+      setBookingError(msg);
+      toast.error(msg);
       return;
     }
 
@@ -601,7 +609,9 @@ export function HomePage() {
       !isHourly &&
       (dropoffLocation.latitude == null || dropoffLocation.longitude == null)
     ) {
-      setBookingError("Please set drop off location on the map.");
+      const msg = "Please set drop off location on the map.";
+      setBookingError(msg);
+      toast.error(msg);
       return;
     }
 
@@ -624,11 +634,11 @@ export function HomePage() {
         childs: Number(data.childs || 0),
       };
 
-      console.log("Booking payload:", payload);
-
       const result = await createBooking(payload);
 
-      setBookingSuccess(result.message || "Booking created successfully.");
+      const successMsg = result.message || "Booking created successfully! 🎉";
+      setBookingSuccess(successMsg);
+      toast.success(successMsg);
       reset({
         pickup: emptyLocation(),
         dropoff: emptyLocation(),
@@ -637,11 +647,11 @@ export function HomePage() {
         passengers: "",
         childs: "0",
       });
-      // navigate("/booking");
     } catch (error) {
-      setBookingError(
-        error instanceof Error ? error.message : "Booking failed. Try again.",
-      );
+      const errMsg =
+        error instanceof Error ? error.message : "Booking failed. Try again.";
+      setBookingError(errMsg);
+      toast.error(errMsg);
     } finally {
       setIsBookingSubmitting(false);
     }
@@ -1097,7 +1107,7 @@ export function HomePage() {
         <GoldHeading before="Our, " accent="Service Coverage" />
         <p className="mt-3 text-[14px] text-maseer-green ">
           From the door of your residence to the door of your private jet —
-          every detail attended to. 
+          every detail attended to.
         </p>
         <div className="mt-10 space-y-3">
           <div className="grid grid-cols-[1.55fr_1fr] gap-3">

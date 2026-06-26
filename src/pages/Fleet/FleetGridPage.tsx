@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { BookingModal } from "../../ui/BookingModal";
 import {
   Wifi,
   Snowflake,
@@ -104,59 +104,65 @@ function getFeatureIcon(feature: string) {
 }
 
 function VehicleCard({ vehicle }: { vehicle: FleetVehicle }) {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
-    <article className="overflow-hidden rounded-xl bg-white shadow-[0_4px_24px_rgba(0,0,0,0.08)]">
-      <div className="relative h-[210px] bg-[#f3f4f2]">
-        <img
-          src={vehicle.image}
-          alt={vehicle.name}
-          className="h-full w-full object-cover"
-        />
-        <span className="absolute right-3 top-3 rounded-md bg-maseer-gold px-2.5 py-1 font-lato text-[10px] font-bold uppercase tracking-wide text-white">
-          {vehicle.bodyType}
-        </span>
-      </div>
-      <div className="p-7">
-        <h3 className="font-serif text-[22px] font-semibold leading-tight text-maseer-green-text">
-          {vehicle.name}
-        </h3>
-        <div className="mt-3 flex gap-6 font-lato text-[12px] text-maseer-muted">
-          <span className="flex items-center gap-1.5">
-            <PersonIcon />
-            {vehicle.seats} Seats
-          </span>
-          <span className="flex items-center gap-1.5">
-            <LuggageIcon />
-            {vehicle.bagLabel}
+    <>
+      <article className="overflow-hidden rounded-xl bg-white shadow-[0_4px_24px_rgba(0,0,0,0.08)]">
+        <div className="relative h-[210px] bg-[#f3f4f2]">
+          <img
+            src={vehicle.image}
+            alt={vehicle.name}
+            className="h-full w-full object-cover"
+          />
+          <span className="absolute right-3 top-3 rounded-md bg-maseer-gold px-2.5 py-1 font-lato text-[10px] font-bold uppercase tracking-wide text-white">
+            {vehicle.bodyType}
           </span>
         </div>
-        <ul className="mt-4 space-y-2.5">
-          {vehicle.features.slice(0, 3).map((feature) => (
-            <li
-              key={feature}
-              className="flex items-center gap-2 font-lato text-[12px] leading-[18px] text-maseer-green-text/85"
+        <div className="p-7">
+          <h3 className="font-serif text-[22px] font-semibold leading-tight text-maseer-green-text">
+            {vehicle.name}
+          </h3>
+          <div className="mt-3 flex gap-6 font-lato text-[12px] text-maseer-muted">
+            <span className="flex items-center gap-1.5">
+              <PersonIcon />
+              {vehicle.seats} Seats
+            </span>
+            <span className="flex items-center gap-1.5">
+              <LuggageIcon />
+              {vehicle.bagLabel}
+            </span>
+          </div>
+          <ul className="mt-4 space-y-2.5">
+            {vehicle.features.slice(0, 3).map((feature) => (
+              <li
+                key={feature}
+                className="flex items-center gap-2 font-lato text-[12px] leading-[18px] text-maseer-green-text/85"
+              >
+                {getFeatureIcon(feature)}
+                {feature}
+              </li>
+            ))}
+          </ul>
+          <div className="mt-6 flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setModalOpen(true)}
+              className="block flex-1 rounded-lg bg-primary py-3.5 text-center font-lato text-sm font-bold text-white transition hover:brightness-105"
             >
-              {getFeatureIcon(feature)}
-              {feature}
-            </li>
-          ))}
-        </ul>
-        <div className="mt-6 flex items-center gap-3">
-          {/* <Link
-            to={`/fleet/${vehicle.id}`}
-            className="link-arrow shrink-0 pb-1 font-lato text-xs font-semibold"
-          >
-            View Details <span aria-hidden>↗</span>
-          </Link> */}
-          <Link
-            to={`/booking?vehicle=${vehicle.id}`}
-            className="block flex-1 rounded-lg bg-primary py-3.5 text-center font-lato text-sm font-bold text-white transition hover:brightness-105"
-          >
-            Book This Vehicle
-          </Link>
+              Book This Vehicle
+            </button>
+          </div>
         </div>
-      </div>
-    </article>
+      </article>
+
+      <BookingModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        vehicleId={vehicle.id}
+        vehicleName={vehicle.name}
+      />
+    </>
   );
 }
 

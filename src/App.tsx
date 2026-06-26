@@ -1,8 +1,13 @@
-import { RouterProvider } from 'react-router-dom'
-import { appRouter } from './router'
+import { RouterProvider } from "react-router-dom";
+import { appRouter } from "./router";
+import { ToastProvider } from "./ui/Toast";
 
 function App() {
-  return <RouterProvider router={appRouter} />
+  return (
+    <ToastProvider>
+      <RouterProvider router={appRouter} />
+    </ToastProvider>
+  );
 }
 
-export default App
+export default App;
