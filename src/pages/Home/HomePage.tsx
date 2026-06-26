@@ -122,33 +122,6 @@ function FieldError({ message }: { message?: string }) {
   );
 }
 
-function CalendarIcon() {
-  return (
-    <svg
-      className="h-[18px] w-[18px] shrink-0 text-primary"
-      viewBox="0 0 16 16"
-      fill="none"
-      aria-hidden
-    >
-      <rect
-        x="2"
-        y="3"
-        width="12"
-        height="11"
-        rx="1.5"
-        stroke="currentColor"
-        strokeWidth="1.2"
-      />
-      <path
-        d="M2 6h12M5 1.5V4M11 1.5V4"
-        stroke="currentColor"
-        strokeWidth="1.2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
-
 function PersonIcon() {
   return (
     <svg

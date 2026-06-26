@@ -82,7 +82,6 @@ const ITINERARY_CARDS = [
 type ItineraryIcon = (typeof ITINERARY_CARDS)[number]["icon"];
 
 function ItineraryIcon({ type }: { type: ItineraryIcon }) {
-  const className = "h-5 w-5 text-primary";
   switch (type) {
     case "airplane":
       return (

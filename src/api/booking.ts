@@ -45,6 +45,6 @@ export async function createBooking(params: CreateBookingParams) {
 
     return result;
   } catch (error) {
-    throw new Error(getErrorMessage(error, "Booking failed"));
+    throw new Error(getErrorMessage(error, "Booking failed"), { cause: error });
   }
 }
