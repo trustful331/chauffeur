@@ -59,11 +59,11 @@ export function FleetPage() {
       />
 
       <section className="section-pad bg-white">
-        <div className="relative mx-auto h-[520px] max-w-[980px]">
+        <div className="relative mx-auto h-[520px] max-w-[980px] max-md:h-auto max-md:min-h-[300px] max-md:pb-8">
           {SHOWCASE_FEATURES.map((feat) => (
             <div
               key={feat.label}
-              className={`absolute ${feat.pos} z-10 flex max-w-[140px] flex-col items-center gap-2 text-center`}
+              className={`absolute ${feat.pos} z-10 flex max-w-[140px] flex-col items-center gap-2 text-center max-md:hidden`}
             >
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-maseer-green shadow-soft">
                 <FeatureIcon />
@@ -74,16 +74,16 @@ export function FleetPage() {
             </div>
           ))}
 
-          <div className="absolute bottom-0 left-1/2 w-[720px] -translate-x-1/2">
+          <div className="absolute bottom-0 left-1/2 w-[720px] -translate-x-1/2 max-md:relative max-md:w-full max-md:translate-x-0">
             <div
-              className="mx-auto h-[120px] w-[620px] rounded-t-full bg-maseer-line"
+              className="mx-auto h-[120px] w-[620px] rounded-t-full bg-maseer-line max-md:h-[80px] max-md:w-[min(100%,360px)]"
               aria-hidden
             />
             {current && (
               <img
                 src={current.image}
                 alt={current.name}
-                className="relative -mt-[100px] mx-auto h-[220px] w-[480px] object-contain drop-shadow-float"
+                className="relative -mt-[100px] mx-auto h-[220px] w-[480px] object-contain drop-shadow-float max-md:-mt-[60px] max-md:h-[160px] max-md:w-full max-md:max-w-[340px]"
               />
             )}
           </div>

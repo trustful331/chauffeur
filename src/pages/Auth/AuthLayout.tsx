@@ -29,7 +29,7 @@ export function AuthLayout() {
         </div>
       </div>
 
-      <div className="flex min-h-screen flex-col bg-maseer-cream px-6 py-10 sm:px-10 lg:py-12">
+      <div className="flex min-h-screen flex-col bg-maseer-cream px-6 py-10 max-md:px-4 max-md:py-6 sm:px-10 lg:py-12">
         <div className="mb-8 flex items-center justify-between lg:hidden">
           <MaseerLogo />
           <Link

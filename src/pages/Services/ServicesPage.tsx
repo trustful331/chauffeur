@@ -319,7 +319,7 @@ function CoverageCard({
       }}
     >
       <div className="absolute bottom-6 left-6 right-6 text-white">
-        <h3 className="font-serif text-[29.48px] leading-[35px]">{title}</h3>
+        <h3 className="font-serif text-[29.48px] leading-[35px] max-md:text-xl max-md:leading-7">{title}</h3>
         <p className="mt-2 max-w-[90%] text-[16.09px] leading-[19px] text-white/90">
           {text}
         </p>
@@ -358,14 +358,14 @@ function ItineraryCard({
 export function ServicesPage() {
   return (
     <div className="overflow-hidden bg-white">
-      <section className="relative w-full min-h-[620px] overflow-hidden bg-maseer-green-deep">
+      <section className="relative w-full min-h-[620px] overflow-hidden bg-maseer-green-deep max-md:min-h-[480px]">
         <HeroBackground
           image={images.services.hero}
           gradient="linear-gradient(90deg, rgba(7,28,11,0.88) 0%, rgba(7,18,11,0.45) 35%, rgba(7,58,11,0.15) 100%)"
         />
-        <div className="page-container relative pb-24 pt-[132px]">
+        <div className="page-container relative pb-24 pt-[132px] max-md:pb-16 max-md:pt-24">
           <p className="eyebrow text-white">EXCELLENCE IN MOTION</p>
-          <h1 className="mt-4 max-w-[640px] font-serif text-figma-hero font-semibold text-white">
+          <h1 className="mt-4 max-w-[640px] font-serif text-figma-hero font-semibold text-white max-md:text-[32px] max-md:leading-[1.15]">
             Tailored Travel Solutions
           </h1>
           <p className="mt-5 max-w-[520px] text-figma-body text-white/85">
@@ -385,7 +385,7 @@ export function ServicesPage() {
         </div>
       </section>
 
-      <section className="page-container py-[100px]">
+      <section className="page-container py-[100px] max-md:py-12">
         <div className="text-left">
           <div className="mb-4 flex items-center gap-2">
             <span className="h-0.5 w-9 bg-primary" aria-hidden />
@@ -402,7 +402,7 @@ export function ServicesPage() {
         <div className="mt-[52px] space-y-3">
           <div className="grid grid-cols-12 gap-3">
             {COVERAGE_LARGE.map((card) => (
-              <div key={card.title} className={card.span}>
+              <div key={card.title} className={`${card.span} max-md:col-span-12`}>
                 <CoverageCard
                   title={card.title}
                   text={card.text}
@@ -411,7 +411,7 @@ export function ServicesPage() {
               </div>
             ))}
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
             {COVERAGE_SMALL.map((card) => (
               <CoverageCard
                 key={card.title}
@@ -425,7 +425,7 @@ export function ServicesPage() {
         </div>
       </section>
 
-      <section className="bg-maseer-cream py-[88px]">
+      <section className="bg-maseer-cream py-[88px] max-md:py-12">
         <div className="page-container">
           <div className="max-w-2xl">
             <div className="mb-4 flex items-center gap-2">
@@ -434,7 +434,7 @@ export function ServicesPage() {
                 SERVICES
               </p>
             </div>
-            <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text">
+            <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
               An itinerary, <span className="text-primary">composed.</span>
             </h2>
             <p className="mt-4 max-w-[560px] font-lato text-[14px] leading-[22px] text-maseer-green-text/80">
@@ -443,7 +443,7 @@ export function ServicesPage() {
               experience for business and leisure travelers.
             </p>
           </div>
-          <div className="mt-12 grid grid-cols-4 gap-6">
+          <div className="mt-12 grid grid-cols-4 gap-6 max-md:grid-cols-1">
             {ITINERARY_CARDS.map((card) => (
               <ItineraryCard
                 key={card.title}
@@ -456,11 +456,11 @@ export function ServicesPage() {
         </div>
       </section>
 
-      <section className="bg-maseer-cream py-[100px]">
+      <section className="bg-maseer-cream py-[100px] max-md:py-12">
         <div className="page-container">
-          <div className="grid grid-cols-2 items-center gap-[80px]">
+          <div className="grid grid-cols-2 items-center gap-[80px] max-md:grid-cols-1 max-md:gap-10">
             <div>
-              <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text">
+              <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
                 Your Journey, Simplified.
               </h2>
               <p className="mt-4 max-w-[480px] font-lato text-[14px] leading-[22px] text-maseer-muted">
@@ -485,7 +485,7 @@ export function ServicesPage() {
                 ))}
               </ol>
             </div>
-            <div className="relative flex justify-end">
+            <div className="relative flex justify-end max-md:justify-center">
               <img
                 src={images.services.sync}
                 alt="Maseer app booking and instant sync"
@@ -496,9 +496,9 @@ export function ServicesPage() {
         </div>
       </section>
 
-      <section className="page-container pb-[100px]">
-        <div className="rounded-[20px] bg-maseer-green-deep px-12 py-16 text-center">
-          <h2 className="font-serif text-[40px] font-semibold leading-[48px] text-white">
+      <section className="page-container pb-[100px] max-md:pb-12">
+        <div className="rounded-[20px] bg-maseer-green-deep px-12 py-16 text-center max-md:px-6 max-md:py-10">
+          <h2 className="font-serif text-[40px] font-semibold leading-[48px] text-white max-md:text-[26px] max-md:leading-[32px]">
             Need a custom solution?
           </h2>
           <p className="mx-auto mt-4 max-w-[560px] text-[15px] leading-6 text-white/75">

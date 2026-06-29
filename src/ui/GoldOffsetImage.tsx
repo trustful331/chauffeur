@@ -16,15 +16,15 @@ export function GoldOffsetImage({
   const goldPosition = offset === 'right' ? 'left-[8.75px] top-[12.17px]' : 'right-[8.75px] top-[12.17px]'
 
   return (
-    <div className={`relative h-[449px] w-full max-w-[549px] ${className}`}>
+    <div className={`relative h-[449px] w-full max-w-[549px] max-md:h-[280px] ${className}`}>
       <div
-        className={`absolute ${goldPosition} h-[437px] w-full max-w-[549px] rounded-[19.28px] bg-maseer-gold-bright`}
+        className={`absolute ${goldPosition} h-[437px] w-full max-w-[549px] rounded-[19.28px] bg-maseer-gold-bright max-md:h-[268px]`}
         aria-hidden
       />
       <img
         src={src}
         alt={alt}
-        className="relative z-10 h-[437px] w-full max-w-[549px] rounded-[19.28px] object-cover shadow-[6px_4px_4px_rgba(0,0,0,0.27)]"
+        className="relative z-10 h-[437px] w-full max-w-[549px] rounded-[19.28px] object-cover shadow-[6px_4px_4px_rgba(0,0,0,0.27)] max-md:h-[268px]"
         style={{ objectPosition }}
       />
     </div>

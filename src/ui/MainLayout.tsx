@@ -1,10 +1,10 @@
+import { useState } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { useAppSelector } from "src/store/hooks";
 import { selectIsAuthenticated } from "src/store/slices/auth/selectors";
 import { MaseerLogo } from "./MaseerLogo";
 import { UserProfileDropdown } from "./UserProfileDropdown";
 
-/* Figma nav: Home, Services, Our Fleet, Corporate, Contact Us */
 const navItems = [
   { to: "/", label: "Home", end: true },
   { to: "/services", label: "Services", end: true },
@@ -89,20 +89,45 @@ function WhatsAppIcon() {
   );
 }
 
+function MenuIcon() {
+  return (
+    <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M4 7h16M4 12h16M4 17h16"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg className="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path
+        d="M6 6l12 12M18 6L6 18"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
 export function MainLayout() {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const { pathname } = useLocation();
   const contactPage = pathname === "/contact";
   const pageBg = contactPage ? "bg-maseer-cream" : "bg-white";
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  const closeMobileNav = () => setMobileNavOpen(false);
 
   return (
     <div className={`min-h-screen ${pageBg}`}>
-      <header
-        className={[
-          "z-40 sticky top-0 border-b border-maseer-line/60 bg-white",
-        ].join(" ")}
-      >
-        <div className="max-w-7xl mx-auto px-5 flex h-[80px] items-center justify-between">
+      <header className="sticky top-0 z-40 border-b border-maseer-line/60 bg-white">
+        <div className="mx-auto flex h-[80px] max-w-7xl items-center justify-between px-4 max-md:h-auto max-md:min-h-[64px] max-md:py-3 md:px-5">
           <MaseerLogo />
 
           <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 xl:flex">
@@ -125,7 +150,7 @@ export function MainLayout() {
             ))}
           </nav>
 
-          <div className="flex items-center gap-4 sm:gap-5">
+          <div className="flex items-center gap-2 sm:gap-4 md:gap-5">
             {isAuthenticated ? (
               <UserProfileDropdown />
             ) : (
@@ -140,19 +165,56 @@ export function MainLayout() {
               href="https://wa.me/"
               target="_blank"
               rel="noreferrer"
-              className="btn-primary !rounded-full !py-2.5 !text-xs"
+              className="btn-primary !rounded-full !py-2.5 !text-xs max-md:!px-3"
             >
               <WhatsAppIcon />
-              Chat on WhatsApp
+              <span className="max-md:hidden">Chat on WhatsApp</span>
             </a>
+            <button
+              type="button"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-maseer-green transition hover:bg-maseer-surface md:hidden"
+              aria-label={mobileNavOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileNavOpen}
+              onClick={() => setMobileNavOpen((open) => !open)}
+            >
+              {mobileNavOpen ? <CloseIcon /> : <MenuIcon />}
+            </button>
           </div>
         </div>
+
+        {mobileNavOpen ? (
+          <nav className="border-t border-maseer-line/60 bg-white px-4 py-4 md:hidden">
+            <ul className="space-y-1">
+              {navItems.map((item) => (
+                <li key={item.to}>
+                  <NavLink
+                    to={item.to}
+                    end={item.end}
+                    onClick={closeMobileNav}
+                    className={({ isActive }) =>
+                      [
+                        "block rounded-lg px-4 py-3 font-lato text-[15px] font-semibold transition",
+                        isActive
+                          ? "bg-maseer-surface text-maseer-green"
+                          : "text-maseer-muted hover:bg-maseer-surface hover:text-maseer-green",
+                      ].join(" ")
+                    }
+                  >
+                    {item.label}
+                  </NavLink>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ) : null}
       </header>
 
-      <main className="w-full">{<Outlet />}</main>
+      <main className="w-full">
+        <Outlet />
+      </main>
 
       <footer className="border-t border-maseer-line/40 bg-white">
-        <div className="page-container py-14 lg:py-16">
+        <div className="page-container py-10 max-md:py-12 lg:py-16">
           <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.35fr_1fr_1fr_1fr] lg:gap-16">
             <div className="sm:col-span-2 lg:col-span-1">
               <MaseerLogo />

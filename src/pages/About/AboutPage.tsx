@@ -170,14 +170,14 @@ const VALUES = [
 export function AboutPage() {
   return (
     <div className="overflow-hidden bg-white">
-      <section className="relative w-full min-h-[520px] overflow-hidden bg-maseer-green-deep">
+      <section className="relative w-full min-h-[520px] overflow-hidden bg-maseer-green-deep max-md:min-h-[420px]">
         <HeroBackground
           image={images.about.hero}
           gradient="linear-gradient(90deg, rgba(7,18,11,0.88) 0%, rgba(7,18,11,0.45) 35%, rgba(7,58,11,0.15) 100%)"
         />
-        <div className="page-container relative flex min-h-[520px] flex-col justify-end pb-16 pt-8">
+        <div className="page-container relative flex min-h-[520px] flex-col justify-end pb-16 pt-8 max-md:min-h-[420px] max-md:pb-12">
           <p className="eyebrow">UNMATCHED LUXURY</p>
-          <h1 className="mt-3 font-serif text-figma-hero text-white">
+          <h1 className="mt-3 font-serif text-figma-hero text-white max-md:text-[32px] max-md:leading-[1.15]">
             About US
           </h1>
           <p className="mt-4 max-w-[580px] text-figma-body text-white/90">
@@ -188,8 +188,8 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="border-b border-[#f0f0f0] bg-white py-[72px]">
-        <div className="page-container grid grid-cols-4 gap-8">
+      <section className="border-b border-[#f0f0f0] bg-white py-[72px] max-md:py-12">
+        <div className="page-container grid grid-cols-4 gap-8 max-md:grid-cols-2">
           {STATS.map((stat) => (
             <article key={stat.label} className="text-center">
               <div className="mx-auto flex h-14 w-14 items-center justify-center">
@@ -204,21 +204,21 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-[#f5f5f5] py-[88px]">
-        <div className="page-container grid items-center gap-[97px] lg:grid-cols-2">
+      <section className="bg-[#f5f5f5] py-[88px] max-md:py-12">
+        <div className="page-container grid items-center gap-[97px] lg:grid-cols-2 max-md:gap-10">
           <div className="relative">
             <GoldOffsetImage
               src={images.about.hospitality}
               alt="Chauffeur greeting guest"
               offset="right"
             />
-            <span className="absolute bottom-8 right-10 z-20 rounded bg-maseer-gold-bright px-3 py-1.5 text-[25px] font-semibold text-white">
+            <span className="absolute bottom-8 right-10 z-20 rounded bg-maseer-gold-bright px-3 py-1.5 text-[25px] font-semibold text-white max-md:bottom-4 max-md:right-4 max-md:text-base">
               — Mr. Affan
             </span>
           </div>
           <div>
             <p className="eyebrow">THE MASEER EXPERIENCE</p>
-            <h2 className="mt-3 font-serif text-figma-h2 text-maseer-green-text">
+            <h2 className="mt-3 font-serif text-figma-h2 text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
               Hospitality on <span className="text-maseer-gold">wheels.</span>
             </h2>
             <p className="mt-5 text-[15.25px] leading-[25px] text-maseer-muted">
@@ -247,8 +247,8 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="bg-white py-[88px]">
-        <div className="page-container grid grid-cols-4 gap-8">
+      <section className="bg-white py-[88px] max-md:py-12">
+        <div className="page-container grid grid-cols-4 gap-8 max-md:grid-cols-1">
           {VALUES.map((item) => (
             <article key={item.title} className="text-center">
               <div className="mx-auto flex h-12 w-12 items-center justify-center">

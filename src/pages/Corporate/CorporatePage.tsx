@@ -92,14 +92,14 @@ const VALUES = [
 export function CorporatePage() {
   return (
     <div className="overflow-hidden bg-white">
-      <section className="relative w-full min-h-[560px] overflow-hidden bg-maseer-green-deep">
+      <section className="relative w-full min-h-[560px] overflow-hidden bg-maseer-green-deep max-md:min-h-[420px]">
         <HeroBackground
           image={images.corporate.hero}
           gradient="linear-gradient(90deg, rgba(7,18,11,0.88) 0%, rgba(7,18,11,0.45) 35%, rgba(7,58,11,0.15) 100%)"
         />
-        <div className="page-container relative flex min-h-[560px] flex-col justify-end pb-16 pt-28">
+        <div className="page-container relative flex min-h-[560px] flex-col justify-end pb-16 pt-28 max-md:min-h-[420px] max-md:pb-12 max-md:pt-20">
           <p className="eyebrow">UNMATCHED LUXURY</p>
-          <h1 className="mt-3 font-serif text-figma-hero text-white">
+          <h1 className="mt-3 font-serif text-figma-hero text-white max-md:text-[32px] max-md:leading-[1.15]">
             Our VISION
           </h1>
           <p className="mt-4 max-w-[560px] text-figma-body text-white/90">
@@ -110,14 +110,14 @@ export function CorporatePage() {
         </div>
       </section>
 
-      <section className="bg-[#f5f5f0] py-[88px]">
-        <div className="page-container grid items-center gap-[97px] lg:grid-cols-2">
+      <section className="bg-[#f5f5f0] py-[88px] max-md:py-12">
+        <div className="page-container grid items-center gap-[97px] lg:grid-cols-2 max-md:gap-10">
           <div>
             <p className="eyebrow">OUR MISSION</p>
-            <h2 className="mt-3 font-serif text-figma-h2 text-maseer-green-text">
+            <h2 className="mt-3 font-serif text-figma-h2 text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
               Corporate &amp; partners.
             </h2>
-            <p className="font-serif text-figma-h2 text-maseer-gold">
+            <p className="font-serif text-figma-h2 text-maseer-gold max-md:text-[28px] max-md:leading-[1.2]">
               Solution.
             </p>
             <p className="mt-6 text-[15.25px] leading-[25px] text-maseer-muted">
@@ -146,8 +146,8 @@ export function CorporatePage() {
         </div>
       </section>
 
-      <section className="bg-white py-[88px]">
-        <div className="page-container grid grid-cols-4 gap-8">
+      <section className="bg-white py-[88px] max-md:py-12">
+        <div className="page-container grid grid-cols-4 gap-8 max-md:grid-cols-1">
           {VALUES.map((item) => (
             <article key={item.title} className="text-center">
               <div className="mx-auto flex h-14 w-14 items-center justify-center">
@@ -164,8 +164,8 @@ export function CorporatePage() {
         </div>
       </section>
 
-      <section className="bg-[#f5f5f0] py-[88px]">
-        <div className="page-container grid items-center gap-[97px] lg:grid-cols-2">
+      <section className="bg-[#f5f5f0] py-[88px] max-md:py-12">
+        <div className="page-container grid items-center gap-[97px] lg:grid-cols-2 max-md:gap-10">
           <GoldOffsetImage
             src={images.corporate.sustainability}
             alt="Sustainability and corporate partnership"
@@ -173,10 +173,10 @@ export function CorporatePage() {
           />
           <div>
             <p className="eyebrow">OUR VISION</p>
-            <h2 className="mt-3 font-serif text-figma-h2 text-maseer-green-text">
+            <h2 className="mt-3 font-serif text-figma-h2 text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
               Sustainability &amp; Vision
             </h2>
-            <p className="font-serif text-figma-h2 text-maseer-gold">2030.</p>
+            <p className="font-serif text-figma-h2 text-maseer-gold max-md:text-[28px] max-md:leading-[1.2]">2030.</p>
             <p className="mt-6 text-[15.25px] leading-[25px] text-maseer-muted">
               Maseer supports the vision of a smarter and more sustainable
               transportation future in Saudi Arabia. Through our Green Class

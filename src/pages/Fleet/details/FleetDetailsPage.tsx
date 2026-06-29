@@ -327,11 +327,11 @@ export function FleetDetailsPage() {
       <FleetHero tagline="UNMATCHED LUXURY" />
 
       {/* ── showcase section ── */}
-      <section className="bg-white pt-16 lg:pt-44">
-        <div className="relative mx-auto h-[680px] max-w-[1200px] px-4">
+      <section className="bg-white pt-16 lg:pt-44 max-md:pt-10">
+        <div className="relative mx-auto h-[680px] max-w-[1200px] px-4 max-md:h-auto max-md:min-h-0 max-md:pb-24">
           {/* sage-green semicircle arch background */}
           <div
-            className="absolute bottom-[120px] left-1/2 -translate-x-1/2"
+            className="absolute bottom-[120px] left-1/2 -translate-x-1/2 max-md:hidden"
             style={{
               width: "992.89px",
               height: "496.44px",
@@ -345,7 +345,7 @@ export function FleetDetailsPage() {
           {FEATURES.map((feat) => (
             <div
               key={feat.label}
-              className={`absolute ${feat.pos} z-10 flex items-center gap-2.5`}
+              className={`absolute ${feat.pos} z-10 flex items-center gap-2.5 max-md:hidden`}
             >
               {/* left side: label → icon */}
               {feat.side === "left" && (
@@ -383,18 +383,18 @@ export function FleetDetailsPage() {
           ))}
 
           {/* car image centered over arch */}
-          <div className="absolute bottom-[120px] left-1/2 w-[680px] -translate-x-1/2">
+          <div className="absolute bottom-[120px] left-1/2 w-[680px] -translate-x-1/2 max-md:relative max-md:bottom-auto max-md:w-full max-md:translate-x-0">
             {current && (
               <img
                 src={current.image}
                 alt={current.name}
-                className="mx-auto h-[400px] w-[700px] object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.18)]"
+                className="mx-auto h-[400px] w-[700px] object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.18)] max-md:h-[200px] max-md:w-full max-md:max-w-[340px]"
               />
             )}
           </div>
 
           {/* CTA + dots — absolute at bottom center, overlapping arch base */}
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-center">
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-center max-md:relative max-md:bottom-auto max-md:mt-6 max-md:translate-x-0">
             <button
               type="button"
               onClick={() => setBookingModalOpen(true)}

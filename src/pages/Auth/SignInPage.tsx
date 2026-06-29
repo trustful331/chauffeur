@@ -79,7 +79,7 @@ export function SignInPage() {
     <div>
       <div className="mb-8">
         <p className="eyebrow !text-primary">WELCOME BACK</p>
-        <h2 className="mt-3 font-serif text-[36px] font-semibold leading-tight text-maseer-green-text">
+        <h2 className="mt-3 font-serif text-[36px] font-semibold leading-tight text-maseer-green-text max-md:text-[28px]">
           Sign in
         </h2>
         <p className="mt-2 font-lato text-[14px] text-maseer-muted">
@@ -123,7 +123,7 @@ export function SignInPage() {
           />
         </AuthField>
 
-        <div className="flex items-center justify-between gap-4 pt-1">
+        <div className="flex items-center justify-between gap-4 pt-1 max-md:flex-col max-md:items-start max-md:gap-2">
           <label className="flex cursor-pointer items-center gap-2 font-lato text-[13px] text-maseer-green-text">
             <input
               type="checkbox"

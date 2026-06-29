@@ -254,7 +254,7 @@ function BookingFormBody({
   return (
     <form noValidate onSubmit={handleSubmit(onBookingSubmit)}>
       {/* tabs */}
-      <div className="grid grid-cols-4 p-8  overflow-hidden rounded-t-2xl border-b border-primary/30">
+      <div className="grid grid-cols-4 overflow-hidden rounded-t-2xl border-b border-primary/30 p-8 max-md:grid-cols-2 max-md:p-4">
         {BOOKING_TABS.map((tab, index) => {
           const isActive = bookingTab === tab;
           return (
@@ -266,7 +266,7 @@ function BookingFormBody({
                 clearErrors();
               }}
               className={[
-                "font-lato py-3.5 text-center text-[12px] font-semibold transition-colors",
+                "font-lato py-3.5 text-center text-[12px] font-semibold transition-colors max-md:px-1 max-md:py-3 max-md:text-[10px]",
                 isActive
                   ? [
                       "bg-maseer-green text-white",
@@ -286,7 +286,7 @@ function BookingFormBody({
       </div>
 
       {/* fields */}
-      <div className="px-6 pb-4 pt-6 lg:px-8">
+      <div className="px-6 pb-4 pt-6 max-md:px-4 lg:px-8">
         {/* pickup / dropoff */}
         <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
           <Controller
@@ -332,7 +332,7 @@ function BookingFormBody({
         </div>
 
         {/* class / date / passengers / children */}
-        <div className="mt-5 grid grid-cols-2 gap-4 lg:grid-cols-4">
+        <div className="mt-5 grid grid-cols-2 gap-4 max-md:grid-cols-1 lg:grid-cols-4">
           {/* fleet class */}
           <div>
             <FieldLabel>Class</FieldLabel>
@@ -579,9 +579,9 @@ export function BookingModal({
       />
  
       {/* panel */}
-      <div className="relative z-10 w-full max-w-3xl h-[600px] overflow-y-auto rounded-[32px] bg-white shadow-[0_24px_64px_rgba(0,0,0,0.22)]">
+      <div className="relative z-10 h-[600px] w-full max-w-3xl overflow-y-auto rounded-[32px] bg-white shadow-[0_24px_64px_rgba(0,0,0,0.22)] max-md:h-auto max-md:max-h-[92vh] max-md:rounded-2xl">
         {/* header */}
-        <div className="flex items-center justify-between px-8 pt-6 pb-4">
+        <div className="flex items-center justify-between px-8 pb-4 pt-6 max-md:px-4">
           <div>
             <h2 className="font-serif text-[22px] font-semibold text-maseer-green-text">
               Book Your Ride
