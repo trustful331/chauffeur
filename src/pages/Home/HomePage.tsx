@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import {
   Listbox,
   ListboxButton,
@@ -557,6 +557,29 @@ export function HomePage() {
   const [bookingSuccess, setBookingSuccess] = useState<string | null>(null);
   const [isBookingSubmitting, setIsBookingSubmitting] = useState(false);
 
+  const [slidesToShow, setSlidesToShow] = useState(() => {
+    if (typeof window !== "undefined") {
+      if (window.innerWidth < 768) return 1;
+      if (window.innerWidth < 1280) return 2.15;
+    }
+    return 3.15;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setSlidesToShow(1);
+      } else if (window.innerWidth < 1280) {
+        setSlidesToShow(2.15);
+      } else {
+        setSlidesToShow(3.15);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -1046,7 +1069,7 @@ export function HomePage() {
                   <span className="flex h-5 w-5 items-center justify-center rounded-full bg-maseer-green text-[10px] text-white">
                     ✓
                   </span>
-                  <span className="text-[12px] font-semibold text-[#2d2d2d]">
+                  <span className="text-[11px] font-semibold text-[#2d2d2d]">
                     {f}
                   </span>
                 </div>
@@ -1169,7 +1192,7 @@ export function HomePage() {
         </div>
 
         <div className="fleet-carousel mt-12 w-full overflow-hidden pl-6 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] pr-0">
-          <SlickSlider {...carouselSliderSettings}>
+          <SlickSlider {...carouselSliderSettings} responsive={undefined} slidesToShow={slidesToShow}>
             {fleetCards.map((car, index) => (
               <div key={`${car.id}-${index}`}>
                 <article
@@ -1220,7 +1243,7 @@ export function HomePage() {
         </div>
 
         <div className="fleet-carousel mt-10 w-full overflow-hidden pl-6 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] pr-0">
-          <SlickSlider {...carouselSliderSettings}>
+          <SlickSlider {...carouselSliderSettings} responsive={undefined} slidesToShow={slidesToShow}>
             {reviews.map((r) => (
               <div key={r.name} className="pr-6 pb-6">
                 <article className="rounded-2xl border border-maseer-line/80 bg-white p-8 shadow-soft">

@@ -383,7 +383,7 @@ export function FleetDetailsPage() {
           ))}
 
           {/* car image centered over arch */}
-          <div className="absolute bottom-[120px] left-1/2 w-[680px] -translate-x-1/2 max-md:relative max-md:bottom-auto max-md:w-full max-md:translate-x-0">
+          <div className="absolute bottom-[120px] left-1/2 w-[680px] -translate-x-1/2 max-md:relative max-md:bottom-auto max-md:left-auto max-md:w-full max-md:translate-x-0">
             {current && (
               <img
                 src={current.image}
@@ -394,7 +394,7 @@ export function FleetDetailsPage() {
           </div>
 
           {/* CTA + dots — absolute at bottom center, overlapping arch base */}
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-center max-md:relative max-md:bottom-auto max-md:mt-6 max-md:translate-x-0">
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-center max-md:relative max-md:bottom-auto max-md:left-auto max-md:mt-6 max-md:translate-x-0">
             <button
               type="button"
               onClick={() => setBookingModalOpen(true)}
