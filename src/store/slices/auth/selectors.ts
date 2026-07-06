@@ -8,6 +8,8 @@ export const selectAuthUser = (state: RootState) => state.auth.user;
 export const selectIsAuthenticated = (state: RootState) =>
   Boolean(state.auth.token);
 
+export const selectAuthRole = (state: RootState) => state.auth.currentRole;
+
 export const selectAuthDisplayName = (state: RootState) => {
   const user = state.auth.user;
   if (user && typeof user === "object") {

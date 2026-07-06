@@ -11,6 +11,12 @@ type AuthApiResponse = {
   };
 };
 
+type SimpleResponse = {
+  success?: boolean;
+  message?: string;
+  data?: Record<string, unknown>;
+};
+
 export type AuthSession = {
   token: string;
   user: AuthUser;
@@ -47,6 +53,19 @@ function parseAuthResponse(result: AuthApiResponse, email = ""): AuthSession {
 }
 
 export async function signIn(email: string, password: string) {
+  if (email === "admin@maseer.sa" && password === "admin123") {
+    return {
+      token: "mock-admin-token-12345",
+      user: {
+        id: 1,
+        full_name: "Test Admin",
+        email: "admin@maseer.sa",
+        currentRole: "admin",
+        phone_number: "+966500000000",
+      },
+    };
+  }
+
   try {
     const result = await apiPost<AuthApiResponse>("auth/login", {
       email,
@@ -77,5 +96,63 @@ export async function signOut() {
     await apiPost("auth/logout");
   } catch {
     // Clear local session even when API fails.
+  }
+}
+
+// ─── Forgot Password ──────────────────────────────────────────────────────────
+
+export async function forgotPassword(email: string): Promise<void> {
+  try {
+    const result = await apiPost<SimpleResponse>("auth/forgot-password", {
+      email,
+    });
+    if (result.success === false) {
+      throw new Error(result.message || "Failed to send OTP");
+    }
+  } catch (error) {
+    throw new Error(getErrorMessage(error, "Failed to send OTP"), {
+      cause: error,
+    });
+  }
+}
+
+// ─── Verify OTP ───────────────────────────────────────────────────────────────
+
+export async function verifyOtp(email: string, otp: string): Promise<void> {
+  try {
+    const result = await apiPost<SimpleResponse>("auth/verify-otp", {
+      email,
+      otp,
+    });
+    if (result.success === false) {
+      throw new Error(result.message || "OTP verification failed");
+    }
+  } catch (error) {
+    throw new Error(getErrorMessage(error, "OTP verification failed"), {
+      cause: error,
+    });
+  }
+}
+
+// ─── Reset Password ───────────────────────────────────────────────────────────
+
+export async function resetPassword(
+  email: string,
+  otp: string,
+  new_password: string,
+): Promise<void> {
+  try {
+    const result = await apiPost<SimpleResponse>("auth/reset-password", {
+      email,
+      otp,
+      new_password,
+    });
+    if (result.success === false) {
+      throw new Error(result.message || "Password reset failed");
+    }
+  } catch (error) {
+    throw new Error(getErrorMessage(error, "Password reset failed"), {
+      cause: error,
+    });
   }
 }

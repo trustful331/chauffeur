@@ -9,7 +9,10 @@ import {
 import { signIn } from "src/api/auth";
 import { setSession } from "src/store/slices/auth";
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
-import { selectIsAuthenticated } from "src/store/slices/auth/selectors";
+import {
+  selectIsAuthenticated,
+  selectAuthUser,
+} from "src/store/slices/auth/selectors";
 import {
   AuthDivider,
   AuthField,
@@ -38,11 +41,19 @@ export function SignInPage() {
     searchParams.get("redirect") ||
     "/";
 
+  const authUser = useAppSelector(selectAuthUser);
+
   useEffect(() => {
-    if (isAuthenticated) {
-      navigate(redirectTo, { replace: true });
+    if (isAuthenticated && authUser && typeof authUser === "object") {
+      if (authUser.currentRole === "admin") {
+        navigate("/admin/dashboard", { replace: true });
+      } else {
+        navigate(redirectTo, { replace: true });
+      }
     }
-  }, [isAuthenticated, navigate, redirectTo]);
+  }, [isAuthenticated, authUser, navigate, redirectTo]);
+
+  const isAdminPath = location.pathname.includes("/admin");
 
   const {
     register,
@@ -52,8 +63,8 @@ export function SignInPage() {
     mode: "onTouched",
     reValidateMode: "onChange",
     defaultValues: {
-      email: "",
-      password: "",
+      email: isAdminPath ? "admin@maseer.sa" : "", 
+      password: isAdminPath ? "admin123" : "",
       rememberMe: false,
     },
   });
@@ -65,7 +76,11 @@ export function SignInPage() {
     try {
       const session = await signIn(data.email.trim(), data.password);
       dispatch(setSession(session));
-      navigate(redirectTo, { replace: true });
+      if (session.user.currentRole === "admin") {
+        navigate("/admin/dashboard", { replace: true });
+      } else {
+        navigate(redirectTo, { replace: true });
+      }
     } catch (error) {
       setSubmitError(
         error instanceof Error ? error.message : "Sign in failed. Try again.",
@@ -132,15 +147,12 @@ export function SignInPage() {
             />
             Remember me
           </label>
-          <button
-            type="button"
+          <Link
+            to="/forgot-password"
             className="font-lato text-[13px] font-semibold text-maseer-gold transition hover:text-maseer-green"
-            onClick={() =>
-              console.log("[Auth] Forgot password — static handler")
-            }
           >
             Forgot password?
-          </button>
+          </Link>
         </div>
 
         {submitError ? (

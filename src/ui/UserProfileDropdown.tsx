@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { ChevronDown, CalendarDays, Settings, LogOut } from "lucide-react";
+import { ChevronDown, CalendarDays, Settings, LogOut, LayoutDashboard } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
-import { selectAuthDisplayName } from "src/store/slices/auth/selectors";
+import { selectAuthDisplayName, selectAuthUser } from "src/store/slices/auth/selectors";
+import type { AuthUser } from "src/store/slices/auth/types";
 import { signOut } from "src/api/auth";
 import { clearSession } from "src/store/slices/auth";
 import { Spinner } from "./Spinner";
@@ -12,6 +13,7 @@ export function UserProfileDropdown() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const displayName = useAppSelector(selectAuthDisplayName);
+  const authUser = useAppSelector(selectAuthUser);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleLogout = async () => {
@@ -50,7 +52,21 @@ export function UserProfileDropdown() {
         </div>
         <div className="h-[1px] bg-maseer-line/30 my-1" />
 
-        <div className="h-[1px] bg-maseer-line/30 my-1" />
+        {authUser && typeof authUser === "object" && (authUser as AuthUser).currentRole === "admin" && (
+          <>
+            <MenuItem>
+              <button
+                type="button"
+                onClick={() => navigate("/admin/dashboard")}
+                className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left font-lato text-sm text-maseer-green-text transition data-[focus]:bg-maseer-surface focus:outline-none"
+              >
+                <LayoutDashboard className="h-4 w-4 shrink-0 text-maseer-muted" />
+                <span>Access Admin Dashboard</span>
+              </button>
+            </MenuItem>
+            <div className="h-[1px] bg-maseer-line/30 my-1" />
+          </>
+        )}
 
         <MenuItem>
           <button
