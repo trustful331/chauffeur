@@ -15,7 +15,7 @@ export function SplitHeading({
 }: SplitHeadingProps) {
   return (
     <h2 className={[
-      'font-serif text-figma-h2 font-medium text-maseer-green-text',
+      'font-serif text-figma-h2 font-medium text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]',
       align === 'center' ? 'text-center' : '',
       className,
     ].join(' ')}>

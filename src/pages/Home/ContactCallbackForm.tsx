@@ -70,7 +70,7 @@ export function ContactCallbackForm() {
     <form
       noValidate
       onSubmit={handleSubmit(onSubmit)}
-      className="rounded-2xl border border-[#e8e8e8] bg-white p-8 lg:p-10"
+      className="rounded-2xl border border-[#e8e8e8] bg-white p-8 max-md:p-5 lg:p-10"
     >
       <h3 className="font-lato text-xl font-bold text-maseer-green-text">
         Request a Callback
@@ -80,7 +80,7 @@ export function ContactCallbackForm() {
       </p>
 
       <div className="mt-6 space-y-4">
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
           <div>
             <input
               {...register("name", {

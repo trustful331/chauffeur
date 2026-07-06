@@ -8,14 +8,14 @@ type FleetHeroProps = {
 
 export function FleetHero({ tagline = "UNMATCHED LUXURY" }: FleetHeroProps) {
   return (
-    <section className="relative w-full min-h-[620px] overflow-hidden bg-maseer-green-deep">
+    <section className="relative w-full min-h-[620px] overflow-hidden bg-maseer-green-deep max-md:min-h-[420px]">
       <HeroBackground
         image={images.fleet.hero}
           gradient="linear-gradient(90deg, rgba(7,18,11,0.88) 0%, rgba(7,18,11,0.45) 35%, rgba(7,58,11,0.15) 100%)"
       />
-      <div className="page-container relative flex min-h-[620px] flex-col justify-end pb-20 pt-28">
+      <div className="page-container relative flex min-h-[620px] flex-col justify-end pb-20 pt-28 max-md:min-h-[420px] max-md:pb-12 max-md:pt-20">
         <p className="eyebrow">{tagline}</p>
-        <h1 className="mt-4 max-w-2xl font-serif text-figma-hero text-white">
+        <h1 className="mt-4 max-w-2xl font-serif text-figma-hero text-white max-md:text-[32px] max-md:leading-[1.15]">
           Our Elite Fleet
         </h1>
         <p className="mt-5 max-w-xl text-figma-body text-white/85">
@@ -54,7 +54,7 @@ export function FleetFilterBar({
           : "border-b border-maseer-line/60 bg-white py-6"
       }
     >
-      <div className="page-container flex flex-wrap items-center justify-center gap-3">
+      <div className="page-container flex flex-wrap items-center justify-center gap-3 max-md:flex-col max-md:items-stretch">
         {showLabel && (
           <span className="font-lato text-[11px] font-bold uppercase tracking-[0.08em] text-maseer-muted">
             FILTER BY CATEGORY:
@@ -110,11 +110,11 @@ export function FleetStandards({
   fleetAge = "2Yrs",
 }: FleetStandardsProps) {
   return (
-    <section className="bg-white py-[88px]">
+    <section className="bg-white py-[88px] max-md:py-12">
       <div className="page-container">
-        <div className="flex flex-wrap items-start justify-between gap-8">
+        <div className="flex flex-wrap items-start justify-between gap-8 max-md:flex-col">
           <div className="max-w-[520px]">
-            <h2 className="font-serif text-[42px] font-semibold leading-[1.1] text-maseer-green-text">
+            <h2 className="font-serif text-[42px] font-semibold leading-[1.1] text-maseer-green-text max-md:text-[28px]">
               Maseer Standards
             </h2>
             <p className="mt-4 font-lato text-[14px] leading-[22px] text-maseer-green-text/80">
@@ -123,13 +123,13 @@ export function FleetStandards({
             </p>
           </div>
           <p className="shrink-0 font-serif leading-none text-maseer-gold">
-            <span className="text-[42px] font-medium">{errorValue}</span>
-            <span className="text-[30px] font-medium"> Error Tolerance</span>
+            <span className="text-[42px] font-medium max-md:text-[28px]">{errorValue}</span>
+            <span className="text-[30px] font-medium max-md:text-xl"> Error Tolerance</span>
           </p>
         </div>
 
         <div className="mt-12 grid gap-6 lg:grid-cols-[1.15fr_1fr]">
-          <article className="flex flex-col justify-center rounded-2xl bg-[#F5F5F5] p-8 lg:p-12 min-h-[380px] lg:min-h-[460px]">
+          <article className="flex min-h-[380px] flex-col justify-center rounded-2xl bg-[#F5F5F5] p-8 lg:min-h-[460px] lg:p-12 max-md:min-h-0 max-md:p-6">
             <div>
               <MaintenanceBadgeIcon />
               <h3 className="mt-8 font-serif text-[28px] font-semibold leading-tight text-maseer-green-text">
@@ -145,7 +145,7 @@ export function FleetStandards({
           </article>
 
           <div className="grid gap-6">
-            <article className="flex gap-6 items-center rounded-2xl bg-[#F5F5F5] p-8 lg:p-10">
+            <article className="flex items-center gap-6 rounded-2xl bg-[#F5F5F5] p-8 lg:p-10 max-md:flex-col max-md:items-start">
               <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-maseer-line/80 bg-white shadow-sm">
                 <SprayBottleIcon />
               </div>
@@ -195,10 +195,10 @@ export function FleetCta({
   buttonLabel = "Book Your Vehicle Now",
 }: FleetCtaProps) {
   return (
-    <section className="bg-maseer-cream pb-[100px]">
+    <section className="bg-maseer-cream pb-[100px] max-md:pb-12">
       <div className="page-container">
-        <div className="rounded-[20px] bg-maseer-green-deep px-8 py-16 text-center lg:px-16 lg:py-20">
-          <h2 className="font-serif text-[40px] font-semibold leading-[48px] text-white">
+        <div className="rounded-[20px] bg-maseer-green-deep px-8 py-16 text-center lg:px-16 lg:py-20 max-md:px-6 max-md:py-10">
+          <h2 className="font-serif text-[40px] font-semibold leading-[48px] text-white max-md:text-[26px] max-md:leading-[32px]">
             Ready for an Unforgettable Journey?
           </h2>
           <Link to="/booking" className="btn-gold mt-8 !rounded-lg text-white">

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import { ChevronDown, CalendarDays, Settings, LogOut, LayoutDashboard } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "src/store/hooks";

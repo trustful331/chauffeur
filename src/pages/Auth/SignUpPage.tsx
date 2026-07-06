@@ -76,7 +76,7 @@ export function SignUpPage() {
     <div>
       <div className="mb-8">
         <p className="eyebrow !text-primary">JOIN MASEER</p>
-        <h2 className="mt-3 font-serif text-[36px] font-semibold leading-tight text-maseer-green-text">
+        <h2 className="mt-3 font-serif text-[36px] font-semibold leading-tight text-maseer-green-text max-md:text-[28px]">
           Create account
         </h2>
         <p className="mt-2 font-lato text-[14px] text-maseer-muted">

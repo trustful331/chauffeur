@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import {
   Listbox,
   ListboxButton,
@@ -27,6 +27,19 @@ import { CalendarDays } from "lucide-react";
 
 const SlickSlider =
   (Slider as unknown as { default?: typeof Slider }).default ?? Slider;
+
+const carouselSliderSettings = {
+  dots: false,
+  arrows: false,
+  infinite: false,
+  speed: 500,
+  slidesToShow: 3.15,
+  slidesToScroll: 1,
+  responsive: [
+    { breakpoint: 1280, settings: { slidesToShow: 2.15, slidesToScroll: 1 } },
+    { breakpoint: 767, settings: { slidesToShow: 1, slidesToScroll: 1 } },
+  ],
+};
 
 type BookingTab = BookingServiceTab;
 
@@ -97,7 +110,7 @@ function GoldHeading({
   after?: string;
 }) {
   return (
-    <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-[#1a1a1a]">
+    <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-[#1a1a1a] max-md:text-[28px] max-md:leading-[1.2]">
       {before}
       <span className="text-maseer-gold">{accent}</span>
       {after}
@@ -544,6 +557,29 @@ export function HomePage() {
   const [bookingSuccess, setBookingSuccess] = useState<string | null>(null);
   const [isBookingSubmitting, setIsBookingSubmitting] = useState(false);
 
+  const [slidesToShow, setSlidesToShow] = useState(() => {
+    if (typeof window !== "undefined") {
+      if (window.innerWidth < 768) return 1;
+      if (window.innerWidth < 1280) return 2.15;
+    }
+    return 3.15;
+  });
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 768) {
+        setSlidesToShow(1);
+      } else if (window.innerWidth < 1280) {
+        setSlidesToShow(2.15);
+      } else {
+        setSlidesToShow(3.15);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const {
     register,
     handleSubmit,
@@ -630,61 +666,35 @@ export function HomePage() {
     }
   };
 
-  const fleetSettings = {
-    dots: false,
-    arrows: false,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 3.15,
-    slidesToScroll: 1,
-    responsive: [
-      { breakpoint: 1280, settings: { slidesToShow: 2.15 } },
-      { breakpoint: 768, settings: { slidesToShow: 1.1 } },
-    ],
-  };
-
-  const reviewsSettings = {
-    dots: false,
-    arrows: false,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 3.15,
-    slidesToScroll: 1,
-    responsive: [
-      { breakpoint: 1280, settings: { slidesToShow: 2.15 } },
-      { breakpoint: 768, settings: { slidesToShow: 1.1 } },
-    ],
-  };
-
   return (
     <div className="overflow-hidden bg-white">
       {/* Hero + Booking — Figma node 201-203 */}
-      <section className="relative w-full min-h-[640px] bg-maseer-green-deep">
+      <section className="relative w-full min-h-[640px] bg-maseer-green-deep max-md:min-h-[480px]">
         <HeroBackground
           image={images.home.hero}
           gradient="linear-gradient(90deg, rgba(7,18,11,0.88) 0%, rgba(7,18,11,0.45) 35%, rgba(7,58,11,0.15) 100%)"
         />
-        <div className="page-container relative pb-[200px] pt-16">
-          <h1 className="max-w-[650px] font-serif text-[44px] font-semibold leading-[1.5] text-white">
-            <span className=" bg-primary text-white px-4 pb-1 rounded-2xl text-center h-[108.82px]">
+        <div className="page-container relative pb-[200px] pt-16 max-md:pb-8 max-md:pt-10">
+          <h1 className="max-w-[650px] font-serif text-[44px] font-semibold leading-[1.5] text-white max-md:text-[28px] max-md:leading-[1.25]">
+            <span className="inline-block rounded-2xl bg-primary px-4 py-1 text-center text-white max-md:h-auto">
               Luxury Chauffeur
             </span>{" "}
             and Mobility Services without limits Across Saudi Arabia
           </h1>
-          <p className="mt-5 max-w-[660px] font-lato text-xl font-medium leading-8 text-white">
+          <p className="mt-5 max-w-[660px] font-lato text-xl font-medium leading-8 text-white max-md:text-base max-md:leading-7">
             Reliable airport transfers, executive transportation, city-to-city
             rides, and premium chauffeur experiences designed for corporates,
             VIP guests, travelers, and hospitality clients.
           </p>
         </div>
 
-        <div className="absolute bottom-0 left-1/2 z-10 w-[calc(100%-232px)] max-w-[1100px] -translate-x-1/2 translate-y-1/2">
+        <div className="absolute bottom-0 left-1/2 z-10 w-[calc(100%-232px)] max-w-[1100px] -translate-x-1/2 translate-y-1/2 max-md:static max-md:mt-6 max-md:w-full max-md:max-w-none max-md:translate-x-0 max-md:translate-y-0 max-md:px-4">
           <form
             noValidate
             onSubmit={handleSubmit(onBookingSubmit)}
-            className=" p-5 rounded-[32px] bg-white shadow-[0_12px_48px_rgba(0,0,0,0.14)]"
+            className="rounded-[32px] bg-white p-5 shadow-[0_12px_48px_rgba(0,0,0,0.14)] max-md:rounded-2xl"
           >
-            <div className="grid grid-cols-4 border-b border-primary/30">
+            <div className="grid grid-cols-4 border-b border-primary/30 max-md:grid-cols-2">
               {BOOKING_TABS.map((tab, index) => {
                 const isActive = bookingTab === tab;
                 return (
@@ -696,7 +706,7 @@ export function HomePage() {
                       clearErrors();
                     }}
                     className={[
-                      "font-lato py-4 text-center text-[13px] font-semibold transition-colors",
+                      "font-lato py-4 text-center text-[13px] font-semibold transition-colors max-md:px-2 max-md:py-3 max-md:text-[11px]",
                       isActive
                         ? [
                             "bg-maseer-green text-white",
@@ -717,7 +727,7 @@ export function HomePage() {
               })}
             </div>
 
-            <div className="px-10 pb-0 pt-8">
+            <div className="px-10 pb-0 pt-8 max-md:px-4 max-md:pt-6">
               <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <Controller
                   name="pickup"
@@ -980,11 +990,11 @@ export function HomePage() {
         </div>
       </section>
 
-      <div className="h-[240px]" />
+      <div className="h-[240px] max-md:hidden" />
 
       {/* An itinerary, composed */}
-      <section className="page-container py-16">
-        <div className="flex items-start justify-between gap-10">
+      <section className="page-container py-16 max-md:py-12">
+        <div className="flex items-start justify-between gap-10 max-md:flex-col max-md:gap-4">
           <div className="max-w-2xl">
             <div className="mb-4 flex items-center gap-2">
               <span className="h-0.5 w-9 bg-primary" aria-hidden />
@@ -992,7 +1002,7 @@ export function HomePage() {
                 SERVICES
               </p>
             </div>
-            <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text">
+            <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
               An itinerary, <span className="text-primary">composed.</span>
             </h2>
             <p className="mt-4 max-w-[520px] font-lato text-[14px] leading-[22px] text-maseer-green-text/80">
@@ -1008,7 +1018,7 @@ export function HomePage() {
           </Link>
         </div>
 
-        <div className="mt-12 grid grid-cols-4 gap-6">
+        <div className="mt-12 grid grid-cols-4 gap-6 max-md:grid-cols-1">
           {servicesCards.map((card) => (
             <article
               key={card.title}
@@ -1037,7 +1047,7 @@ export function HomePage() {
 
       {/* Hospitality on wheels */}
       <section className="bg-maseer-tint-green py-[53px]">
-        <div className="page-container grid items-center gap-[97px] lg:grid-cols-[549px_1fr]">
+        <div className="page-container grid items-center gap-[97px] lg:grid-cols-[549px_1fr] max-md:gap-10">
           <GoldOffsetImage
             src={images.home.wheels}
             alt="Hospitality on wheels"
@@ -1045,7 +1055,7 @@ export function HomePage() {
           />
           <div>
             <p className="eyebrow">THE MASEER EXPERIENCE</p>
-            <h2 className="mt-3 font-serif text-figma-h2 font-medium text-maseer-green-text">
+            <h2 className="mt-3 font-serif text-figma-h2 font-medium text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
               Hospitality on <span className="text-maseer-gold">wheels.</span>
             </h2>
             <p className="mt-4 text-[14px] leading-6 text-maseer-muted">
@@ -1053,13 +1063,13 @@ export function HomePage() {
               cabin, climate prepared, music to your taste. The car is ready
               before you ever step out.
             </p>
-            <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4">
+            <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 max-md:grid-cols-1">
               {hospitalityFeatures.map((f) => (
                 <div key={f} className="flex items-center gap-2.5">
                   <span className="flex h-5 w-5 items-center justify-center rounded-full bg-maseer-green text-[10px] text-white">
                     ✓
                   </span>
-                  <span className="text-[12px] font-semibold text-[#2d2d2d]">
+                  <span className="text-[11px] font-semibold text-[#2d2d2d]">
                     {f}
                   </span>
                 </div>
@@ -1070,7 +1080,7 @@ export function HomePage() {
       </section>
 
       {/* Service Coverage */}
-      <section className="page-container py-16">
+      <section className="page-container py-16 max-md:py-12">
         <div className="mb-4 flex items-center gap-2">
           <span className="h-0.5 w-9 bg-primary" aria-hidden />
           <p className="font-lato text-xs font-bold uppercase tracking-[0.12em] text-primary">
@@ -1083,17 +1093,17 @@ export function HomePage() {
           every detail attended to.
         </p>
         <div className="mt-10 space-y-3">
-          <div className="grid grid-cols-[1.55fr_1fr] gap-3">
+          <div className="grid grid-cols-[1.55fr_1fr] gap-3 max-md:grid-cols-1">
             {coverageLarge.map((item) => (
               <div
                 key={item.title}
-                className="card-image h-[290px]"
+                className="card-image h-[290px] max-md:h-[200px]"
                 style={{
                   backgroundImage: `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.75) 100%), url(${item.image})`,
                 }}
               >
                 <div className="absolute bottom-6 left-6 text-white">
-                  <p className="font-serif text-[26px] font-medium">
+                  <p className="font-serif text-[26px] font-medium max-md:text-lg">
                     {item.title}
                   </p>
                   <p className="mt-1 text-[13px] text-white/80">
@@ -1103,17 +1113,17 @@ export function HomePage() {
               </div>
             ))}
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
             {coverageSmall.map((item) => (
               <div
                 key={item.title}
-                className="card-image h-[240px]"
+                className="card-image h-[240px] max-md:h-[200px]"
                 style={{
                   backgroundImage: `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.75) 100%), url(${item.image})`,
                 }}
               >
                 <div className="absolute bottom-5 left-5 text-white">
-                  <p className="font-serif text-[22px] font-medium">
+                  <p className="font-serif text-[22px] font-medium max-md:text-base">
                     {item.title}
                   </p>
                   <p className="mt-1 text-[12px] text-white/80">
@@ -1127,14 +1137,14 @@ export function HomePage() {
       </section>
 
       {/* Best Feature */}
-      <section className="page-container py-16">
+      <section className="page-container py-16 max-md:py-12">
         <div className="mb-4 flex items-center gap-2">
           <span className="h-0.5 w-9 bg-primary" aria-hidden />
           <p className="font-lato text-xs font-bold uppercase tracking-[0.12em] text-primary">
             FEATURES
           </p>
         </div>
-        <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text">
+        <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
           Our, <span className="text-primary">Best Feature.</span>
         </h2>
         <p className="mt-4 max-w-[550px] font-lato text-[14px] leading-[22px] text-maseer-green-text/80">
@@ -1142,7 +1152,7 @@ export function HomePage() {
           every detail attended to.
         </p>
 
-        <div className="mt-12 grid grid-cols-4 gap-6">
+        <div className="mt-12 grid grid-cols-4 gap-6 max-md:grid-cols-1">
           {bestFeatures.map((f) => (
             <article
               key={f.title}
@@ -1171,7 +1181,7 @@ export function HomePage() {
               OUR FLEET
             </p>
           </div>
-          <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text">
+          <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
             Explore our,{" "}
             <span className="text-maseer-gold">Exquisite Fleet</span>
           </h2>
@@ -1182,7 +1192,7 @@ export function HomePage() {
         </div>
 
         <div className="fleet-carousel mt-12 w-full overflow-hidden pl-6 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] pr-0">
-          <SlickSlider {...fleetSettings}>
+          <SlickSlider {...carouselSliderSettings} responsive={undefined} slidesToShow={slidesToShow}>
             {fleetCards.map((car, index) => (
               <div key={`${car.id}-${index}`}>
                 <article
@@ -1233,7 +1243,7 @@ export function HomePage() {
         </div>
 
         <div className="fleet-carousel mt-10 w-full overflow-hidden pl-6 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] pr-0">
-          <SlickSlider {...reviewsSettings}>
+          <SlickSlider {...carouselSliderSettings} responsive={undefined} slidesToShow={slidesToShow}>
             {reviews.map((r) => (
               <div key={r.name} className="pr-6 pb-6">
                 <article className="rounded-2xl border border-maseer-line/80 bg-white p-8 shadow-soft">
@@ -1293,7 +1303,7 @@ export function HomePage() {
                 CONTACT US
               </p>
             </div>
-            <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text">
+            <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
               Get in, <span className="text-primary">Touch</span>
             </h2>
             <p className="mt-4 font-lato text-[14px] text-maseer-green">
@@ -1301,7 +1311,7 @@ export function HomePage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-[1.15fr_0.85fr] gap-8">
+          <div className="grid grid-cols-[1.15fr_0.85fr] gap-8 max-md:grid-cols-1">
             <ContactCallbackForm />
 
             <div className="space-y-3">
@@ -1347,7 +1357,7 @@ export function HomePage() {
         <p className="font-lato text-xs font-bold uppercase tracking-[0.12em] text-maseer-green-text">
           QUESTION ABOUT OUR SERVICE
         </p>
-        <h2 className="mt-2 font-serif text-[40px] font-bold leading-[52px] text-maseer-green-text">
+        <h2 className="mt-2 font-serif text-[40px] font-bold leading-[52px] text-maseer-green-text max-md:text-[26px] max-md:leading-[34px]">
           Frequently asked Questions
         </h2>
 
@@ -1394,7 +1404,7 @@ export function HomePage() {
                   ].join(" ")}
                 >
                   <div className="overflow-hidden">
-                    <p className="max-w-[913px] pb-5 pr-14 font-lato text-[15.91px] leading-7 text-maseer-green-text/85">
+                    <p className="max-w-[913px] pb-5 pr-14 font-lato text-[15.91px] leading-7 text-maseer-green-text/85 max-md:pr-0">
                       {item.a}
                     </p>
                   </div>

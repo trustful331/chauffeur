@@ -175,14 +175,14 @@ export function ContactPage() {
 
   return (
     <div className="overflow-hidden bg-maseer-cream">
-      <section className="relative w-full min-h-[480px] overflow-hidden bg-maseer-green-deep">
+      <section className="relative w-full min-h-[480px] overflow-hidden bg-maseer-green-deep max-md:min-h-[400px]">
         <HeroBackground
           image={images.contact.hero}
           gradient="linear-gradient(90deg, rgba(7,18,11,0.88) 0%, rgba(7,18,11,0.45) 35%, rgba(7,58,11,0.15) 100%)"
         />
-        <div className="page-container relative flex min-h-[480px] flex-col justify-end pb-14 pt-8">
+        <div className="page-container relative flex min-h-[480px] flex-col justify-end pb-14 pt-8 max-md:min-h-[400px] max-md:pb-10">
           <p className="eyebrow">UNMATCHED LUXURY</p>
-          <h1 className="mt-3 font-serif text-figma-hero text-white">
+          <h1 className="mt-3 font-serif text-figma-hero text-white max-md:text-[32px] max-md:leading-[1.15]">
             Contact Us
           </h1>
           <p className="mt-4 max-w-[560px] text-figma-body text-white/90">
@@ -192,9 +192,9 @@ export function ContactPage() {
         </div>
       </section>
 
-      <section className="bg-maseer-cream py-[80px]">
+      <section className="bg-maseer-cream py-[80px] max-md:py-12">
         <div className="page-container">
-          <div className="grid grid-cols-4 gap-10">
+          <div className="grid grid-cols-4 gap-10 max-md:grid-cols-1">
             {CONTACT_CARDS.map((card) => (
               <article key={card.title} className="text-center">
                 <div className="mx-auto flex h-[56px] w-[56px] items-center justify-center rounded-full bg-maseer-green text-white">
@@ -225,11 +225,11 @@ export function ContactPage() {
         </div>
       </section>
 
-      <section className="bg-maseer-cream pb-[88px] pt-6">
+      <section className="bg-maseer-cream pb-[88px] pt-6 max-md:pb-12">
         <div className="page-container">
-          <div className="grid grid-cols-[1fr_1.15fr] items-start gap-14">
+          <div className="grid grid-cols-[1fr_1.15fr] items-start gap-14 max-md:grid-cols-1 max-md:gap-8">
             <div className="pt-4">
-              <h2 className="max-w-[420px] font-lato text-[28px] font-bold leading-[1.25] text-maseer-green">
+              <h2 className="max-w-[420px] font-lato text-[28px] font-bold leading-[1.25] text-maseer-green max-md:text-[22px]">
                 We&apos;re Excited To Hear From You!
               </h2>
               <div className="mt-8">
@@ -246,7 +246,7 @@ export function ContactPage() {
               className="rounded-2xl border border-[#e8e8e8] bg-white p-8 shadow-[0_4px_24px_rgba(0,0,0,0.05)] lg:p-10"
             >
               <div className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
                   <FormField
                     icon={
                       <svg
@@ -347,7 +347,7 @@ export function ContactPage() {
                 type="submit"
                 loading={isSubmitting}
                 loadingText="Sending..."
-                className="btn-primary mt-6 !rounded-none !px-14 disabled:cursor-not-allowed disabled:opacity-70"
+                className="btn-primary mt-6 !rounded-none !px-14 disabled:cursor-not-allowed disabled:opacity-70 max-md:w-full max-md:!px-6"
               >
                 <span className="inline-flex items-center gap-2">
                   Send message
@@ -361,7 +361,7 @@ export function ContactPage() {
 
       <section className="page-container pb-20">
         <p className="eyebrow !text-maseer-green">QUESTION ABOUT OUR SERVICE</p>
-        <h2 className="mt-2 font-serif text-[40px] font-bold leading-[52px] text-maseer-green">
+        <h2 className="mt-2 font-serif text-[40px] font-bold leading-[52px] text-maseer-green max-md:text-[26px] max-md:leading-[34px]">
           Frequently asked Questions
         </h2>
         <div className="mt-8 divide-y divide-maseer-green/25 border-t border-maseer-green/25">

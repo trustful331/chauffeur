@@ -140,8 +140,8 @@ function VehicleCard({ vehicle }: { vehicle: FleetVehicle }) {
             {vehicle.bodyType}
           </span>
         </div>
-        <div className="p-7">
-          <h3 className="font-serif text-[22px] font-semibold leading-tight text-maseer-green-text">
+        <div className="p-7 max-md:p-5">
+          <h3 className="font-serif text-[22px] font-semibold leading-tight text-maseer-green-text max-md:text-lg">
             {vehicle.name}
           </h3>
           <div className="mt-3 flex gap-6 font-lato text-[12px] text-maseer-muted">
@@ -166,7 +166,7 @@ function VehicleCard({ vehicle }: { vehicle: FleetVehicle }) {
             ))}
           </ul>
 
-          <div className="mt-6 flex items-center gap-3">
+          <div className="mt-6 flex items-center gap-3 max-md:flex-col max-md:items-stretch">
             <Link
               to={`/fleet/${vehicle.id}`}
               className="link-arrow shrink-0 pb-1 font-lato text-xs font-semibold"
@@ -211,7 +211,7 @@ export function FleetGridPage() {
       />
 
       <section className="page-container pb-20 pt-4">
-        <div className="grid grid-cols-3 gap-8">
+        <div className="grid grid-cols-3 gap-8 max-md:grid-cols-1">
           {vehicles.map((vehicle, index) => (
             <VehicleCard key={`${vehicle.id}-${index}`} vehicle={vehicle} />
           ))}

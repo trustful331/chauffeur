@@ -196,7 +196,7 @@ export function LocationMapField({
 
       {showDropdown ? (
         <div
-          className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-[0_12px_40px_rgba(0,0,0,0.12)]"
+          className="absolute left-0 right-0 top-full z-50 mt-2 max-h-[70vh] overflow-y-auto overflow-hidden rounded-xl border border-[#e5e7eb] bg-white shadow-[0_12px_40px_rgba(0,0,0,0.12)]"
           onMouseDown={(event) => event.preventDefault()}
         >
           {isSearching ? (
@@ -236,7 +236,7 @@ export function LocationMapField({
             key={`${center[0]}-${center[1]}-${value.address}`}
             center={center}
             zoom={value.latitude != null ? 14 : 11}
-            className="h-52 w-full"
+            className="h-52 w-full max-md:h-40"
             scrollWheelZoom={false}
           >
             <TileLayer
