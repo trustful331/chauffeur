@@ -1,9 +1,11 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { fetchServiceCoverages } from "src/api/admin/serviceCoverage";
 import { images } from "../../assets/images";
 import { SplitHeading } from "../../ui/SplitHeading";
 import { HeroBackground } from "../../ui/HeroBackground";
 
-const COVERAGE_LARGE = [
+const fallbackCoverageLarge = [
   {
     title: "Airport Transfers Service",
     text: "Enjoy professional and seamless airport transfers.",
@@ -18,7 +20,7 @@ const COVERAGE_LARGE = [
   },
 ];
 
-const COVERAGE_SMALL = [
+const fallbackCoverageSmall = [
   {
     title: "Intercity Travel service",
     text: "Travel between cities with comfort.",
@@ -36,7 +38,7 @@ const COVERAGE_SMALL = [
   },
 ];
 
-const ITINERARY_CARDS = [
+const fallbackItineraryCards = [
   {
     title: "Airport Transfers",
     text: "Professional airport pickup and drop-off services with real-time coordination, meet and greet support, and premium chauffeur experience for business and leisure travelers.",
@@ -79,7 +81,7 @@ const ITINERARY_CARDS = [
   },
 ] as const;
 
-type ItineraryIcon = (typeof ITINERARY_CARDS)[number]["icon"];
+type ItineraryIcon = (typeof fallbackItineraryCards)[number]["icon"];
 
 function ItineraryIcon({ type }: { type: ItineraryIcon }) {
   switch (type) {
@@ -356,6 +358,54 @@ function ItineraryCard({
 }
 
 export function ServicesPage() {
+  const [featuredCoverage, setFeaturedCoverage] = useState<any[]>([]);
+  const [itineraryCoverage, setItineraryCoverage] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function getCoverage() {
+      try {
+        const response = await fetchServiceCoverages({ is_active: true });
+        if (response && response.success && Array.isArray(response.data)) {
+          const featured = response.data.filter(item => item.section_type === "featured");
+          const itinerary = response.data.filter(item => item.section_type === "itinerary");
+          setFeaturedCoverage(featured);
+          setItineraryCoverage(itinerary);
+        }
+      } catch (err) {
+        console.error("Error fetching service coverage on services page:", err);
+      }
+    }
+    getCoverage();
+  }, []);
+
+  const dynamicHeading = featuredCoverage[0]?.section_heading;
+  const dynamicSubtitle = featuredCoverage[0]?.section_subtitle;
+
+  const itineraryHeading = itineraryCoverage[0]?.section_heading;
+  const itinerarySubtitle = itineraryCoverage[0]?.section_subtitle;
+
+  const finalFeatured = featuredCoverage.length > 0
+    ? featuredCoverage.map((item, index) => ({
+        title: item.title,
+        text: item.description,
+        image: item.image_url || "",
+        span: index % 2 === 0 ? "col-span-7" : "col-span-5"
+      }))
+    : [];
+
+  const COVERAGE_LARGE = finalFeatured.length > 0 ? finalFeatured.slice(0, 2) : fallbackCoverageLarge;
+  const COVERAGE_SMALL = finalFeatured.length > 0 
+    ? finalFeatured.slice(2) 
+    : fallbackCoverageSmall;
+
+  const ITINERARY_CARDS = itineraryCoverage.length > 0
+    ? itineraryCoverage.map(item => ({
+        title: item.title,
+        text: item.description,
+        icon: item.icon_key || "briefcase"
+      }))
+    : fallbackItineraryCards;
+
   return (
     <div className="overflow-hidden bg-white">
       <section className="relative w-full min-h-[620px] overflow-hidden bg-maseer-green-deep max-md:min-h-[480px]">
@@ -393,10 +443,13 @@ export function ServicesPage() {
               FEATURES
             </p>
           </div>
-          <SplitHeading before="Our, " accent="Service Coverage" align="left" />
+          <SplitHeading 
+            before={dynamicHeading ? dynamicHeading.split(" ").slice(0, -1).join(" ") + ", " : "Our, "} 
+            accent={dynamicHeading ? dynamicHeading.split(" ").slice(-1)[0] : "Service Coverage"} 
+            align="left" 
+          />
           <p className="mt-4 max-w-[690px] text-[18px] leading-[26px] text-maseer-green-text">
-            From the door of your residence to the door of your private jet
-            every detail attended to.
+            {dynamicSubtitle || "From the door of your residence to the door of your private jet every detail attended to."}
           </p>
         </div>
         <div className="mt-[52px] space-y-3">
@@ -435,12 +488,19 @@ export function ServicesPage() {
               </p>
             </div>
             <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
-              An itinerary, <span className="text-primary">composed.</span>
+              {itineraryHeading ? (
+                <>
+                  {itineraryHeading.split(" ").slice(0, -1).join(" ") + " "}
+                  <span className="text-primary">{itineraryHeading.split(" ").slice(-1)[0]}</span>
+                </>
+              ) : (
+                <>
+                  An itinerary, <span className="text-primary">composed.</span>
+                </>
+              )}
             </h2>
             <p className="mt-4 max-w-[560px] font-lato text-[14px] leading-[22px] text-maseer-green-text/80">
-              Professional airport pickup and drop-off services with real-time
-              coordination, meet and greet support, and premium chauffeur
-              experience for business and leisure travelers.
+              {itinerarySubtitle || "Professional airport pickup and drop-off services with real-time coordination, meet and greet support, and premium chauffeur experience for business and leisure travelers."}
             </p>
           </div>
           <div className="mt-12 grid grid-cols-4 gap-6 max-md:grid-cols-1">

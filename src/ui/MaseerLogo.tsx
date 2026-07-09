@@ -8,7 +8,7 @@ type MaseerLogoProps = {
 export function MaseerLogo({ className = '' }: MaseerLogoProps) {
   return (
     <Link to="/" className={`inline-block ${className}`}>
-      <img src={images.logo} alt="Maseer Luxury Chauffeur Service" className="h-[52px] w-auto object-contain" />
+      <img src={images.logo} alt="Maseer Luxury Chauffeur Service" className="h-[72px] object-contain" />
     </Link>
   )
 }

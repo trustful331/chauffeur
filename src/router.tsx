@@ -21,6 +21,8 @@ import AdminLoginPage from "./pages/Admin/AdminLoginPage";
 import { AdminLayout } from "./ui/AdminLayout";
 import { RequireAdmin } from "./ui/RequireAdmin";
 import { AdminFleetPage } from "./pages/Admin/AdminFleetPage";
+import { AdminServiceCoveragePage } from "./pages/Admin/AdminServiceCoveragePage";
+import { AdminCustomerReviewPage } from "./pages/Admin/AdminCustomerReviewPage";
 
 export const appRouter = createBrowserRouter([
   {
@@ -63,6 +65,8 @@ export const appRouter = createBrowserRouter([
       { index: true, element: <Navigate to="dashboard" replace /> },
       { path: "dashboard", element: <AdminDashboardPage /> },
       { path: "fleet", element: <AdminFleetPage /> },
+      { path: "services", element: <AdminServiceCoveragePage /> },
+      { path: "reviews", element: <AdminCustomerReviewPage /> },
     ],
   },
 ]);

@@ -16,9 +16,12 @@ import {
   Search,
   ChevronDown,
   Globe,
-  Shield
+  Shield,
+  MapPin,
+  MessageSquare
 } from "lucide-react";
 import type { AuthUser } from "src/store/slices/auth/types";
+import { MaseerLogo } from "./MaseerLogo";
 
 export function AdminLayout() {
   const dispatch = useAppDispatch();
@@ -51,6 +54,8 @@ export function AdminLayout() {
   const menuItems = [
     { to: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { to: "/admin/fleet", label: "Fleet", icon: Car },
+    { to: "/admin/services", label: "Service Coverage", icon: MapPin },
+    { to: "/admin/reviews", label: "Customer Reviews", icon: MessageSquare },
   ];
 
   const handleSignOut = async () => {
@@ -95,15 +100,11 @@ export function AdminLayout() {
   return (
     <div className="min-h-screen bg-[#F4F5F4] lg:flex">
       {/* ── Desktop Sidebar ──────────────────────────────────────── */}
-      <aside className="sticky top-0 hidden h-screen w-[280px] shrink-0 flex-col justify-between border-r border-[#1a3822] bg-[#062111] p-6 text-white lg:flex">
-        <div className="flex flex-col gap-8">
+      <aside className="sticky top-0 hidden h-screen w-[280px] shrink-0 flex-col justify-between border-r border-[#1a3822] bg-[#062111] px-6 text-white lg:flex">
+        <div className="flex flex-col gap-4">
           {/* Logo & Badge */}
           <div className="flex items-center gap-3">
-            <img
-              src={images.logo}
-              alt="Maseer"
-              className="h-[40px] w-auto object-contain brightness-0 invert"
-            />
+           <MaseerLogo />
             <span
               className="rounded-full px-2.5 py-0.5 font-lato text-[9px] font-bold uppercase tracking-[0.12em] text-maseer-gold"
               style={{
