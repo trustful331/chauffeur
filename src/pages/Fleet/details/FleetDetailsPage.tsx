@@ -1,12 +1,16 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import {
   FLEET_VEHICLES,
   getFleetVehicleById,
   type FleetCategory,
+  type VehicleBodyType,
+  type FleetVehicle,
 } from "../../../data/fleetData";
 import { FleetCta, FleetHero, FleetStandards } from "../FleetShared";
 import { BookingModal } from "../../../ui/BookingModal";
+import { fetchFleetById, fetchFleets, type FleetItem } from "src/api/admin/fleet";
+import { fetchFleetDetails, type FleetDetailItem } from "src/api/admin/fleetDetail";
 
 /* ─── per-feature SVG icons ───────────────────────────────────────────────── */
 
@@ -283,42 +287,165 @@ type FleetSlideInteraction = {
 
 /* ─── page ────────────────────────────────────────────────────────────────── */
 
+function mapBackendFleetToFleetVehicle(item: FleetItem): FleetVehicle {
+  let catName: Exclude<FleetCategory, "All Vehicles"> = "Economy Class";
+  if (item.category === "green_class") catName = "Green Class";
+  else if (item.category === "ultra_luxury") catName = "Ultra Luxury";
+  else if (item.category === "business_van") catName = "Business Van";
+  else if (item.category === "vip_business_class") catName = "VIP / Business Class";
+
+  const bodyTypeUpper = (item.vehicle_type || "sedan").toUpperCase() as VehicleBodyType;
+
+  return {
+    id: item.id,
+    name: item.vehicle_name,
+    category: catName,
+    bodyType: bodyTypeUpper,
+    seats: item.seat_count,
+    bags: item.luggage_capacity,
+    bagLabel: `${item.luggage_capacity} Large`,
+    transmission: "Automatic",
+    fuel: "Petrol",
+    features: (item.amenities || []).map((a) => a.name),
+    image: item.image_url,
+    gridTags: [catName],
+  };
+}
+
+function getHighlightIcon(iconKey: string) {
+  const key = iconKey.toLowerCase();
+  if (key.includes("booking") || key.includes("check")) return <IconBooking />;
+  if (key.includes("diamond") || key.includes("luxury")) return <IconDiamond />;
+  if (key.includes("chauffeur") || key.includes("driver")) return <IconChauffeur />;
+  if (key.includes("safety") || key.includes("shield")) return <IconSafety />;
+  if (key.includes("quality") || key.includes("price")) return <IconQuality />;
+  return <IconClock24 />;
+}
+
 export function FleetDetailsPage() {
   const { vehicleId } = useParams<{ vehicleId: string }>();
-  const vehicle = vehicleId ? getFleetVehicleById(vehicleId) : undefined;
+  const [liveVehicle, setLiveVehicle] = useState<FleetVehicle | null>(null);
+  const [detail, setDetail] = useState<FleetDetailItem | null>(null);
+  const [sliderVehicles, setSliderVehicles] = useState<FleetVehicle[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [category] = useState<FleetCategory>(
-    vehicle?.category ?? "All Vehicles",
-  );
   const [interaction, setInteraction] = useState<FleetSlideInteraction | null>(
     null,
   );
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
 
-  const filtered = useMemo(
-    () =>
-      category === "All Vehicles"
-        ? FLEET_VEHICLES
-        : FLEET_VEHICLES.filter((v) => v.category === category),
-    [category],
-  );
+  useEffect(() => {
+    const vId = vehicleId;
+    if (!vId) return;
+
+    async function loadVehicleAndDetails(activeId: string) {
+      setLoading(true);
+      try {
+        // 1. Check if mock vehicle exists
+        const mock = getFleetVehicleById(activeId);
+        let activeVeh: FleetVehicle | null = null;
+
+        if (mock) {
+          activeVeh = mock;
+          setLiveVehicle(mock);
+        } else {
+          // Fetch live vehicle listing
+          const response = await fetchFleetById(activeId);
+          if (response && response.success && response.data) {
+            const mapped = mapBackendFleetToFleetVehicle(response.data);
+            activeVeh = mapped;
+            setLiveVehicle(mapped);
+          }
+        }
+
+        if (activeVeh) {
+          // 2. Fetch page details for this fleet vehicle
+          const detailRes = await fetchFleetDetails({ fleet: activeId });
+          if (detailRes && detailRes.success && detailRes.data && detailRes.data.length > 0) {
+            setDetail(detailRes.data[0]);
+          } else {
+            setDetail(null);
+          }
+
+          // 3. Fetch slider vehicles (other vehicles in same category)
+          if (mock) {
+            // Mock slider
+            const cat = activeVeh.category;
+            const filteredMock = FLEET_VEHICLES.filter((v) => v.category === cat);
+            setSliderVehicles(filteredMock);
+          } else {
+            // Live slider
+            const fleetsRes = await fetchFleets({ is_active: true });
+            if (fleetsRes && fleetsRes.success && Array.isArray(fleetsRes.data)) {
+              // Convert category format to match backend selection
+              let backendCat = "economy_class";
+              if (activeVeh.category === "Green Class") backendCat = "green_class";
+              else if (activeVeh.category === "Ultra Luxury") backendCat = "ultra_luxury";
+              else if (activeVeh.category === "Business Van") backendCat = "business_van";
+              else if (activeVeh.category === "VIP / Business Class") backendCat = "vip_business_class";
+
+              const categoryFleets = fleetsRes.data.filter((f) => f.category === backendCat);
+              const mappedSlider = categoryFleets.map(mapBackendFleetToFleetVehicle);
+              setSliderVehicles(mappedSlider);
+            }
+          }
+        }
+      } catch (err) {
+        console.error("Error loading vehicle details:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadVehicleAndDetails(vId);
+  }, [vehicleId]);
 
   const slide = useMemo(() => {
     if (
       interaction &&
-      interaction.category === category &&
       interaction.vehicleId === vehicleId
     ) {
       return interaction.slide;
     }
     if (!vehicleId) return 0;
-    const index = filtered.findIndex((v) => v.id === vehicleId);
+    const index = sliderVehicles.findIndex((v) => v.id === vehicleId);
     return index >= 0 ? index : 0;
-  }, [interaction, category, vehicleId, filtered]);
+  }, [interaction, vehicleId, sliderVehicles]);
 
-  const current = filtered[slide] ?? filtered[0];
+  const current = sliderVehicles[slide] ?? liveVehicle;
 
-  if (!vehicle) {
+  const currentHighlights = useMemo(() => {
+    if (detail && detail.highlights && detail.highlights.length > 0) {
+      const positions = [
+        { pos: "top-[7%] left-[20%]", side: "left" as const },
+        { pos: "top-[26%] left-[1%]", side: "left" as const },
+        { pos: "top-[55%] left-[-4%]", side: "left" as const },
+        { pos: "top-[5%] right-[20%]", side: "right" as const },
+        { pos: "top-[26%] right-[4%]", side: "right" as const },
+        { pos: "top-[55%] right-[-3%]", side: "right" as const },
+      ];
+      return detail.highlights.slice(0, 6).map((h, i) => ({
+        label: h.title + (h.description ? `\n${h.description}` : ""),
+        icon: getHighlightIcon(h.icon_key),
+        pos: positions[i].pos,
+        side: positions[i].side,
+      }));
+    }
+    return FEATURES;
+  }, [detail]);
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-maseer-cream">
+        <div className="flex flex-col items-center gap-4">
+          <span className="h-10 w-10 animate-spin rounded-full border-4 border-maseer-gold border-t-transparent" />
+          <p className="font-lato text-sm font-semibold text-maseer-green-text">Loading elite details...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!liveVehicle) {
     return <Navigate to="/fleet" replace />;
   }
 
@@ -328,6 +455,17 @@ export function FleetDetailsPage() {
 
       {/* ── showcase section ── */}
       <section className="bg-white pt-16 lg:pt-44 max-md:pt-10">
+        {detail && (
+          <div className="mx-auto max-w-2xl px-4 text-center mb-12">
+            <h2 className="font-serif text-3xl font-bold text-maseer-green-text sm:text-4xl">
+              {detail.title}
+            </h2>
+            <p className="mt-4 font-lato text-sm text-maseer-muted whitespace-pre-line">
+              {detail.description}
+            </p>
+          </div>
+        )}
+
         <div className="relative mx-auto h-[680px] max-w-[1200px] px-4 max-md:h-auto max-md:min-h-0 max-md:pb-24">
           {/* sage-green semicircle arch background */}
           <div
@@ -342,7 +480,7 @@ export function FleetDetailsPage() {
           />
 
           {/* feature badges */}
-          {FEATURES.map((feat) => (
+          {currentHighlights.map((feat) => (
             <div
               key={feat.label}
               className={`absolute ${feat.pos} z-10 flex items-center gap-2.5 max-md:hidden`}
@@ -386,7 +524,7 @@ export function FleetDetailsPage() {
           <div className="absolute bottom-[120px] left-1/2 w-[680px] -translate-x-1/2 max-md:relative max-md:bottom-auto max-md:left-auto max-md:w-full max-md:translate-x-0">
             {current && (
               <img
-                src={current.image}
+                src={(current.id === liveVehicle.id && detail?.vehicle_image_url) ? detail.vehicle_image_url : current.image}
                 alt={current.name}
                 className="mx-auto h-[400px] w-[700px] object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.18)] max-md:h-[200px] max-md:w-full max-md:max-w-[340px]"
               />
@@ -405,13 +543,13 @@ export function FleetDetailsPage() {
             </button>
 
             <div className="mt-4 flex items-center justify-center gap-2">
-              {filtered.map((item, i) => (
+              {sliderVehicles.map((item, i) => (
                 <button
                   key={item.id}
                   type="button"
                   aria-label={`Show ${item.name}`}
                   onClick={() =>
-                    setInteraction({ category, slide: i, vehicleId })
+                    setInteraction({ category: liveVehicle.category, slide: i, vehicleId })
                   }
                   className={[
                     "h-2.5 rounded-full transition-all duration-300",
@@ -438,8 +576,8 @@ export function FleetDetailsPage() {
       <BookingModal
         isOpen={bookingModalOpen}
         onClose={() => setBookingModalOpen(false)}
-        vehicleId={current?.id ?? vehicle.id}
-        vehicleName={current?.name ?? vehicle.name}
+        vehicleId={current?.id ?? liveVehicle.id}
+        vehicleName={current?.name ?? liveVehicle.name}
       />
     </div>
   );

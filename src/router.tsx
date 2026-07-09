@@ -17,11 +17,10 @@ import { HomePage } from "./pages/Home/HomePage";
 import { ServicesPage } from "./pages/Services/ServicesPage";
 import { AdminAuthLayout } from "./pages/Admin/AdminAuthLayout";
 import { AdminDashboardPage } from "./pages/Admin/AdminDashboardPage";
-import { AdminBookingsPage } from "./pages/Admin/AdminBookingsPage";
-import { AdminDriversPage } from "./pages/Admin/AdminDriversPage";
 import AdminLoginPage from "./pages/Admin/AdminLoginPage";
 import { AdminLayout } from "./ui/AdminLayout";
 import { RequireAdmin } from "./ui/RequireAdmin";
+import { AdminFleetPage } from "./pages/Admin/AdminFleetPage";
 
 export const appRouter = createBrowserRouter([
   {
@@ -63,8 +62,7 @@ export const appRouter = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="dashboard" replace /> },
       { path: "dashboard", element: <AdminDashboardPage /> },
-      { path: "bookings", element: <AdminBookingsPage /> },
-      { path: "drivers", element: <AdminDriversPage /> },
+      { path: "fleet", element: <AdminFleetPage /> },
     ],
   },
 ]);

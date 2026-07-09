@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { ChevronDown, CalendarDays, Settings, LogOut, LayoutDashboard } from "lucide-react";
+import { ChevronDown, LogOut, LayoutDashboard } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
 import { selectAuthDisplayName, selectAuthUser } from "src/store/slices/auth/selectors";
 import type { AuthUser } from "src/store/slices/auth/types";

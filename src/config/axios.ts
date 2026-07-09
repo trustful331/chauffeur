@@ -62,3 +62,14 @@ export async function apiPost<T>(url: string, body?: object) {
   const { data } = await client.post<T>(url, body);
   return data;
 }
+
+export async function apiPut<T>(url: string, body?: object) {
+  const { data } = await client.put<T>(url, body);
+  return data;
+}
+
+export async function apiDelete<T>(url: string) {
+  const { data } = await client.delete<T>(url);
+  return data;
+}
+

@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { BookingModal } from "../../ui/BookingModal";
+import { fetchFleets, type FleetItem } from "src/api/admin/fleet";
 import {
   Wifi,
   Snowflake,
@@ -21,6 +22,8 @@ import {
   getFleetGridVehicles,
   type FleetGridCategory,
   type FleetVehicle,
+  type FleetCategory,
+  type VehicleBodyType,
 } from "../../data/fleetData";
 import {
   FleetCta,
@@ -194,10 +197,60 @@ function VehicleCard({ vehicle }: { vehicle: FleetVehicle }) {
   );
 }
 
+function mapBackendFleetToFleetVehicle(item: FleetItem): FleetVehicle {
+  let catName: Exclude<FleetCategory, "All Vehicles"> = "Economy Class";
+  if (item.category === "green_class") catName = "Green Class";
+  else if (item.category === "ultra_luxury") catName = "Ultra Luxury";
+  else if (item.category === "business_van") catName = "Business Van";
+  else if (item.category === "vip_business_class") catName = "VIP / Business Class";
+
+  const bodyTypeUpper = (item.vehicle_type || "sedan").toUpperCase() as VehicleBodyType;
+
+  return {
+    id: item.id,
+    name: item.vehicle_name,
+    category: catName,
+    bodyType: bodyTypeUpper,
+    seats: item.seat_count,
+    bags: item.luggage_capacity,
+    bagLabel: `${item.luggage_capacity} Large`,
+    transmission: "Automatic",
+    fuel: "Petrol",
+    features: (item.amenities || []).map((a) => a.name),
+    image: item.image_url,
+    gridTags: [catName],
+  };
+}
+
 export function FleetGridPage() {
   const [category, setCategory] = useState<FleetGridCategory>("All Vehicles");
+  const [liveVehicles, setLiveVehicles] = useState<FleetVehicle[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const vehicles = useMemo(() => getFleetGridVehicles(category), [category]);
+  useEffect(() => {
+    async function loadData() {
+      try {
+        const response = await fetchFleets({ is_active: true });
+        if (response && response.success && Array.isArray(response.data) && response.data.length > 0) {
+          const mapped = response.data.map(mapBackendFleetToFleetVehicle);
+          setLiveVehicles(mapped);
+        }
+      } catch (err) {
+        console.error("Failed to load live fleet, using fallback registry:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadData();
+  }, []);
+
+  const vehicles = useMemo(() => {
+    const list = liveVehicles.length > 0 ? liveVehicles : getFleetGridVehicles("All Vehicles");
+    if (category === "All Vehicles") {
+      return list;
+    }
+    return list.filter((v) => v.category === category);
+  }, [liveVehicles, category]);
 
   return (
     <div className="overflow-hidden bg-maseer-cream">
@@ -211,11 +264,22 @@ export function FleetGridPage() {
       />
 
       <section className="page-container pb-20 pt-4">
-        <div className="grid grid-cols-3 gap-8 max-md:grid-cols-1">
-          {vehicles.map((vehicle, index) => (
-            <VehicleCard key={`${vehicle.id}-${index}`} vehicle={vehicle} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex h-64 w-full flex-col items-center justify-center gap-4">
+            <span className="h-8 w-8 animate-spin rounded-full border-4 border-maseer-gold border-t-transparent" />
+            <p className="font-lato text-sm font-medium text-maseer-muted">Loading fleet inventory...</p>
+          </div>
+        ) : vehicles.length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-maseer-line bg-white p-16 text-center">
+            <h3 className="font-serif text-[18px] font-bold text-[#1a2e1f]">No listings match criteria</h3>
+          </div>
+        ) : (
+          <div className="grid grid-cols-3 gap-8 max-md:grid-cols-1">
+            {vehicles.map((vehicle, index) => (
+              <VehicleCard key={`${vehicle.id}-${index}`} vehicle={vehicle} />
+            ))}
+          </div>
+        )}
       </section>
 
       <FleetStandards />

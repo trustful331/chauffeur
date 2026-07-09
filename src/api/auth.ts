@@ -53,19 +53,6 @@ function parseAuthResponse(result: AuthApiResponse, email = ""): AuthSession {
 }
 
 export async function signIn(email: string, password: string) {
-  if (email === "admin@maseer.sa" && password === "admin123") {
-    return {
-      token: "mock-admin-token-12345",
-      user: {
-        id: 1,
-        full_name: "Test Admin",
-        email: "admin@maseer.sa",
-        currentRole: "admin",
-        phone_number: "+966500000000",
-      },
-    };
-  }
-
   try {
     const result = await apiPost<AuthApiResponse>("auth/login", {
       email,
