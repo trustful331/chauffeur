@@ -18,7 +18,9 @@ import {
   Globe,
   Shield,
   MapPin,
-  MessageSquare
+  MessageSquare,
+  Calendar,
+  PhoneCall
 } from "lucide-react";
 import type { AuthUser } from "src/store/slices/auth/types";
 import { MaseerLogo } from "./MaseerLogo";
@@ -53,8 +55,10 @@ export function AdminLayout() {
 
   const menuItems = [
     { to: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+    { to: "/admin/bookings", label: "Bookings", icon: Calendar },
     { to: "/admin/fleet", label: "Fleet", icon: Car },
     { to: "/admin/services", label: "Service Coverage", icon: MapPin },
+    { to: "/admin/get-in-touch", label: "Get In Touch", icon: PhoneCall },
     { to: "/admin/reviews", label: "Customer Reviews", icon: MessageSquare },
   ];
 

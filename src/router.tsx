@@ -23,6 +23,8 @@ import { RequireAdmin } from "./ui/RequireAdmin";
 import { AdminFleetPage } from "./pages/Admin/AdminFleetPage";
 import { AdminServiceCoveragePage } from "./pages/Admin/AdminServiceCoveragePage";
 import { AdminCustomerReviewPage } from "./pages/Admin/AdminCustomerReviewPage";
+import { AdminBookingPage } from "./pages/Admin/AdminBookingPage";
+import { AdminGetInTouchPage } from "./pages/Admin/AdminGetInTouchPage";
 
 export const appRouter = createBrowserRouter([
   {
@@ -64,8 +66,10 @@ export const appRouter = createBrowserRouter([
     children: [
       { index: true, element: <Navigate to="dashboard" replace /> },
       { path: "dashboard", element: <AdminDashboardPage /> },
+      { path: "bookings", element: <AdminBookingPage /> },
       { path: "fleet", element: <AdminFleetPage /> },
       { path: "services", element: <AdminServiceCoveragePage /> },
+      { path: "get-in-touch", element: <AdminGetInTouchPage /> },
       { path: "reviews", element: <AdminCustomerReviewPage /> },
     ],
   },
