@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import {
   FLEET_VEHICLES,
   getFleetVehicleById,
@@ -11,6 +11,10 @@ import { FleetCta, FleetHero, FleetStandards } from "../FleetShared";
 import { BookingModal } from "../../../ui/BookingModal";
 import { fetchFleetById, fetchFleets, type FleetItem } from "src/api/admin/fleet";
 import { fetchFleetDetails, type FleetDetailItem } from "src/api/admin/fleetDetail";
+import { Pencil } from "lucide-react";
+import { useAppSelector } from "src/store/hooks";
+import { selectAuthUser } from "src/store/slices/auth/selectors";
+import type { AuthUser } from "src/store/slices/auth/types";
 
 /* ─── per-feature SVG icons ───────────────────────────────────────────────── */
 
@@ -323,6 +327,9 @@ function getHighlightIcon(iconKey: string) {
 }
 
 export function FleetDetailsPage() {
+  const navigate = useNavigate();
+  const authUser = useAppSelector(selectAuthUser) as AuthUser | "";
+  const isAdmin = authUser && typeof authUser === "object" && authUser.currentRole === "admin";
   const { vehicleId } = useParams<{ vehicleId: string }>();
   const [liveVehicle, setLiveVehicle] = useState<FleetVehicle | null>(null);
   const [detail, setDetail] = useState<FleetDetailItem | null>(null);
@@ -457,9 +464,21 @@ export function FleetDetailsPage() {
       <section className="bg-white pt-16 lg:pt-44 max-md:pt-10">
         {detail && (
           <div className="mx-auto max-w-2xl px-4 text-center mb-12">
-            <h2 className="font-serif text-3xl font-bold text-maseer-green-text sm:text-4xl">
-              {detail.title}
-            </h2>
+            <div className="flex items-center justify-center gap-3">
+              <h2 className="font-serif text-3xl font-bold text-maseer-green-text sm:text-4xl">
+                {detail.title}
+              </h2>
+              {isAdmin && (
+                <button
+                  type="button"
+                  title="Edit vehicle in admin panel"
+                  onClick={() => navigate("/admin/fleet")}
+                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                >
+                  <Pencil size={13} />
+                </button>
+              )}
+            </div>
             <p className="mt-4 font-lato text-sm text-maseer-muted whitespace-pre-line">
               {detail.description}
             </p>
@@ -562,9 +581,21 @@ export function FleetDetailsPage() {
             </div>
 
             {current && (
-              <p className="mt-3 font-serif text-xl font-semibold text-maseer-green-text">
-                {current.name}
-              </p>
+              <div className="mt-3 flex items-center justify-center gap-2">
+                <p className="font-serif text-xl font-semibold text-maseer-green-text">
+                  {current.name}
+                </p>
+                {isAdmin && (
+                  <button
+                    type="button"
+                    title="Edit vehicle in admin panel"
+                    onClick={() => navigate("/admin/fleet")}
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                  >
+                    <Pencil size={13} />
+                  </button>
+                )}
+              </div>
             )}
           </div>
         </div>

@@ -31,7 +31,11 @@ import {
   FleetHero,
   FleetStandards,
 } from "./FleetShared";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Pencil } from "lucide-react";
+import { useAppSelector } from "src/store/hooks";
+import { selectAuthUser } from "src/store/slices/auth/selectors";
+import type { AuthUser } from "src/store/slices/auth/types";
 
 function PersonIcon() {
   return <User className="h-3.5 w-3.5 text-maseer-gold" />;
@@ -127,7 +131,7 @@ function getFeatureIcon(feature: string) {
   return <Info className={className} />;
 }
 
-function VehicleCard({ vehicle }: { vehicle: FleetVehicle }) {
+function VehicleCard({ vehicle, isAdmin, onEdit }: { vehicle: FleetVehicle; isAdmin: boolean; onEdit: () => void }) {
   const [modalOpen, setModalOpen] = useState(false);
 
   return (
@@ -142,6 +146,18 @@ function VehicleCard({ vehicle }: { vehicle: FleetVehicle }) {
           <span className="absolute right-3 top-3 rounded-md bg-maseer-gold px-2.5 py-1 font-lato text-[10px] font-bold uppercase tracking-wide text-white">
             {vehicle.bodyType}
           </span>
+          {/* Admin edit button */}
+          {isAdmin && (
+            <button
+              type="button"
+              aria-label={`Edit ${vehicle.name}`}
+              title="Edit in admin panel"
+              onClick={onEdit}
+              className="absolute left-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+            >
+              <Pencil size={13} />
+            </button>
+          )}
         </div>
         <div className="p-7 max-md:p-5">
           <h3 className="font-serif text-[22px] font-semibold leading-tight text-maseer-green-text max-md:text-lg">
@@ -223,6 +239,9 @@ function mapBackendFleetToFleetVehicle(item: FleetItem): FleetVehicle {
 }
 
 export function FleetGridPage() {
+  const navigate = useNavigate();
+  const authUser = useAppSelector(selectAuthUser) as AuthUser | "";
+  const isAdmin = authUser && typeof authUser === "object" && authUser.currentRole === "admin";
   const [category, setCategory] = useState<FleetGridCategory>("All Vehicles");
   const [liveVehicles, setLiveVehicles] = useState<FleetVehicle[]>([]);
   const [loading, setLoading] = useState(true);
@@ -276,7 +295,12 @@ export function FleetGridPage() {
         ) : (
           <div className="grid grid-cols-3 gap-8 max-md:grid-cols-1">
             {vehicles.map((vehicle, index) => (
-              <VehicleCard key={`${vehicle.id}-${index}`} vehicle={vehicle} />
+              <VehicleCard
+                key={`${vehicle.id}-${index}`}
+                vehicle={vehicle}
+                isAdmin={!!isAdmin}
+                onEdit={() => navigate("/admin/fleet")}
+              />
             ))}
           </div>
         )}

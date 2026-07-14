@@ -7,7 +7,7 @@ import {
   ListboxOption,
   ListboxOptions,
 } from "@headlessui/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import Slider from "react-slick";
 import { Controller, useForm } from "react-hook-form";
@@ -25,7 +25,10 @@ import {
   type BookingServiceTab,
 } from "src/api/booking";
 import { ContactCallbackForm } from "./ContactCallbackForm";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, Pencil } from "lucide-react";
+import { useAppSelector } from "src/store/hooks";
+import { selectAuthUser } from "src/store/slices/auth/selectors";
+import type { AuthUser } from "src/store/slices/auth/types";
 
 const SlickSlider =
   (Slider as unknown as { default?: typeof Slider }).default ?? Slider;
@@ -569,6 +572,9 @@ function FaqChevron({ open }: { open: boolean }) {
 }
 
 export function HomePage() {
+  const navigate = useNavigate();
+  const authUser = useAppSelector(selectAuthUser) as AuthUser | "";
+  const isAdmin = authUser && typeof authUser === "object" && authUser.currentRole === "admin";
   const [bookingTab, setBookingTab] = useState<BookingTab>("Airport Transfer");
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [bookingError, setBookingError] = useState<string | null>(null);
@@ -619,6 +625,7 @@ export function HomePage() {
 
   const servicesCards = itineraryCoverage.length > 0
     ? itineraryCoverage.map(item => ({
+        id: item.id as number | undefined,
         title: item.title,
         text: item.description,
         icon: item.icon_key || "briefcase"
@@ -1089,18 +1096,30 @@ export function HomePage() {
                 SERVICES
               </p>
             </div>
-            <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
-              {itineraryHeading ? (
-                <>
-                  {itineraryHeading.split(" ").slice(0, -1).join(" ") + " "}
-                  <span className="text-primary">{itineraryHeading.split(" ").slice(-1)[0]}</span>
-                </>
-              ) : (
-                <>
-                  An itinerary, <span className="text-primary">composed.</span>
-                </>
+            <div className="flex items-center gap-3">
+              <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
+                {itineraryHeading ? (
+                  <>
+                    {itineraryHeading.split(" ").slice(0, -1).join(" ") + " "}
+                    <span className="text-primary">{itineraryHeading.split(" ").slice(-1)[0]}</span>
+                  </>
+                ) : (
+                  <>
+                    An itinerary, <span className="text-primary">composed.</span>
+                  </>
+                )}
+              </h2>
+              {isAdmin && (
+                <button
+                  type="button"
+                  title="Edit section in admin panel"
+                  onClick={() => navigate("/admin/services")}
+                  className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                >
+                  <Pencil size={13} />
+                </button>
               )}
-            </h2>
+            </div>
             <p className="mt-4 max-w-[520px] font-lato text-[14px] leading-[22px] text-maseer-green-text/80">
               {itinerarySubtitle || "From the door of your residence to the door of your private jet — every detail attended to."}
             </p>
@@ -1117,8 +1136,20 @@ export function HomePage() {
           {servicesCards.map((card) => (
             <article
               key={card.title}
-              className="flex min-h-[220px] flex-col rounded-2xl bg-maseer-surface-card p-7"
+              className="relative flex min-h-[220px] flex-col rounded-2xl bg-maseer-surface-card p-7"
             >
+              {/* Admin edit button */}
+              {isAdmin && (
+                <button
+                  type="button"
+                  aria-label={`Edit ${card.title} card`}
+                  title="Edit in admin panel"
+                  onClick={() => navigate("/admin/services")}
+                  className="absolute right-3 top-3 flex h-7 w-7 items-center justify-center rounded-full bg-white shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                >
+                  <Pencil size={13} />
+                </button>
+              )}
               <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-[0_1px_4px_rgba(0,0,0,0.06)]">
                 <ServiceCardIcon type={card.icon} />
               </div>
@@ -1182,12 +1213,24 @@ export function HomePage() {
             Features
           </p>
         </div>
-        <GoldHeading 
-          before={dynamicHeading ? dynamicHeading.split(" ").slice(0, -1).join(" ") + ", " : "Our, "}
-          accent={dynamicHeading ? dynamicHeading.split(" ").slice(-1)[0] : "Service Coverage"}
-        />
+        <div className="flex items-center gap-3">
+          <GoldHeading 
+            before={dynamicHeading ? dynamicHeading.split(" ").slice(0, -1).join(" ") + ", " : "Our, "}
+            accent={dynamicHeading ? dynamicHeading.split(" ").slice(-1)[0] : "Service Coverage"}
+          />
+          {isAdmin && (
+            <button
+              type="button"
+              title="Edit section in admin panel"
+              onClick={() => navigate("/admin/services")}
+              className="mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+            >
+              <Pencil size={13} />
+            </button>
+          )}
+        </div>
         <p className="mt-3 text-[14px] text-maseer-green ">
-          {dynamicSubtitle || "From the door of your residence to the door of your private jet — every detail attended to."}
+          {dynamicSubtitle || "From the door of your residence to the door of your private jet — every detail attended to. "}
         </p>
         <div className="mt-10 space-y-3">
           <div className="grid grid-cols-[1.55fr_1fr] gap-3 max-md:grid-cols-1">
@@ -1199,6 +1242,18 @@ export function HomePage() {
                   backgroundImage: `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.75) 100%), url(${item.image})`,
                 }}
               >
+                {/* Admin edit button */}
+                {isAdmin && (
+                  <button
+                    type="button"
+                    aria-label={`Edit ${item.title} card`}
+                    title="Edit in admin panel"
+                    onClick={() => navigate("/admin/services")}
+                    className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                  >
+                    <Pencil size={13} />
+                  </button>
+                )}
                 <div className="absolute bottom-6 left-6 text-white">
                   <p className="font-serif text-[26px] font-medium max-md:text-lg">
                     {item.title}
@@ -1219,6 +1274,18 @@ export function HomePage() {
                   backgroundImage: `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.75) 100%), url(${item.image})`,
                 }}
               >
+                {/* Admin edit button */}
+                {isAdmin && (
+                  <button
+                    type="button"
+                    aria-label={`Edit ${item.title} card`}
+                    title="Edit in admin panel"
+                    onClick={() => navigate("/admin/services")}
+                    className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                  >
+                    <Pencil size={13} />
+                  </button>
+                )}
                 <div className="absolute bottom-5 left-5 text-white">
                   <p className="font-serif text-[22px] font-medium max-md:text-base">
                     {item.title}
@@ -1333,10 +1400,22 @@ export function HomePage() {
               Ratings and reviews
             </p>
           </div>
-          <GoldHeading 
-            before={reviewHeading ? reviewHeading.split(" ").slice(0, -1).join(" ") + ", " : "What our, "}
-            accent={reviewHeading ? reviewHeading.split(" ").slice(-1)[0] : "Customers Say"}
-          />
+          <div className="flex items-center gap-3">
+            <GoldHeading 
+              before={reviewHeading ? reviewHeading.split(" ").slice(0, -1).join(" ") + ", " : "What our, "}
+              accent={reviewHeading ? reviewHeading.split(" ").slice(-1)[0] : "Customers Say"}
+            />
+            {isAdmin && (
+              <button
+                type="button"
+                title="Edit reviews in admin panel"
+                onClick={() => navigate("/admin/reviews")}
+                className="mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+              >
+                <Pencil size={13} />
+              </button>
+            )}
+          </div>
           <p className="mt-3 text-[14px] text-maseer-green">
             {reviewSubtitle || "Trusted by hundreds of happy customers"}
           </p>
@@ -1346,7 +1425,19 @@ export function HomePage() {
           <SlickSlider {...carouselSliderSettings} responsive={undefined} slidesToShow={slidesToShow}>
             {finalReviews.map((r) => (
               <div key={r.name} className="pr-6 pb-6">
-                <article className="rounded-2xl border border-maseer-line/80 bg-white p-8 shadow-soft">
+                <article className="relative rounded-2xl border border-maseer-line/80 bg-white p-8 shadow-soft">
+                  {/* Admin edit button */}
+                  {isAdmin && (
+                    <button
+                      type="button"
+                      aria-label={`Edit ${r.name} review`}
+                      title="Edit in admin panel"
+                      onClick={() => navigate("/admin/reviews")}
+                      className="absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                    >
+                      <Pencil size={13} />
+                    </button>
+                  )}
                   <div className="flex items-center justify-between">
                     <div className="flex gap-1 text-primary text-[14px]">
                       {"★".repeat(r.rating || 5)}
