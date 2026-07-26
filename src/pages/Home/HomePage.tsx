@@ -25,6 +25,7 @@ import {
   type BookingServiceTab,
 } from "src/api/booking";
 import { ContactCallbackForm } from "./ContactCallbackForm";
+import { BookingModal } from "../../ui/BookingModal";
 import { CalendarDays, Pencil } from "lucide-react";
 import { useAppSelector } from "src/store/hooks";
 import { selectAuthUser } from "src/store/slices/auth/selectors";
@@ -583,6 +584,8 @@ export function HomePage() {
   const [featuredCoverage, setFeaturedCoverage] = useState<any[]>([]);
   const [itineraryCoverage, setItineraryCoverage] = useState<any[]>([]);
   const [customerReviews, setCustomerReviews] = useState<any[]>([]);
+  const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [modalInitialData, setModalInitialData] = useState<any>(null);
 
   useEffect(() => {
     async function getCoverage() {
@@ -718,46 +721,16 @@ export function HomePage() {
       return;
     }
 
-    setIsBookingSubmitting(true);
-
-    try {
-      const payload = {
-        service_type: BOOKING_SERVICE_TYPE_MAP[bookingTab],
-        pick_up_location: data.pickup.address.trim(),
-        drop_off_location: (
-          dropoffLocation.address || data.pickup.address
-        ).trim(),
-        pick_up_latitude: data.pickup.latitude,
-        pick_up_longitude: data.pickup.longitude,
-        drop_off_latitude: dropoffLocation.latitude ?? data.pickup.latitude,
-        drop_off_longitude: dropoffLocation.longitude ?? data.pickup.longitude,
-        class: data.fleetClass,
-        date_and_time: new Date(data.dateTime).toISOString(),
-        passengers: Number(data.passengers),
-        childs: Number(data.childs || 0),
-      };
-
-      const result = await createBooking(payload);
-
-      const successMsg = result.message || "Booking created successfully! 🎉";
-      setBookingSuccess(successMsg);
-      toast.success(successMsg);
-      reset({
-        pickup: emptyLocation(),
-        dropoff: emptyLocation(),
-        fleetClass: "",
-        dateTime: "",
-        passengers: "",
-        childs: "0",
-      });
-    } catch (error) {
-      const errMsg =
-        error instanceof Error ? error.message : "Booking failed. Try again.";
-      setBookingError(errMsg);
-      toast.error(errMsg);
-    } finally {
-      setIsBookingSubmitting(false);
-    }
+    // Set the initial data for modal and open it to complete passenger info & payment!
+    setModalInitialData({
+      pickup: data.pickup,
+      dropoff: dropoffLocation,
+      fleetClass: data.fleetClass,
+      dateTime: data.dateTime,
+      passengers: data.passengers,
+      childs: data.childs,
+    });
+    setBookingModalOpen(true);
   };
 
   return (
@@ -1605,6 +1578,12 @@ export function HomePage() {
           })}
         </div>
       </section>
+
+      <BookingModal
+        isOpen={bookingModalOpen}
+        onClose={() => setBookingModalOpen(false)}
+        initialData={modalInitialData}
+      />
     </div>
   );
 }

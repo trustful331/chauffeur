@@ -9,6 +9,9 @@ import { ForgotPasswordPage } from "./pages/Auth/ForgotPasswordPage";
 import { OtpPage } from "./pages/Auth/OtpPage";
 import { ResetPasswordPage } from "./pages/Auth/ResetPasswordPage";
 import { BookingPage } from "./pages/Booking/BookingPage";
+import { PaymentSuccessPage } from "./pages/Booking/PaymentSuccessPage";
+import { PaymentFailurePage } from "./pages/Booking/PaymentFailurePage";
+import { ErrorPage } from "./pages/Error/ErrorPage";
 import { ContactPage } from "./pages/Contact/ContactPage";
 import { CorporatePage } from "./pages/Corporate/CorporatePage";
 import { FleetDetailsPage } from "./pages/Fleet/details/FleetDetailsPage";
@@ -30,6 +33,7 @@ export const appRouter = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <ErrorPage />,
     children: [
       { index: true, element: <HomePage /> },
       { path: "services", element: <ServicesPage /> },
@@ -39,6 +43,8 @@ export const appRouter = createBrowserRouter([
       { path: "contact", element: <ContactPage /> },
       { path: "about", element: <AboutPage /> },
       { path: "booking", element: <RequireAuth><BookingPage /></RequireAuth> },
+      { path: "booking/payment/success", element: <RequireAuth><PaymentSuccessPage /></RequireAuth> },
+      { path: "booking/payment/failure", element: <RequireAuth><PaymentFailurePage /></RequireAuth> },
     ],
   },
   {

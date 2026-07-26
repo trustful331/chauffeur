@@ -1,4 +1,4 @@
-import { type ReactNode, useState } from "react";
+import { type ReactNode, useState, useEffect } from "react";
 import {
   Listbox,
   ListboxButton,
@@ -9,13 +9,19 @@ import { Controller, useForm } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
 import "react-datepicker/dist/react-datepicker.css";
-import { CalendarDays, X } from "lucide-react";
+import { CalendarDays, X, Clock, CreditCard, ChevronLeft, User, Mail, Phone, MessageSquare } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "src/store/hooks";
+import { selectAuthUser, selectIsAuthenticated } from "src/store/slices/auth/selectors";
 import {
   BOOKING_SERVICE_TYPE_MAP,
   createBooking,
+  getFleetIdForCategory,
   type BookingLocation,
   type BookingServiceTab,
 } from "../api/booking";
+import { payBooking } from "../api/payment";
+import { FLEET_VEHICLES } from "../data/fleetData";
 import { LocationMapField } from "./LocationMapField";
 import { LoadingButton } from "./Spinner";
 
@@ -23,13 +29,19 @@ import { LoadingButton } from "./Spinner";
 
 type BookingTab = BookingServiceTab;
 
-type BookingForm = {
+export type BookingForm = {
   pickup: BookingLocation;
   dropoff: BookingLocation;
   fleetClass: string;
   dateTime: string;
   passengers: string;
   childs: string;
+  hours: string;
+  passenger_name: string;
+  passenger_email: string;
+  phone_number: string;
+  specialRequests: string;
+  paymentMethod: string;
 };
 
 /* ─── constants ─────────────────────────────────────────────────────────────── */
@@ -48,6 +60,14 @@ const FLEET_CLASS_OPTIONS = [
   "VIP / Business Class",
   "Economy Class",
 ];
+
+const CATEGORY_PRICE_MAP: Record<string, number> = {
+  "Economy Class": 15,
+  "Green Class": 25,
+  "VIP / Business Class": 40,
+  "Business Van": 50,
+  "Ultra Luxury": 75,
+};
 
 const emptyLocation = (): BookingLocation => ({
   address: "",
@@ -151,17 +171,30 @@ function BookingInput({
 
 /* ─── booking form body ─────────────────────────────────────────────────────── */
 
-function BookingFormBody({
+export function BookingFormBody({
   vehicleId,
+  vehicleName,
   onSuccess,
+  initialData,
 }: {
   vehicleId?: string;
+  vehicleName?: string;
   onSuccess?: () => void;
+  initialData?: Partial<BookingForm>;
 }) {
+  const navigate = useNavigate();
+  const authUser = useAppSelector(selectAuthUser);
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+
+  const [step, setStep] = useState<1 | 2>(1);
   const [bookingTab, setBookingTab] = useState<BookingTab>("Airport Transfer");
   const [bookingError, setBookingError] = useState<string | null>(null);
-  const [bookingSuccess, setBookingSuccess] = useState<string | null>(null);
   const [isBookingSubmitting, setIsBookingSubmitting] = useState(false);
+
+  // Auto-resolve fleet class category if vehicleId is passed
+  const autoResolvedClass = vehicleId
+    ? (FLEET_VEHICLES.find((v) => v.id === vehicleId)?.category || "")
+    : "";
 
   const {
     register,
@@ -170,80 +203,175 @@ function BookingFormBody({
     formState: { errors },
     clearErrors,
     reset,
+    trigger,
+    getValues,
+    setValue,
   } = useForm<BookingForm>({
     mode: "onTouched",
     reValidateMode: "onChange",
     defaultValues: {
       pickup: emptyLocation(),
       dropoff: emptyLocation(),
-      fleetClass: "",
+      fleetClass: autoResolvedClass,
       dateTime: "",
       passengers: "",
       childs: "0",
+      hours: "1",
+      passenger_name: "",
+      passenger_email: "",
+      phone_number: "",
+      specialRequests: "",
+      paymentMethod: "card",
     },
   });
 
-  const onBookingSubmit = async (data: BookingForm) => {
-    setBookingError(null);
-    setBookingSuccess(null);
+  // Apply initialData if passed (e.g. from homepage form)
+  useEffect(() => {
+    if (initialData) {
+      if (initialData.pickup) setValue("pickup", initialData.pickup);
+      if (initialData.dropoff) setValue("dropoff", initialData.dropoff);
+      if (initialData.fleetClass) setValue("fleetClass", initialData.fleetClass);
+      if (initialData.dateTime) setValue("dateTime", initialData.dateTime);
+      if (initialData.passengers) setValue("passengers", initialData.passengers);
+      if (initialData.childs) setValue("childs", initialData.childs);
+      if (initialData.hours) setValue("hours", initialData.hours);
+    }
+  }, [initialData, setValue]);
 
-    if (data.pickup.latitude == null || data.pickup.longitude == null) {
+  // Autofill passenger details once authUser is loaded
+  useEffect(() => {
+    if (authUser && typeof authUser === "object") {
+      setValue("passenger_name", authUser.full_name || "");
+      setValue("passenger_email", authUser.email || "");
+      if (authUser.phone_number) setValue("phone_number", authUser.phone_number);
+    }
+  }, [authUser, setValue]);
+
+  const handleNextStep = async () => {
+    setBookingError(null);
+    
+    // Validate Step 1 fields
+    const fieldsToValidate: Array<keyof BookingForm> = [
+      "pickup",
+      "fleetClass",
+      "dateTime",
+      "passengers",
+      "childs",
+    ];
+    if (bookingTab !== "Hourly Service") {
+      fieldsToValidate.push("dropoff");
+    } else {
+      fieldsToValidate.push("hours");
+    }
+
+    const isValid = await trigger(fieldsToValidate);
+    if (!isValid) return;
+
+    // Check map coordinate validations
+    const values = getValues();
+    if (values.pickup.latitude == null || values.pickup.longitude == null) {
       const msg = "Please set pick up location on the map.";
       setBookingError(msg);
       toast.error(msg);
       return;
     }
 
-    const isHourly = bookingTab === "Hourly Service";
-    const dropoffLocation = isHourly ? data.pickup : data.dropoff;
+    if (bookingTab !== "Hourly Service") {
+      if (values.dropoff.latitude == null || values.dropoff.longitude == null) {
+        const msg = "Please set drop off location on the map.";
+        setBookingError(msg);
+        toast.error(msg);
+        return;
+      }
+    }
 
-    if (
-      !isHourly &&
-      (dropoffLocation.latitude == null || dropoffLocation.longitude == null)
-    ) {
-      const msg = "Please set drop off location on the map.";
-      setBookingError(msg);
-      toast.error(msg);
+    // Redirect to Signin if not authenticated before going to payment step
+    if (!isAuthenticated) {
+      toast.error("Please sign in to proceed with booking payment.");
+      navigate("/signin");
       return;
     }
 
+    setStep(2);
+  };
+
+  const onBookingSubmit = async (data: BookingForm) => {
+    if (step === 1) {
+      await handleNextStep();
+      return;
+    }
+
+    setBookingError(null);
     setIsBookingSubmitting(true);
 
     try {
+      // 1. Resolve fleet_id
+      const fleet_id = vehicleId || (await getFleetIdForCategory(data.fleetClass));
+
+      // 2. Format date and time
+      const d = new Date(data.dateTime);
+      const pickup_date = d.toISOString().split("T")[0];
+      const pickup_time = d.toTimeString().split(" ")[0].substring(0, 5);
+
+      // 3. Est. amount based on class pricing
+      const amount = CATEGORY_PRICE_MAP[data.fleetClass] || 25;
+
+      const isHourly = bookingTab === "Hourly Service";
       const payload = {
         service_type: BOOKING_SERVICE_TYPE_MAP[bookingTab],
-        pick_up_location: data.pickup.address.trim(),
-        drop_off_location: (
-          dropoffLocation.address || data.pickup.address
-        ).trim(),
-        pick_up_latitude: data.pickup.latitude,
-        pick_up_longitude: data.pickup.longitude,
-        drop_off_latitude: dropoffLocation.latitude ?? data.pickup.latitude,
-        drop_off_longitude:
-          dropoffLocation.longitude ?? data.pickup.longitude,
-        class: data.fleetClass,
-        date_and_time: new Date(data.dateTime).toISOString(),
-        passengers: Number(data.passengers),
-        childs: Number(data.childs || 0),
-        ...(vehicleId ? { vehicle_id: vehicleId } : {}),
+        fleet_id,
+        pickup_location: data.pickup.address.trim(),
+        pickup_latitude: data.pickup.latitude!,
+        pickup_longitude: data.pickup.longitude!,
+        dropoff_location: (isHourly ? data.pickup.address : data.dropoff.address).trim(),
+        dropoff_latitude: isHourly ? data.pickup.latitude! : data.dropoff.latitude!,
+        dropoff_longitude: isHourly ? data.pickup.longitude! : data.dropoff.longitude!,
+        pickup_date,
+        pickup_time,
+        passengers_count: Number(data.passengers),
+        children_count: Number(data.childs || 0),
+        hours: isHourly ? Number(data.hours) : null,
+        passenger_name: data.passenger_name.trim(),
+        passenger_email: data.passenger_email.trim(),
+        phone_number: data.phone_number.trim(),
+        payment_method: data.paymentMethod,
+        special_requests: data.specialRequests?.trim() || "",
+        addons: [],
+        amount,
+        currency: "KWD",
       };
 
+      // 4. Create booking
       const result = await createBooking(payload);
-      const successMsg = result.message || "Booking created successfully! 🎉";
-      setBookingSuccess(successMsg);
-      toast.success(successMsg);
-      reset({
-        pickup: emptyLocation(),
-        dropoff: emptyLocation(),
-        fleetClass: "",
-        dateTime: "",
-        passengers: "",
-        childs: "0",
+
+      if (!result.success || !result.data?.id) {
+        throw new Error(result.message || "Failed to create booking.");
+      }
+
+      const bookingId = result.data.id;
+
+      // 5. Store booking ID in localStorage for redirect page retrieval
+      localStorage.setItem("pending_booking_id", bookingId);
+
+      // 6. Pay booking to get MyFatoorah checkout URL
+      const payResult = await payBooking(bookingId, {
+        amount,
+        currency: "KWD",
+        language: "en",
       });
-      onSuccess?.();
+
+      if (!payResult.success || !payResult.data?.checkout_url) {
+        throw new Error(payResult.message || "Failed to create payment checkout page.");
+      }
+
+      toast.success("Redirecting to secure payment page...");
+
+      // 7. Redirect the browser to MyFatoorah hosted page
+      window.location.href = payResult.data.checkout_url;
+
     } catch (error) {
       const errMsg =
-        error instanceof Error ? error.message : "Booking failed. Try again.";
+        error instanceof Error ? error.message : "Booking payment failed. Try again.";
       setBookingError(errMsg);
       toast.error(errMsg);
     } finally {
@@ -251,297 +379,466 @@ function BookingFormBody({
     }
   };
 
+  const selectedCategoryPrice = CATEGORY_PRICE_MAP[getValues("fleetClass")] || 25;
+
   return (
     <form noValidate onSubmit={handleSubmit(onBookingSubmit)}>
-      {/* tabs */}
-      <div className="grid grid-cols-4 overflow-hidden rounded-t-2xl border-b border-primary/30 p-8 max-md:grid-cols-2 max-md:p-4">
-        {BOOKING_TABS.map((tab, index) => {
-          const isActive = bookingTab === tab;
-          return (
-            <button
-              key={tab}
-              type="button"
-              onClick={() => {
-                setBookingTab(tab);
-                clearErrors();
-              }}
-              className={[
-                "font-lato py-3.5 text-center text-[12px] font-semibold transition-colors max-md:px-1 max-md:py-3 max-md:text-[10px]",
-                isActive
-                  ? [
-                      "bg-maseer-green text-white",
-                      index === 0 ? "rounded-tl-2xl" : "",
-                      index === BOOKING_TABS.length - 1
-                        ? "rounded-tr-2xl"
-                        : "",
-                    ].join(" ")
-                  : "bg-[#FFF9EB] text-primary",
-                !isActive && index > 0 ? "border-l border-primary/20" : "",
-              ].join(" ")}
-            >
-              {tab}
-            </button>
-          );
-        })}
+      {/* Step Indicator Progress Bar */}
+      <div className="flex items-center justify-between border-b border-primary/10 px-8 py-3 bg-[#FFFBF0] text-xs font-semibold max-md:px-4">
+        <div className="flex items-center gap-2">
+          <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] ${step === 1 ? "bg-maseer-green text-white" : "bg-maseer-green/20 text-maseer-green"}`}>1</span>
+          <span className={step === 1 ? "text-maseer-green" : "text-maseer-muted"}>Trip Info</span>
+        </div>
+        <div className="h-0.5 flex-1 mx-4 bg-primary/10" />
+        <div className="flex items-center gap-2">
+          <span className={`flex h-5 w-5 items-center justify-center rounded-full text-[10px] ${step === 2 ? "bg-maseer-green text-white" : "bg-primary/10 text-maseer-muted"}`}>2</span>
+          <span className={step === 2 ? "text-maseer-green" : "text-maseer-muted"}>Passenger &amp; Payment</span>
+        </div>
       </div>
 
-      {/* fields */}
-      <div className="px-6 pb-4 pt-6 max-md:px-4 lg:px-8">
-        {/* pickup / dropoff */}
-        <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
-          <Controller
-            name="pickup"
-            control={control}
-            rules={{
-              validate: (value) =>
-                value.address.trim().length >= 2 ||
-                "Pick up location is required",
-            }}
-            render={({ field }) => (
-              <LocationMapField
-                label="Pick Up Location"
-                value={field.value}
-                onChange={field.onChange}
-                placeholder="Enter Pickup Location"
-                required
-                error={errors.pickup?.message as string | undefined}
-              />
-            )}
-          />
-          {bookingTab !== "Hourly Service" ? (
-            <Controller
-              name="dropoff"
-              control={control}
-              rules={{
-                validate: (value) =>
-                  value.address.trim().length >= 2 ||
-                  "Drop off location is required",
-              }}
-              render={({ field }) => (
-                <LocationMapField
-                  label="Drop Off Location"
-                  value={field.value}
-                  onChange={field.onChange}
-                  placeholder="Enter DropOff Location"
-                  required
-                  error={errors.dropoff?.message as string | undefined}
-                />
-              )}
-            />
-          ) : null}
-        </div>
-
-        {/* class / date / passengers / children */}
-        <div className="mt-5 grid grid-cols-2 gap-4 max-md:grid-cols-1 lg:grid-cols-4">
-          {/* fleet class */}
-          <div>
-            <FieldLabel>Class</FieldLabel>
-            <Controller
-              name="fleetClass"
-              control={control}
-              rules={{ required: "Please select a fleet class" }}
-              render={({ field }) => (
-                <Listbox
-                  value={field.value}
-                  onChange={field.onChange}
-                  invalid={!!errors.fleetClass}
+      {step === 1 && (
+        <>
+          {/* tabs */}
+          <div className="grid grid-cols-4 overflow-hidden border-b border-primary/30 p-8 max-md:grid-cols-2 max-md:p-4">
+            {BOOKING_TABS.map((tab, index) => {
+              const isActive = bookingTab === tab;
+              return (
+                <button
+                  key={tab}
+                  type="button"
+                  onClick={() => {
+                    setBookingTab(tab);
+                    clearErrors();
+                  }}
+                  className={[
+                    "font-lato py-3.5 text-center text-[12px] font-semibold transition-colors max-md:px-1 max-md:py-3 max-md:text-[10px]",
+                    isActive
+                      ? "bg-maseer-green text-white"
+                      : "bg-[#FFF9EB] text-primary",
+                    !isActive && index > 0 ? "border-l border-primary/20" : "",
+                  ].join(" ")}
                 >
-                  <div className="relative">
-                    <BookingInput
-                      icon={<ChevronDownIcon />}
-                      hasError={!!errors.fleetClass}
-                    >
-                      <ListboxButton
-                        onBlur={field.onBlur}
-                        className="w-full cursor-pointer bg-transparent text-left font-lato text-[12px] outline-none"
-                      >
-                        <span
-                          className={
-                            field.value ? "text-[#333]" : "text-[#9ca3af]"
-                          }
-                        >
-                          {field.value || "Select Category"}
-                        </span>
-                      </ListboxButton>
-                    </BookingInput>
-                    <ListboxOptions
-                      anchor="bottom start"
-                      className="z-[1050] mt-1 max-h-60 w-[var(--button-width)] overflow-auto rounded-xl border border-[#e5e7eb] bg-white py-1 shadow-lg [--anchor-gap:4px] focus:outline-none"
-                    >
-                      {FLEET_CLASS_OPTIONS.map((opt) => (
-                        <ListboxOption
-                          key={opt}
-                          value={opt}
-                          className="cursor-pointer px-4 py-2.5 font-lato text-[12px] text-[#333] data-[focus]:bg-[#FFF9EB] data-[selected]:font-semibold data-[selected]:text-maseer-green"
-                        >
-                          {opt}
-                        </ListboxOption>
-                      ))}
-                    </ListboxOptions>
-                  </div>
-                </Listbox>
-              )}
-            />
-            <FieldError message={errors.fleetClass?.message} />
+                  {tab}
+                </button>
+              );
+            })}
           </div>
 
-          {/* date & time */}
-          <div>
-            <FieldLabel>Date &amp; Time</FieldLabel>
-            <Controller
-              name="dateTime"
-              control={control}
-              rules={{
-                required: "Date and time is required",
-                validate: validateDateTime,
-              }}
-              render={({ field }) => (
-                <BookingInput
-                  icon={<CalendarDays className="h-4 w-4 text-primary" />}
-                  hasError={!!errors.dateTime}
-                >
-                  <DatePicker
-                    selected={field.value ? new Date(field.value) : null}
-                    onChange={(date: Date | null) => {
-                      field.onChange(date ? date.toISOString() : "");
-                    }}
-                    onBlur={field.onBlur}
-                    showTimeSelect
-                    timeFormat="HH:mm"
-                    timeIntervals={15}
-                    timeCaption="Time"
-                    dateFormat="EEE, MMM d · h:mm aa"
-                    minDate={new Date()}
-                    filterTime={filterFutureTime}
-                    placeholderText="Date and Time"
-                    shouldCloseOnSelect={false}
-                    showPopperArrow={false}
-                    portalId="datepicker-portal"
-                    calendarClassName="maseer-datepicker"
-                    popperClassName="maseer-datepicker-popper"
-                    popperPlacement="bottom-start"
-                    className="w-full cursor-pointer bg-transparent font-lato text-[12px] text-[#333] outline-none placeholder:text-[#b0b0b0]"
-                    renderCustomHeader={({
-                      date,
-                      decreaseMonth,
-                      increaseMonth,
-                      prevMonthButtonDisabled,
-                      nextMonthButtonDisabled,
-                    }) => (
-                      <div className="flex items-center justify-between px-3 py-3">
-                        <button
-                          type="button"
-                          onClick={decreaseMonth}
-                          disabled={prevMonthButtonDisabled}
-                          className="flex h-8 w-8 items-center justify-center rounded-full text-white transition hover:bg-white/15 disabled:opacity-30"
+          {/* fields */}
+          <div className="px-6 pb-4 pt-6 max-md:px-4 lg:px-8">
+            {/* pickup / dropoff */}
+            <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
+              <Controller
+                name="pickup"
+                control={control}
+                rules={{
+                  validate: (value) =>
+                    value.address.trim().length >= 2 ||
+                    "Pick up location is required",
+                }}
+                render={({ field }) => (
+                  <LocationMapField
+                    label="Pick Up Location"
+                    value={field.value}
+                    onChange={field.onChange}
+                    placeholder="Enter Pickup Location"
+                    required
+                    error={errors.pickup?.message as string | undefined}
+                  />
+                )}
+              />
+              {bookingTab !== "Hourly Service" ? (
+                <Controller
+                  name="dropoff"
+                  control={control}
+                  rules={{
+                    validate: (value) =>
+                      value.address.trim().length >= 2 ||
+                      "Drop off location is required",
+                  }}
+                  render={({ field }) => (
+                    <LocationMapField
+                      label="Drop Off Location"
+                      value={field.value}
+                      onChange={field.onChange}
+                      placeholder="Enter DropOff Location"
+                      required
+                      error={errors.dropoff?.message as string | undefined}
+                    />
+                  )}
+                />
+              ) : (
+                <div>
+                  <FieldLabel>Duration (Hours)</FieldLabel>
+                  <BookingInput icon={<Clock className="h-4 w-4 text-[#9ca3af]" />} hasError={!!errors.hours}>
+                    <input
+                      {...register("hours", {
+                        required: "Duration is required",
+                        validate: (v) => {
+                          const num = Number(v);
+                          if (!v || Number.isNaN(num)) return "Enter valid hours";
+                          if (num < 1) return "Min 1 hour required";
+                          if (num > 24) return "Max 24 hours allowed";
+                          return true;
+                        }
+                      })}
+                      type="number"
+                      min={1}
+                      max={24}
+                      placeholder="1"
+                      className="w-full bg-transparent font-lato text-[12px] text-[#333] outline-none"
+                    />
+                  </BookingInput>
+                  <FieldError message={errors.hours?.message} />
+                </div>
+              )}
+            </div>
+
+            {/* class / date / passengers / children */}
+            <div className="mt-5 grid grid-cols-2 gap-4 max-md:grid-cols-1 lg:grid-cols-4">
+              {/* fleet class */}
+              <div>
+                <FieldLabel>Class</FieldLabel>
+                <Controller
+                  name="fleetClass"
+                  control={control}
+                  rules={{ required: "Please select a fleet class" }}
+                  render={({ field }) => (
+                    <Listbox
+                      value={field.value}
+                      onChange={field.onChange}
+                      invalid={!!errors.fleetClass}
+                    >
+                      <div className="relative">
+                        <BookingInput
+                          icon={<ChevronDownIcon />}
+                          hasError={!!errors.fleetClass}
                         >
-                          ‹
-                        </button>
-                        <span className="font-lato text-sm font-bold tracking-wide text-white">
-                          {date.toLocaleString("en-US", {
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={increaseMonth}
-                          disabled={nextMonthButtonDisabled}
-                          className="flex h-8 w-8 items-center justify-center rounded-full text-white transition hover:bg-white/15 disabled:opacity-30"
+                          <ListboxButton
+                            onBlur={field.onBlur}
+                            className="w-full cursor-pointer bg-transparent text-left font-lato text-[12px] outline-none"
+                          >
+                            <span
+                              className={
+                                field.value ? "text-[#333]" : "text-[#9ca3af]"
+                              }
+                            >
+                              {field.value || "Select Category"}
+                            </span>
+                          </ListboxButton>
+                        </BookingInput>
+                        <ListboxOptions
+                          anchor="bottom start"
+                          className="z-[1050] mt-1 max-h-60 w-[var(--button-width)] overflow-auto rounded-xl border border-[#e5e7eb] bg-white py-1 shadow-lg [--anchor-gap:4px] focus:outline-none"
                         >
-                          ›
-                        </button>
+                          {FLEET_CLASS_OPTIONS.map((opt) => (
+                            <ListboxOption
+                              key={opt}
+                              value={opt}
+                              className="cursor-pointer px-4 py-2.5 font-lato text-[12px] text-[#333] data-[focus]:bg-[#FFF9EB] data-[selected]:font-semibold data-[selected]:text-maseer-green"
+                            >
+                              {opt}
+                            </ListboxOption>
+                          ))}
+                        </ListboxOptions>
                       </div>
-                    )}
+                    </Listbox>
+                  )}
+                />
+                <FieldError message={errors.fleetClass?.message} />
+              </div>
+
+              {/* date & time */}
+              <div>
+                <FieldLabel>Date &amp; Time</FieldLabel>
+                <Controller
+                  name="dateTime"
+                  control={control}
+                  rules={{
+                    required: "Date and time is required",
+                    validate: validateDateTime,
+                  }}
+                  render={({ field }) => (
+                    <BookingInput
+                      icon={<CalendarDays className="h-4 w-4 text-primary" />}
+                      hasError={!!errors.dateTime}
+                    >
+                      <DatePicker
+                        selected={field.value ? new Date(field.value) : null}
+                        onChange={(date: Date | null) => {
+                          field.onChange(date ? date.toISOString() : "");
+                        }}
+                        onBlur={field.onBlur}
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={15}
+                        timeCaption="Time"
+                        dateFormat="EEE, MMM d · h:mm aa"
+                        minDate={new Date()}
+                        filterTime={filterFutureTime}
+                        placeholderText="Date and Time"
+                        shouldCloseOnSelect={false}
+                        showPopperArrow={false}
+                        portalId="datepicker-portal"
+                        calendarClassName="maseer-datepicker"
+                        popperClassName="maseer-datepicker-popper"
+                        popperPlacement="bottom-start"
+                        className="w-full cursor-pointer bg-transparent font-lato text-[12px] text-[#333] outline-none placeholder:text-[#b0b0b0]"
+                      />
+                    </BookingInput>
+                  )}
+                />
+                <FieldError message={errors.dateTime?.message} />
+              </div>
+
+              {/* passengers */}
+              <div>
+                <FieldLabel>Passengers</FieldLabel>
+                <BookingInput icon={<PersonIcon />} hasError={!!errors.passengers}>
+                  <input
+                    {...register("passengers", {
+                      required: "Passengers is required",
+                      validate: (value) => {
+                        const count = Number(value);
+                        if (!value || Number.isNaN(count))
+                          return "Enter number of passengers";
+                        if (!Number.isInteger(count))
+                          return "Must be a whole number";
+                        if (count < 1) return "At least 1 passenger required";
+                        if (count > 99) return "Maximum 99 passengers";
+                        return true;
+                      },
+                    })}
+                    type="number"
+                    min={1}
+                    max={99}
+                    placeholder="00"
+                    className="w-full bg-transparent font-lato text-[12px] text-[#333] outline-none placeholder:text-[#b0b0b0]"
                   />
                 </BookingInput>
+                <FieldError message={errors.passengers?.message} />
+              </div>
+
+              {/* children */}
+              <div>
+                <FieldLabel>Children</FieldLabel>
+                <BookingInput icon={<PersonIcon />} hasError={!!errors.childs}>
+                  <input
+                    {...register("childs", {
+                      validate: (value) => {
+                        const count = Number(value || 0);
+                        if (Number.isNaN(count)) return "Enter a valid number";
+                        if (!Number.isInteger(count)) return "Must be a whole number";
+                        if (count < 0) return "Cannot be negative";
+                        if (count > 99) return "Maximum 99 children";
+                        return true;
+                      },
+                    })}
+                    type="number"
+                    min={0}
+                    max={99}
+                    placeholder="0"
+                    className="w-full bg-transparent font-lato text-[12px] text-[#333] outline-none placeholder:text-[#b0b0b0]"
+                  />
+                </BookingInput>
+                <FieldError message={errors.childs?.message} />
+              </div>
+            </div>
+
+            {bookingError && (
+              <p className="mt-4 text-center font-lato text-[12px] text-red-600" role="alert">
+                {bookingError}
+              </p>
+            )}
+
+            {/* next step button */}
+            <button
+              type="button"
+              onClick={handleNextStep}
+              className="mx-auto mt-8 block w-full max-w-[360px] rounded-xl bg-maseer-green py-3.5 font-lato text-[15px] font-semibold text-white transition hover:bg-maseer-green-deep"
+            >
+              Continue to Details
+            </button>
+          </div>
+        </>
+      )}
+
+      {step === 2 && (
+        <div className="px-6 pb-6 pt-6 max-md:px-4 lg:px-8">
+          <button
+            type="button"
+            onClick={() => setStep(1)}
+            className="mb-5 flex items-center gap-1.5 font-lato text-xs font-semibold text-maseer-green hover:underline"
+          >
+            <ChevronLeft className="h-4 w-4" /> Back to Trip Details
+          </button>
+
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-5">
+            {/* Passenger Fields */}
+            <div className="lg:col-span-3 space-y-4">
+              <h3 className="font-serif text-lg font-semibold text-maseer-green-text">
+                Passenger Information
+              </h3>
+
+              {/* Name */}
+              <div>
+                <FieldLabel>Passenger Full Name</FieldLabel>
+                <BookingInput icon={<User className="h-4 w-4 text-[#9ca3af]" />} hasError={!!errors.passenger_name}>
+                  <input
+                    {...register("passenger_name", {
+                      required: "Passenger name is required",
+                      minLength: { value: 2, message: "Name must be at least 2 characters" },
+                    })}
+                    type="text"
+                    placeholder="Ali Khan"
+                    className="w-full bg-transparent font-lato text-[12px] text-[#333] outline-none"
+                  />
+                </BookingInput>
+                <FieldError message={errors.passenger_name?.message} />
+              </div>
+
+              {/* Email */}
+              <div>
+                <FieldLabel>Email Address</FieldLabel>
+                <BookingInput icon={<Mail className="h-4 w-4 text-[#9ca3af]" />} hasError={!!errors.passenger_email}>
+                  <input
+                    {...register("passenger_email", {
+                      required: "Passenger email is required",
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: "Invalid email address",
+                      },
+                    })}
+                    type="email"
+                    placeholder="ali@email.com"
+                    className="w-full bg-transparent font-lato text-[12px] text-[#333] outline-none"
+                  />
+                </BookingInput>
+                <FieldError message={errors.passenger_email?.message} />
+              </div>
+
+              {/* Phone */}
+              <div>
+                <FieldLabel>Phone Number</FieldLabel>
+                <BookingInput icon={<Phone className="h-4 w-4 text-[#9ca3af]" />} hasError={!!errors.phone_number}>
+                  <input
+                    {...register("phone_number", {
+                      required: "Phone number is required",
+                      minLength: { value: 8, message: "Invalid phone number" },
+                    })}
+                    type="tel"
+                    placeholder="+96550000000"
+                    className="w-full bg-transparent font-lato text-[12px] text-[#333] outline-none"
+                  />
+                </BookingInput>
+                <FieldError message={errors.phone_number?.message} />
+              </div>
+
+              {/* Special Requests */}
+              <div>
+                <FieldLabel>Special Requests (Optional)</FieldLabel>
+                <div className="flex rounded-xl border border-[#e5e7eb] bg-white p-3.5 focus-within:border-maseer-gold">
+                  <span className="mt-1 shrink-0"><MessageSquare className="h-4 w-4 text-[#9ca3af] mr-2" /></span>
+                  <textarea
+                    {...register("specialRequests")}
+                    rows={2}
+                    placeholder="E.g., child safety seat details, specific routes..."
+                    className="w-full resize-none bg-transparent font-lato text-[12px] text-[#333] outline-none placeholder:text-[#b0b0b0]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Summary Sidebar */}
+            <div className="lg:col-span-2 space-y-4">
+              <div className="rounded-2xl bg-gradient-to-br from-maseer-green-deep to-[#05280b] p-5 text-white shadow-md">
+                <h4 className="font-serif text-sm font-semibold tracking-wide text-maseer-gold">
+                  BOOKING SUMMARY
+                </h4>
+
+                <div className="mt-4 space-y-2 border-b border-white/10 pb-4 text-xs font-lato text-white/80">
+                  <div className="flex justify-between">
+                    <span>Vehicle Class:</span>
+                    <strong className="text-white">{getValues("fleetClass") || vehicleName || "Luxury Fleet"}</strong>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Service:</span>
+                    <strong className="text-white">{bookingTab}</strong>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Date/Time:</span>
+                    <strong className="text-white">
+                      {getValues("dateTime") ? new Date(getValues("dateTime")).toLocaleString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      }) : "Not set"}
+                    </strong>
+                  </div>
+                  {bookingTab === "Hourly Service" && (
+                    <div className="flex justify-between">
+                      <span>Duration:</span>
+                      <strong className="text-white">{getValues("hours")} hour(s)</strong>
+                    </div>
+                  )}
+                  <div className="flex justify-between">
+                    <span>Passengers:</span>
+                    <strong className="text-white">
+                      {getValues("passengers")} adults, {getValues("childs") || "0"} children
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="mt-4 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="font-lato text-xs text-white/70">Estimated Price:</span>
+                    <span className="font-serif text-2xl font-black text-maseer-gold">
+                      {selectedCategoryPrice} KWD
+                    </span>
+                  </div>
+
+                  {/* Payment Method Selector */}
+                  <div className="space-y-2">
+                    <span className="block font-lato text-[11px] uppercase tracking-wide text-white/60">
+                      Payment Method
+                    </span>
+                    <label className="flex cursor-pointer items-center justify-between rounded-xl bg-white/10 p-3 hover:bg-white/15 border border-white/10">
+                      <div className="flex items-center gap-2">
+                        <CreditCard className="h-4 w-4 text-maseer-gold" />
+                        <span className="font-lato text-xs font-semibold">Credit/Debit Card</span>
+                      </div>
+                      <input
+                        type="radio"
+                        value="card"
+                        checked
+                        readOnly
+                        className="h-3.5 w-3.5 accent-maseer-gold"
+                      />
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              {bookingError && (
+                <p className="text-center font-lato text-[11px] text-red-500" role="alert">
+                  {bookingError}
+                </p>
               )}
-            />
-            <FieldError message={errors.dateTime?.message} />
-          </div>
 
-          {/* passengers */}
-          <div>
-            <FieldLabel>Passengers</FieldLabel>
-            <BookingInput icon={<PersonIcon />} hasError={!!errors.passengers}>
-              <input
-                {...register("passengers", {
-                  required: "Passengers is required",
-                  validate: (value) => {
-                    const count = Number(value);
-                    if (!value || Number.isNaN(count))
-                      return "Enter number of passengers";
-                    if (!Number.isInteger(count))
-                      return "Must be a whole number";
-                    if (count < 1) return "At least 1 passenger required";
-                    if (count > 99) return "Maximum 99 passengers";
-                    return true;
-                  },
-                })}
-                type="number"
-                min={1}
-                max={99}
-                placeholder="00"
-                className="w-full bg-transparent font-lato text-[12px] text-[#333] outline-none placeholder:text-[#b0b0b0]"
-              />
-            </BookingInput>
-            <FieldError message={errors.passengers?.message} />
-          </div>
-
-          {/* children */}
-          <div>
-            <FieldLabel>Children</FieldLabel>
-            <BookingInput icon={<PersonIcon />} hasError={!!errors.childs}>
-              <input
-                {...register("childs", {
-                  validate: (value) => {
-                    const count = Number(value || 0);
-                    if (Number.isNaN(count)) return "Enter a valid number";
-                    if (!Number.isInteger(count)) return "Must be a whole number";
-                    if (count < 0) return "Cannot be negative";
-                    if (count > 99) return "Maximum 99 children";
-                    return true;
-                  },
-                })}
-                type="number"
-                min={0}
-                max={99}
-                placeholder="0"
-                className="w-full bg-transparent font-lato text-[12px] text-[#333] outline-none placeholder:text-[#b0b0b0]"
-              />
-            </BookingInput>
-            <FieldError message={errors.childs?.message} />
+              {/* Submit / Pay Button */}
+              <LoadingButton
+                type="submit"
+                loading={isBookingSubmitting}
+                loadingText="Securing payment..."
+                className="block w-full rounded-xl bg-maseer-gold py-4 text-center font-lato text-sm font-bold text-[#101828] hover:bg-[#d8a400] transition active:scale-[0.99] disabled:opacity-50"
+              >
+                Proceed to Payment ({selectedCategoryPrice} KWD)
+              </LoadingButton>
+            </div>
           </div>
         </div>
-
-        {/* status messages */}
-        {bookingError && (
-          <p
-            className="mt-4 text-center font-lato text-[12px] text-red-600"
-            role="alert"
-          >
-            {bookingError}
-          </p>
-        )}
-        {bookingSuccess && (
-          <p
-            className="mt-4 text-center font-lato text-[12px] text-maseer-green"
-            role="status"
-          >
-            {bookingSuccess}
-          </p>
-        )}
-
-        {/* submit */}
-        <LoadingButton
-          type="submit"
-          loading={isBookingSubmitting}
-          loadingText="Booking..."
-          className="mx-auto mt-6 block w-full max-w-[360px] rounded-xl bg-maseer-green py-3.5 font-lato text-[15px] font-semibold text-white transition hover:bg-maseer-green-deep disabled:cursor-not-allowed disabled:opacity-70"
-        >
-          Book Your Ride
-        </LoadingButton>
-      </div>
+      )}
     </form>
   );
 }
@@ -553,6 +850,7 @@ type BookingModalProps = {
   onClose: () => void;
   vehicleId?: string;
   vehicleName?: string;
+  initialData?: Partial<BookingForm>;
 };
 
 export function BookingModal({
@@ -560,6 +858,7 @@ export function BookingModal({
   onClose,
   vehicleId,
   vehicleName,
+  initialData,
 }: BookingModalProps) {
   if (!isOpen) return null;
 
@@ -577,9 +876,9 @@ export function BookingModal({
         onClick={onClose}
         aria-hidden
       />
- 
+
       {/* panel */}
-      <div className="relative z-10 h-[600px] w-full max-w-3xl overflow-y-auto rounded-[32px] bg-white shadow-[0_24px_64px_rgba(0,0,0,0.22)] max-md:h-auto max-md:max-h-[92vh] max-md:rounded-2xl">
+      <div className="relative z-10 h-[620px] w-full max-w-3xl overflow-y-auto rounded-[32px] bg-white shadow-[0_24px_64px_rgba(0,0,0,0.22)] max-md:h-auto max-md:max-h-[92vh] max-md:rounded-2xl">
         {/* header */}
         <div className="flex items-center justify-between px-8 pb-4 pt-6 max-md:px-4">
           <div>
@@ -605,7 +904,12 @@ export function BookingModal({
         <hr className="border-maseer-line/50" />
 
         {/* form */}
-        <BookingFormBody vehicleId={vehicleId} onSuccess={onClose} />
+        <BookingFormBody
+          vehicleId={vehicleId}
+          vehicleName={vehicleName}
+          onSuccess={onClose}
+          initialData={initialData}
+        />
       </div>
     </div>
   );
