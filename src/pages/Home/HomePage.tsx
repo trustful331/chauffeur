@@ -19,8 +19,6 @@ import { HeroBackground } from "../../ui/HeroBackground";
 import { LocationMapField } from "../../ui/LocationMapField";
 import { LoadingButton } from "../../ui/Spinner";
 import {
-  BOOKING_SERVICE_TYPE_MAP,
-  createBooking,
   type BookingLocation,
   type BookingServiceTab,
 } from "src/api/booking";
@@ -580,7 +578,6 @@ export function HomePage() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const [bookingError, setBookingError] = useState<string | null>(null);
   const [bookingSuccess, setBookingSuccess] = useState<string | null>(null);
-  const [isBookingSubmitting, setIsBookingSubmitting] = useState(false);
   const [featuredCoverage, setFeaturedCoverage] = useState<any[]>([]);
   const [itineraryCoverage, setItineraryCoverage] = useState<any[]>([]);
   const [customerReviews, setCustomerReviews] = useState<any[]>([]);
@@ -683,7 +680,6 @@ export function HomePage() {
     control,
     formState: { errors },
     clearErrors,
-    reset,
   } = useForm<BookingForm>({
     mode: "onTouched",
     reValidateMode: "onChange",
@@ -1046,7 +1042,7 @@ export function HomePage() {
 
               <LoadingButton
                 type="submit"
-                loading={isBookingSubmitting}
+                loading={false}
                 loadingText="Booking..."
                 className="mx-auto mt-8 block w-full max-w-[420px] rounded-xl bg-maseer-green py-3.5 font-lato text-[16px] font-semibold text-white transition hover:bg-maseer-green-deep disabled:cursor-not-allowed disabled:opacity-70"
               >

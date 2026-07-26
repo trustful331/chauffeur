@@ -32,7 +32,7 @@ export function PaymentSuccessPage() {
 
     async function runVerification() {
       try {
-        const response = await verifyPayment(savedBookingId, {
+        const response = await verifyPayment(savedBookingId!, {
           payment_id: paymentId!,
         });
 

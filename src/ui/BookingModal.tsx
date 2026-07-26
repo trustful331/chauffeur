@@ -174,7 +174,6 @@ function BookingInput({
 export function BookingFormBody({
   vehicleId,
   vehicleName,
-  onSuccess,
   initialData,
 }: {
   vehicleId?: string;
@@ -202,7 +201,6 @@ export function BookingFormBody({
     control,
     formState: { errors },
     clearErrors,
-    reset,
     trigger,
     getValues,
     setValue,
