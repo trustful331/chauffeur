@@ -28,6 +28,7 @@ import { AdminServiceCoveragePage } from "./pages/Admin/AdminServiceCoveragePage
 import { AdminCustomerReviewPage } from "./pages/Admin/AdminCustomerReviewPage";
 import { AdminBookingPage } from "./pages/Admin/AdminBookingPage";
 import { AdminGetInTouchPage } from "./pages/Admin/AdminGetInTouchPage";
+import { AdminPricingPage } from "./pages/Admin/AdminPricingPage";
 
 export const appRouter = createBrowserRouter([
   {
@@ -45,6 +46,7 @@ export const appRouter = createBrowserRouter([
       { path: "booking", element: <RequireAuth><BookingPage /></RequireAuth> },
       { path: "booking/payment/success", element: <RequireAuth><PaymentSuccessPage /></RequireAuth> },
       { path: "booking/payment/failure", element: <RequireAuth><PaymentFailurePage /></RequireAuth> },
+      { path: "pricing", element: <Navigate to="/admin/pricing" replace /> },
     ],
   },
   {
@@ -75,6 +77,7 @@ export const appRouter = createBrowserRouter([
       { path: "bookings", element: <AdminBookingPage /> },
       { path: "fleet", element: <AdminFleetPage /> },
       { path: "services", element: <AdminServiceCoveragePage /> },
+      { path: "pricing", element: <AdminPricingPage /> },
       { path: "get-in-touch", element: <AdminGetInTouchPage /> },
       { path: "reviews", element: <AdminCustomerReviewPage /> },
     ],

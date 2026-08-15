@@ -21,6 +21,8 @@ export function Spinner({ size = "md", className = "" }: SpinnerProps) {
   );
 }
 
+export { Spinner as LoadingSpinner };
+
 type LoadingButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   loading?: boolean;
   loadingText?: string;

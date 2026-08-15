@@ -20,10 +20,12 @@ import {
   MapPin,
   MessageSquare,
   Calendar,
-  PhoneCall
+  PhoneCall,
+  DollarSign
 } from "lucide-react";
 import type { AuthUser } from "src/store/slices/auth/types";
 import { MaseerLogo } from "./MaseerLogo";
+import { fetchPendingQuotes } from "src/api/pricing";
 
 export function AdminLayout() {
   const dispatch = useAppDispatch();
@@ -33,9 +35,28 @@ export function AdminLayout() {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [pendingQuoteCount, setPendingQuoteCount] = useState<number>(0);
 
   const profileRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
+
+  // Poll for pending quotes count
+  useEffect(() => {
+    async function checkPendingQuotes() {
+      try {
+        const res = await fetchPendingQuotes();
+        if (res.success && Array.isArray(res.data)) {
+          const awaitingCount = res.data.filter((q) => q.status === "awaiting_admin").length;
+          setPendingQuoteCount(awaitingCount);
+        }
+      } catch (e) {
+        // Silently handle
+      }
+    }
+    checkPendingQuotes();
+    const timer = setInterval(checkPendingQuotes, 6000);
+    return () => clearInterval(timer);
+  }, []);
 
   // Click outside listener for dropdowns
   useEffect(() => {
@@ -57,6 +78,7 @@ export function AdminLayout() {
     { to: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
     { to: "/admin/bookings", label: "Bookings", icon: Calendar },
     { to: "/admin/fleet", label: "Fleet", icon: Car },
+    { to: "/admin/pricing", label: "Pricing & Quotes", icon: DollarSign, badge: pendingQuoteCount },
     { to: "/admin/services", label: "Service Coverage", icon: MapPin },
     { to: "/admin/get-in-touch", label: "Get In Touch", icon: PhoneCall },
     { to: "/admin/reviews", label: "Customer Reviews", icon: MessageSquare },
@@ -138,7 +160,12 @@ export function AdminLayout() {
                   }
                 >
                   <Icon className="h-5 w-5 shrink-0" />
-                  <span>{item.label}</span>
+                  <span className="flex-1">{item.label}</span>
+                  {item.badge && item.badge > 0 ? (
+                    <span className="rounded-full bg-red-500 px-2 py-0.5 font-lato text-[10px] font-bold text-white">
+                      {item.badge}
+                    </span>
+                  ) : null}
                 </NavLink>
               );
             })}

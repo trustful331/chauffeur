@@ -861,7 +861,7 @@ export function HomePage() {
                                   field.value ? "text-[#333]" : "text-[#9ca3af]"
                                 }
                               >
-                                {field.value || "Select Fleet Category"}
+                                {field.value || "Select Fleet Category "}
                               </span>
                             </ListboxButton>
                           </BookingInput>
