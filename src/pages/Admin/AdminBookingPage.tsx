@@ -11,6 +11,9 @@ import {
 import {
   fetchBookings,
   deleteBooking,
+  getBookingFleetName,
+  formatBookingDate,
+  getBookingTimestamp,
   type BookingItem,
 } from "src/api/admin/booking";
 import { Spinner } from "src/ui/Spinner";
@@ -22,7 +25,6 @@ export function AdminBookingPage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-console.log(items,"check data");
 
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
@@ -39,16 +41,10 @@ console.log(items,"check data");
     try {
       const response = await fetchBookings();
       if (response && response.success && Array.isArray(response.data)) {
-        // Sort bookings by creation date / time
-        const sorted = [...response.data].sort((a, b) => {
-          const dateA = a.date_and_time
-            ? new Date(a.date_and_time).getTime()
-            : 0;
-          const dateB = b.date_and_time
-            ? new Date(b.date_and_time).getTime()
-            : 0;
-          return dateA - dateB; // Chronological order
-        });
+        // Sort bookings by creation date / time (newest first)
+        const sorted = [...response.data].sort(
+          (a, b) => getBookingTimestamp(b) - getBookingTimestamp(a)
+        );
         setItems(sorted);
       } else {
         throw new Error(response?.message || "Invalid response format.");
@@ -91,6 +87,7 @@ console.log(items,"check data");
 
   // Filter items based on search and class select
   const filteredItems = items.filter((item) => {
+    const fleetName = getBookingFleetName(item);
     const matchesSearch =
       (item.pickup_location || "")
         .toLowerCase()
@@ -101,11 +98,12 @@ console.log(items,"check data");
       (item.service_type || "")
         .toLowerCase()
         .includes(searchQuery.toLowerCase()) ||
-      (item.fleet_name || "").toLowerCase().includes(searchQuery.toLowerCase());
+      fleetName.toLowerCase().includes(searchQuery.toLowerCase());
 
     const matchesClass =
       filterClass === "all" ||
-      (item.fleet_name || "").toLowerCase() === filterClass.toLowerCase();
+      fleetName.toLowerCase().includes(filterClass.toLowerCase()) ||
+      ((item.fleet?.category as string) || "").toLowerCase().includes(filterClass.toLowerCase());
 
     return matchesSearch && matchesClass;
   });
@@ -271,16 +269,11 @@ console.log(items,"check data");
                   </td>
                   <td className="px-6 py-4">
                     <span className="inline-block rounded-full bg-[#0b331b]/10 text-maseer-green px-2.5 py-0.5 text-xs font-bold">
-                      {item.fleet_name}
+                      {getBookingFleetName(item)}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-maseer-muted">
-                    {item.date_and_time
-                      ? new Date(item.date_and_time).toLocaleString("en-US", {
-                          dateStyle: "medium",
-                          timeStyle: "short",
-                        })
-                      : "—"}
+                    {formatBookingDate(item)}
                   </td>
                   <td className="px-6 py-4 text-maseer-muted">
                     {item.passengers_count} Adults{" "}

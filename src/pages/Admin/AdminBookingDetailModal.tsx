@@ -1,5 +1,9 @@
 import { X, Calendar, MapPin, Users, Map, Clipboard } from "lucide-react";
-import { type BookingItem } from "src/api/admin/booking";
+import {
+  type BookingItem,
+  getBookingFleetName,
+  formatBookingDate,
+} from "src/api/admin/booking";
 
 type AdminBookingDetailModalProps = {
   isOpen: boolean;
@@ -14,12 +18,7 @@ export function AdminBookingDetailModal({
 }: AdminBookingDetailModalProps) {
   if (!isOpen || !booking) return null;
 
-  const formattedDate = booking.date_and_time
-    ? new Date(booking.date_and_time).toLocaleString("en-US", {
-        dateStyle: "medium",
-        timeStyle: "short",
-      })
-    : "N/A";
+  const formattedDate = formatBookingDate(booking);
 
   const getServiceTypeLabel = (type: string) => {
     switch (type) {
@@ -87,7 +86,7 @@ export function AdminBookingDetailModal({
                 Vehicle Class
               </p>
               <span className="inline-block mt-1 rounded-full bg-[#0b331b] px-3 py-1 text-xs font-bold text-[#F9BB00]">
-                {booking.fleet_name}
+                {getBookingFleetName(booking)}
               </span>
             </div>
           </div>

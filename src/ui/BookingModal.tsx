@@ -1,15 +1,15 @@
-import { type ReactNode, useState, useEffect } from "react";
+import { type ReactNode, useState, useEffect, useMemo } from "react";
 import {
   Listbox,
   ListboxButton,
   ListboxOption,
   ListboxOptions,
 } from "@headlessui/react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
 import "react-datepicker/dist/react-datepicker.css";
-import { CalendarDays, X, Clock, CreditCard, ChevronLeft, User, Mail, Phone, MessageSquare } from "lucide-react";
+import { CalendarDays, X, Clock, CreditCard, ChevronLeft, User, Mail, Phone, MessageSquare, Check, Car } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "src/store/hooks";
 import { selectAuthUser, selectIsAuthenticated } from "src/store/slices/auth/selectors";
@@ -20,6 +20,8 @@ import {
   type BookingLocation,
   type BookingServiceTab,
 } from "../api/booking";
+import { fetchFleets, type FleetItem } from "../api/admin/fleet";
+import { saveLocalBooking } from "../api/admin/booking";
 import { payBooking } from "../api/payment";
 import {
   requestQuote,
@@ -80,6 +82,75 @@ const emptyLocation = (): BookingLocation => ({
   latitude: null,
   longitude: null,
 });
+
+export type UnifiedVehicleOption = {
+  id: string;
+  name: string;
+  category: string;
+  seats: number;
+  bags: number;
+  image: string;
+  bodyType?: string;
+};
+
+export function getVehiclesForCategory(
+  categoryName: string,
+  backendFleets: FleetItem[] = []
+): UnifiedVehicleOption[] {
+  if (!categoryName) return [];
+
+  const categoryCodeMap: Record<string, string> = {
+    "Green Class": "green_class",
+    "Ultra Luxury": "ultra_luxury",
+    "Business Van": "business_van",
+    "VIP / Business Class": "vip_business_class",
+    "Economy Class": "economy_class",
+  };
+  const backendCategory = categoryCodeMap[categoryName];
+
+  const list: UnifiedVehicleOption[] = [];
+
+  // 1. Backend active vehicles matching category
+  const backendMatched = backendFleets.filter(
+    (item) => item.is_active && (!backendCategory || item.category === backendCategory)
+  );
+
+  for (const b of backendMatched) {
+    const fallbackStatic = FLEET_VEHICLES.find(
+      (s) => s.id === b.id || s.name.toLowerCase() === b.vehicle_name.toLowerCase()
+    );
+    list.push({
+      id: b.id,
+      name: b.vehicle_name,
+      category: categoryName,
+      seats: b.seat_count || fallbackStatic?.seats || 4,
+      bags: b.luggage_capacity || fallbackStatic?.bags || 2,
+      image: b.image_url || fallbackStatic?.image || "",
+      bodyType: b.vehicle_type ? b.vehicle_type.toUpperCase() : fallbackStatic?.bodyType,
+    });
+  }
+
+  // 2. Static FLEET_VEHICLES matching category
+  const staticMatched = FLEET_VEHICLES.filter((s) => s.category === categoryName);
+  for (const s of staticMatched) {
+    const exists = list.some(
+      (item) => item.id === s.id || item.name.toLowerCase() === s.name.toLowerCase()
+    );
+    if (!exists) {
+      list.push({
+        id: s.id,
+        name: s.name,
+        category: s.category,
+        seats: s.seats,
+        bags: s.bags,
+        image: s.image,
+        bodyType: s.bodyType,
+      });
+    }
+  }
+
+  return list;
+}
 
 /* ─── helpers ───────────────────────────────────────────────────────────────── */
 
@@ -196,6 +267,10 @@ export function BookingFormBody({
   const [bookingError, setBookingError] = useState<string | null>(null);
   const [isBookingSubmitting, setIsBookingSubmitting] = useState(false);
 
+  // Vehicle Selection State
+  const [backendFleets, setBackendFleets] = useState<FleetItem[]>([]);
+  const [selectedVehicleId, setSelectedVehicleId] = useState<string>(vehicleId || "");
+
   // Quote State
   const [quoteData, setQuoteData] = useState<QuoteData | null>(null);
   const [isFetchingQuote, setIsFetchingQuote] = useState(false);
@@ -233,6 +308,46 @@ export function BookingFormBody({
       paymentMethod: "card",
     },
   });
+
+  // Watch selected fleet class from form
+  const watchedFleetClass = useWatch({ control, name: "fleetClass" });
+
+  // Load backend active fleets on mount
+  useEffect(() => {
+    let isMounted = true;
+    fetchFleets({ is_active: true })
+      .then((res) => {
+        if (isMounted && res && res.success && Array.isArray(res.data)) {
+          setBackendFleets(res.data);
+        }
+      })
+      .catch(() => {
+        // Silently fallback to static fleet data
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Compute available vehicles for currently selected class
+  const availableVehicles = useMemo(
+    () => getVehiclesForCategory(watchedFleetClass, backendFleets),
+    [watchedFleetClass, backendFleets]
+  );
+
+  // Synchronize car selection when class or available vehicles change
+  useEffect(() => {
+    if (availableVehicles.length > 0) {
+      const isValid = availableVehicles.some((v) => v.id === selectedVehicleId);
+      if (!isValid) {
+        setSelectedVehicleId(availableVehicles[0].id);
+      }
+    }
+  }, [availableVehicles, selectedVehicleId]);
+
+  const activeVehicle = availableVehicles.find((v) => v.id === selectedVehicleId) || FLEET_VEHICLES.find((v) => v.id === selectedVehicleId);
+  const displayVehicleName = activeVehicle?.name || vehicleName || getValues("fleetClass") || "Luxury Fleet";
+  const displayVehicleImage = activeVehicle?.image;
 
   // Apply initialData if passed (e.g. from homepage form)
   useEffect(() => {
@@ -329,6 +444,13 @@ export function BookingFormBody({
     const isValid = await trigger(fieldsToValidate);
     if (!isValid) return;
 
+    if (!selectedVehicleId && availableVehicles.length > 0) {
+      const msg = "Please select a vehicle from the available cars.";
+      setBookingError(msg);
+      toast.error(msg);
+      return;
+    }
+
     // Check map coordinate validations
     const values = getValues();
     if (values.pickup.latitude == null || values.pickup.longitude == null) {
@@ -357,7 +479,7 @@ export function BookingFormBody({
     // Request pricing quote from API
     setIsFetchingQuote(true);
     try {
-      const fleet_id = vehicleId || (await getFleetIdForCategory(values.fleetClass));
+      const fleet_id = selectedVehicleId || vehicleId || (await getFleetIdForCategory(values.fleetClass));
       let quoteRes;
 
       if (bookingTab === "Hourly Service") {
@@ -422,7 +544,7 @@ export function BookingFormBody({
 
     try {
       // 1. Resolve fleet_id
-      const fleet_id = vehicleId || (await getFleetIdForCategory(data.fleetClass));
+      const fleet_id = selectedVehicleId || vehicleId || (await getFleetIdForCategory(data.fleetClass));
 
       // 2. Format date and time
       const d = new Date(data.dateTime);
@@ -466,7 +588,14 @@ export function BookingFormBody({
 
       const bookingId = result.data.id;
 
-      // 5. Store booking ID in localStorage for redirect page retrieval
+      // 5. Save booking in local store so admin panel immediately displays it
+      saveLocalBooking({
+        id: bookingId,
+        ...payload,
+        fleet_name: displayVehicleName || data.fleetClass,
+      });
+
+      // 6. Store booking ID in localStorage for redirect page retrieval
       localStorage.setItem("pending_booking_id", bookingId);
 
       // 6. Pay booking to get MyFatoorah checkout URL
@@ -761,6 +890,80 @@ export function BookingFormBody({
               </div>
             </div>
 
+            {/* Vehicle Selection Section */}
+            {watchedFleetClass && availableVehicles.length > 0 && (
+              <div className="mt-5 rounded-2xl border border-maseer-gold/30 bg-[#FFFDF7] p-4 shadow-sm">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <Car className="h-4 w-4 text-maseer-gold" />
+                    <h4 className="font-serif text-sm font-bold text-maseer-green-text">
+                      Select Vehicle ({watchedFleetClass})
+                    </h4>
+                  </div>
+                  <span className="text-[11px] font-lato text-maseer-muted">
+                    {availableVehicles.length} car(s) available
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-56 overflow-y-auto pr-1">
+                  {availableVehicles.map((veh) => {
+                    const isSelected = selectedVehicleId === veh.id;
+                    return (
+                      <button
+                        key={veh.id}
+                        type="button"
+                        onClick={() => setSelectedVehicleId(veh.id)}
+                        className={[
+                          "relative flex items-center gap-3 rounded-xl border p-3 text-left transition-all",
+                          isSelected
+                            ? "border-maseer-gold bg-white ring-2 ring-maseer-gold/40 shadow-sm"
+                            : "border-gray-200 bg-white/70 hover:border-maseer-gold/50 hover:bg-white",
+                        ].join(" ")}
+                      >
+                        {/* Image */}
+                        <div className="h-12 w-16 shrink-0 overflow-hidden rounded-lg bg-gray-100 flex items-center justify-center">
+                          {veh.image ? (
+                            <img
+                              src={veh.image}
+                              alt={veh.name}
+                              className="h-full w-full object-cover object-center"
+                            />
+                          ) : (
+                            <Car className="h-5 w-5 text-gray-400" />
+                          )}
+                        </div>
+
+                        {/* Vehicle Details */}
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center justify-between gap-1">
+                            <span className="truncate font-lato text-xs font-bold text-maseer-green-text">
+                              {veh.name}
+                            </span>
+                            {isSelected && (
+                              <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-maseer-gold text-white text-[9px]">
+                                <Check className="h-2.5 w-2.5 stroke-[3]" />
+                              </span>
+                            )}
+                          </div>
+
+                          {veh.bodyType && (
+                            <span className="inline-block font-lato text-[9px] uppercase font-semibold text-maseer-muted">
+                              {veh.bodyType}
+                            </span>
+                          )}
+
+                          <div className="mt-0.5 flex items-center gap-2.5 font-lato text-[11px] text-gray-600">
+                            <span>👥 {veh.seats} Seats</span>
+                            <span>🧳 {veh.bags} Bags</span>
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {bookingError && (
               <p className="mt-4 text-center font-lato text-[12px] text-red-600" role="alert">
                 {bookingError}
@@ -933,6 +1136,21 @@ export function BookingFormBody({
                   </h4>
 
                   <div className="mt-4 space-y-2 border-b border-white/10 pb-4 text-xs font-lato text-white/80">
+                    <div className="flex items-center gap-3 mb-3 bg-white/10 p-2.5 rounded-xl border border-white/15">
+                      {displayVehicleImage && (
+                        <img
+                          src={displayVehicleImage}
+                          alt={displayVehicleName}
+                          className="h-12 w-16 object-cover rounded-lg shrink-0 border border-white/20"
+                        />
+                      )}
+                      <div>
+                        <span className="block font-lato text-[10px] uppercase font-bold tracking-wider text-maseer-gold">
+                          {getValues("fleetClass") || "Selected Vehicle"}
+                        </span>
+                        <strong className="text-sm font-serif text-white">{displayVehicleName}</strong>
+                      </div>
+                    </div>
                     <div className="flex justify-between">
                       <span>Vehicle Class:</span>
                       <strong className="text-white">{getValues("fleetClass") || vehicleName || "Luxury Fleet"}</strong>
