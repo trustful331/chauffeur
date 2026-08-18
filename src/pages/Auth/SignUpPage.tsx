@@ -1,5 +1,7 @@
+import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Eye, EyeOff } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { signUp } from "src/api/auth";
 import { setSession } from "src/store/slices/auth";
@@ -27,6 +29,7 @@ export function SignUpPage() {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -55,18 +58,26 @@ export function SignUpPage() {
     setIsSubmitting(true);
 
     try {
-      const session = await signUp({
+      const res = await signUp({
         full_name: data.fullName.trim(),
         email: data.email.trim(),
         password: data.password,
         phone_number: data.phone.trim(),
       });
-      dispatch(setSession(session));
-      navigate("/", { replace: true });
+
+      if (res.requires_verification) {
+        toast.success(
+          res.message || "OTP sent to your email. Verify to activate your account."
+        );
+        navigate("/otp-verify", { state: { email: data.email.trim() } });
+      } else if (res.session) {
+        dispatch(setSession(res.session));
+        navigate("/", { replace: true });
+      }
     } catch (error) {
-      setSubmitError(
-        error instanceof Error ? error.message : "Sign up failed. Try again.",
-      );
+      const msg = error instanceof Error ? error.message : "Sign up failed. Try again.";
+      setSubmitError(msg);
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -136,19 +147,33 @@ export function SignUpPage() {
         </AuthField>
 
         <AuthField label="Password" error={errors.password?.message}>
-          <input
-            {...register("password", {
-              required: "Password is required",
-              minLength: {
-                value: 8,
-                message: "Password must be at least 8 characters",
-              },
-            })}
-            type="password"
-            autoComplete="new-password"
-            placeholder="Create a password"
-            className={fieldClass(!!errors.password)}
-          />
+          <div className="relative">
+            <input
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must be at least 8 characters",
+                },
+              })}
+              type={showPassword ? "text" : "password"}
+              autoComplete="new-password"
+              placeholder="Create a password"
+              className={`${fieldClass(!!errors.password)} pr-11`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-maseer-muted transition hover:text-maseer-green"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? (
+                <EyeOff className="h-4.5 w-4.5" />
+              ) : (
+                <Eye className="h-4.5 w-4.5" />
+              )}
+            </button>
+          </div>
         </AuthField>
 
         <label className="flex cursor-pointer items-start gap-2.5 pt-1">

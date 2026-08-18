@@ -231,7 +231,7 @@ export function AdminFleetModal({
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto py-4 space-y-5 pr-1 font-lato">
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto no-scrollbar py-4 space-y-5 pr-1 font-lato">
           {/* Row 1: Name */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-bold text-maseer-green-text uppercase tracking-wider">Vehicle Name *</label>

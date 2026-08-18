@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
@@ -53,15 +54,16 @@ export function ForgotPasswordPage() {
     setIsSubmitting(true);
     try {
       await forgotPassword(data.email.trim());
+      toast.success("OTP sent to your email!");
       // Pass email forward via state so OTP and reset pages can use it
       navigate("/otp-verify", {
         state: { email: data.email.trim() },
         replace: false,
       });
     } catch (error) {
-      setSubmitError(
-        error instanceof Error ? error.message : "Failed to send OTP.",
-      );
+      const msg = error instanceof Error ? error.message : "Failed to send OTP.";
+      setSubmitError(msg);
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }

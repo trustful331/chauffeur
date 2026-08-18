@@ -1,5 +1,7 @@
+import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { Eye, EyeOff } from "lucide-react";
 import {
   Link,
   useLocation,
@@ -35,6 +37,7 @@ export function SignInPage() {
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const redirectTo =
     (location.state as { from?: string } | null)?.from ||
@@ -76,15 +79,16 @@ export function SignInPage() {
     try {
       const session = await signIn(data.email.trim(), data.password);
       dispatch(setSession(session));
+      toast.success("Signed in successfully!");
       if (session.user.currentRole === "admin") {
         navigate("/admin/dashboard", { replace: true });
       } else {
         navigate(redirectTo, { replace: true });
       }
     } catch (error) {
-      setSubmitError(
-        error instanceof Error ? error.message : "Sign in failed. Try again.",
-      );
+      const msg = error instanceof Error ? error.message : "Sign in failed. Try again.";
+      setSubmitError(msg);
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -123,19 +127,33 @@ export function SignInPage() {
         </AuthField>
 
         <AuthField label="Password" error={errors.password?.message}>
-          <input
-            {...register("password", {
-              required: "Password is required",
-              minLength: {
-                value: 8,
-                message: "Password must be at least 8 characters",
-              },
-            })}
-            type="password"
-            autoComplete="current-password"
-            placeholder="Enter your password"
-            className={fieldClass(!!errors.password)}
-          />
+          <div className="relative">
+            <input
+              {...register("password", {
+                required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Password must be at least 8 characters",
+                },
+              })}
+              type={showPassword ? "text" : "password"}
+              autoComplete="current-password"
+              placeholder="Enter your password"
+              className={`${fieldClass(!!errors.password)} pr-11`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((v) => !v)}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-maseer-muted transition hover:text-maseer-green"
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? (
+                <EyeOff className="h-4.5 w-4.5" />
+              ) : (
+                <Eye className="h-4.5 w-4.5" />
+              )}
+            </button>
+          </div>
         </AuthField>
 
         <div className="flex items-center justify-between gap-4 pt-1 max-md:flex-col max-md:items-start max-md:gap-2">

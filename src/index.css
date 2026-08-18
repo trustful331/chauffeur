@@ -263,3 +263,21 @@
 .maseer-datepicker .react-datepicker__triangle {
   display: none;
 }
+
+/* Hide scrollbars for all dialogs, modals, popups, and no-scrollbar elements globally */
+[role="dialog"],
+[role="dialog"] *,
+.modal-body,
+.no-scrollbar {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
+}
+
+[role="dialog"]::-webkit-scrollbar,
+[role="dialog"] *::-webkit-scrollbar,
+.modal-body::-webkit-scrollbar,
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}

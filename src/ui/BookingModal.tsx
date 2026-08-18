@@ -905,7 +905,7 @@ export function BookingFormBody({
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-56 overflow-y-auto pr-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-56 overflow-y-auto no-scrollbar pr-1">
                   {availableVehicles.map((veh) => {
                     const isSelected = selectedVehicleId === veh.id;
                     return (
@@ -1291,12 +1291,12 @@ export function BookingModal({
       />
 
       {/* panel */}
-      <div className="relative z-10 h-[620px] w-full max-w-3xl overflow-y-auto rounded-[32px] bg-white shadow-[0_24px_64px_rgba(0,0,0,0.22)] max-md:h-auto max-md:max-h-[92vh] max-md:rounded-2xl">
+      <div className="relative z-10 h-[620px] w-full max-w-[1000px] overflow-y-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden rounded-[32px] bg-white shadow-[0_24px_64px_rgba(0,0,0,0.22)] max-md:h-auto max-md:max-h-[92vh] max-md:rounded-2xl">
         {/* header */}
         <div className="flex items-center justify-between px-8 pb-4 pt-6 max-md:px-4">
-          <div>
+          <div> 
             <h2 className="font-serif text-[22px] font-semibold text-maseer-green-text">
-              Book Your Ride
+              Book Your Ride 
             </h2>
             {vehicleName && (
               <p className="mt-0.5 font-lato text-[13px] text-maseer-muted">

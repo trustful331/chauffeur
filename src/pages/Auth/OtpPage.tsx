@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import {
   useEffect,
   useRef,
@@ -115,11 +116,12 @@ export function OtpPage() {
       setDigits(Array(OTP_LENGTH).fill(""));
       inputRefs.current[0]?.focus();
       setResendSuccess(true);
+      toast.success("New OTP code sent to your email!");
       setTimeout(() => setResendSuccess(false), 3000);
     } catch (error) {
-      setSubmitError(
-        error instanceof Error ? error.message : "Failed to resend OTP.",
-      );
+      const msg = error instanceof Error ? error.message : "Failed to resend OTP.";
+      setSubmitError(msg);
+      toast.error(msg);
     } finally {
       setIsResending(false);
     }
@@ -129,21 +131,24 @@ export function OtpPage() {
     e.preventDefault();
     const otp = digits.join("");
     if (otp.length < OTP_LENGTH) {
-      setSubmitError("Please enter the complete 6-digit OTP.");
+      const msg = "Please enter the complete 6-digit OTP.";
+      setSubmitError(msg);
+      toast.error(msg);
       return;
     }
     setSubmitError(null);
     setIsSubmitting(true);
     try {
       await verifyOtp(email, otp);
+      toast.success("OTP verified successfully!");
       navigate("/reset-password", {
         state: { email, otp },
         replace: false,
       });
     } catch (error) {
-      setSubmitError(
-        error instanceof Error ? error.message : "OTP verification failed.",
-      );
+      const msg = error instanceof Error ? error.message : "OTP verification failed.";
+      setSubmitError(msg);
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }

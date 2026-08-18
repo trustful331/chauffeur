@@ -274,7 +274,7 @@ export function AdminFleetDetailModal({
             <p className="font-lato text-sm text-maseer-muted">Fetching page detail configurations...</p>
           </div>
         ) : (
-          <form onSubmit={handleSave} className="flex-1 overflow-y-auto py-4 space-y-5 pr-1 font-lato">
+          <form onSubmit={handleSave} className="flex-1 overflow-y-auto no-scrollbar py-4 space-y-5 pr-1 font-lato">
             
             {/* Title & Description */}
             <div className="grid gap-4 sm:grid-cols-1">
@@ -333,7 +333,7 @@ export function AdminFleetDetailModal({
                   No custom highlights added. (Click Add Highlight to configure up to 6 visual details).
                 </div>
               ) : (
-                <div className="space-y-3.5 max-h-[220px] overflow-y-auto pr-1">
+                <div className="space-y-3.5 max-h-[220px] overflow-y-auto no-scrollbar pr-1">
                   {highlights.map((h, index) => {
                     const matchedIcon = AVAILABLE_ICONS.find(i => i.key === h.icon_key);
                     const RenderIcon = matchedIcon ? matchedIcon.icon : HelpCircle;

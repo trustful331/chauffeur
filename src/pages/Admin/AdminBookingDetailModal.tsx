@@ -70,7 +70,7 @@ export function AdminBookingDetailModal({
         </div>
 
         {/* Details List */}
-        <div className="flex-1 overflow-y-auto py-5 space-y-6">
+        <div className="flex-1 overflow-y-auto no-scrollbar py-5 space-y-6">
           {/* Service Badge & Class */}
           <div className="flex items-center justify-between gap-3 bg-[#F8FAF8] p-4 rounded-xl border border-gray-100">
             <div>

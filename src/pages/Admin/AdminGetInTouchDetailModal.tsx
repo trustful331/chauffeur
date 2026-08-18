@@ -56,7 +56,7 @@ export function AdminGetInTouchDetailModal({
         </div>
 
         {/* Details Grid */}
-        <div className="flex-1 overflow-y-auto py-5 space-y-6">
+        <div className="flex-1 overflow-y-auto no-scrollbar py-5 space-y-6">
           {/* User Icon & Full Name */}
           <div className="flex items-center gap-3.5 bg-[#F8FAF8] p-4 rounded-xl border border-gray-100">
             <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#062111] text-[#F9BB00] font-bold text-lg">

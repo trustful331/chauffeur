@@ -1,3 +1,4 @@
+import toast from "react-hot-toast";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -117,14 +118,15 @@ export function ResetPasswordPage() {
     setIsSubmitting(true);
     try {
       await resetPassword(email, otp, data.newPassword);
+      toast.success("Password reset successfully! Please sign in.");
       navigate("/signin", {
         state: { resetSuccess: true },
         replace: true,
       });
     } catch (error) {
-      setSubmitError(
-        error instanceof Error ? error.message : "Password reset failed.",
-      );
+      const msg = error instanceof Error ? error.message : "Password reset failed.";
+      setSubmitError(msg);
+      toast.error(msg);
     } finally {
       setIsSubmitting(false);
     }

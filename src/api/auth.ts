@@ -52,6 +52,12 @@ function parseAuthResponse(result: AuthApiResponse, email = ""): AuthSession {
   };
 }
 
+export type SignUpResult = {
+  requires_verification: boolean;
+  message?: string;
+  session?: AuthSession;
+};
+
 export async function signIn(email: string, password: string) {
   try {
     const result = await apiPost<AuthApiResponse>("auth/login", {
@@ -69,10 +75,32 @@ export async function signUp(data: {
   email: string;
   password: string;
   phone_number: string;
-}) {
+}): Promise<SignUpResult> {
   try {
     const result = await apiPost<AuthApiResponse>("auth/signup", data);
-    return parseAuthResponse(result, data.email);
+
+    if (result.success === false) {
+      throw new Error(result.message || "Sign up failed");
+    }
+
+    const resData = (result.data ?? result) as {
+      requires_verification?: boolean;
+      token?: string;
+      access_token?: string;
+    };
+
+    if (resData.requires_verification || (!resData.token && !resData.access_token)) {
+      return {
+        requires_verification: true,
+        message: result.message || "OTP sent to your email. Verify to activate your account.",
+      };
+    }
+
+    const session = parseAuthResponse(result, data.email);
+    return {
+      requires_verification: false,
+      session,
+    };
   } catch (error) {
     throw new Error(getErrorMessage(error, "Sign up failed"), { cause: error });
   }

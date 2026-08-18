@@ -143,7 +143,7 @@ export function AdminCustomerReviewModal({
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto py-4 space-y-5 pr-1 font-lato">
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto no-scrollbar py-4 space-y-5 pr-1 font-lato">
           {/* Row 1: Section Title & Subtitle */}
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-1.5">
