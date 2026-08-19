@@ -1,5 +1,6 @@
-import { apiPost, getErrorMessage } from "src/config/axios";
+import { apiGet, apiPost, apiPut, getErrorMessage } from "src/config/axios";
 import { fetchFleets } from "./admin/fleet";
+import { type BookingItem, type BookingResponse } from "./admin/booking";
 
 export type CreateBookingParams = {
   service_type: string;
@@ -12,6 +13,8 @@ export type CreateBookingParams = {
   dropoff_longitude: number;
   pickup_date: string; // YYYY-MM-DD
   pickup_time: string; // HH:MM
+  dropoff_date?: string; // YYYY-MM-DD
+  dropoff_time?: string; // HH:MM
   passengers_count: number;
   children_count: number;
   hours?: number | null;
@@ -64,6 +67,77 @@ export async function createBooking(params: CreateBookingParams) {
     return result;
   } catch (error) {
     throw new Error(getErrorMessage(error, "Booking failed"), { cause: error });
+  }
+}
+
+/**
+ * Fetch bookings for user with status tab (upcoming | history | inprogress | cancelled | completed | all) and date filters (from, to).
+ */
+export async function fetchUserBookings(query?: {
+  status?: "upcoming" | "history" | "inprogress" | "cancelled" | "completed" | "all" | string;
+  from?: string;
+  to?: string;
+}): Promise<BookingItem[]> {
+  try {
+    const searchParams = new URLSearchParams();
+    if (query?.status) searchParams.append("status", query.status);
+    if (query?.from) searchParams.append("from", query.from);
+    if (query?.to) searchParams.append("to", query.to);
+
+    const queryString = searchParams.toString();
+    const endpoint = `booking/get${queryString ? `?${queryString}` : ""}`;
+
+    const response = await apiGet<BookingResponse>(endpoint);
+
+    if (response && response.success && Array.isArray(response.data)) {
+      return response.data;
+    }
+    return [];
+  } catch (error) {
+    console.warn("Failed to fetch user bookings via status query:", error);
+    return [];
+  }
+}
+
+/**
+ * Update status of a booking (allowed: upcoming, inprogress, cancelled, completed)
+ */
+export async function updateBookingStatus(
+  bookingId: string,
+  status: "upcoming" | "inprogress" | "cancelled" | "completed" | string
+) {
+  try {
+    const result = await apiPut<{ success: boolean; message?: string; data?: BookingItem }>(
+      `booking/${bookingId}/status`,
+      { status }
+    );
+    if (result.success === false) {
+      throw new Error(result.message || "Failed to update booking status");
+    }
+    return result;
+  } catch (error) {
+    // Try shortcut cancel endpoint if status is cancelled
+    if (status === "cancelled" || status === "cancel") {
+      return cancelBooking(bookingId);
+    }
+    throw new Error(getErrorMessage(error, "Failed to update booking status"), { cause: error });
+  }
+}
+
+/**
+ * Shortcut to cancel booking
+ */
+export async function cancelBooking(bookingId: string) {
+  try {
+    const result = await apiPut<{ success: boolean; message?: string; data?: BookingItem }>(
+      `booking/${bookingId}/cancel`
+    );
+    if (result.success === false) {
+      throw new Error(result.message || "Failed to cancel booking");
+    }
+    return result;
+  } catch (error) {
+    throw new Error(getErrorMessage(error, "Failed to cancel booking"), { cause: error });
   }
 }
 

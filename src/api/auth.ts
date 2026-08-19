@@ -1,4 +1,4 @@
-import { apiPost, getErrorMessage } from "src/config/axios";
+import { apiGet, apiPost, apiPut, getErrorMessage } from "src/config/axios";
 import type { AuthUser } from "src/store/slices/auth/types";
 
 type AuthApiResponse = {
@@ -211,5 +211,55 @@ export async function resetPassword(
     throw new Error(getErrorMessage(error, "Password reset failed"), {
       cause: error,
     });
+  }
+}
+
+// ─── Profile APIs ─────────────────────────────────────────────────────────────
+
+export type UserProfile = {
+  id: string;
+  full_name: string;
+  email: string;
+  phone_number?: string;
+  profile_image_url?: string;
+  provider?: string;
+  is_email_verified?: boolean;
+  role?: string;
+};
+
+export type ProfileResponse = {
+  success: boolean;
+  message?: string;
+  data: UserProfile;
+};
+
+export async function getProfile(): Promise<UserProfile> {
+  try {
+    const res = await apiGet<ProfileResponse>("auth/profile");
+    if (res && res.success && res.data) {
+      return res.data;
+    }
+    throw new Error(res?.message || "Failed to fetch profile");
+  } catch (error) {
+    throw new Error(getErrorMessage(error, "Failed to fetch profile"), { cause: error });
+  }
+}
+
+export async function updateProfile(data: {
+  full_name?: string;
+  phone_number?: string;
+  profile_image_url?: string;
+  current_password?: string;
+  new_password?: string;
+  password?: string;
+}): Promise<UserProfile> {
+  try {
+    const res = await apiPut<ProfileResponse>("auth/profile", data);
+    if (res && res.success && res.data) {
+      return res.data;
+    }
+    throw new Error(res?.message || "Failed to update profile");
+  } catch (error) {
+    throw new Error(getErrorMessage(error, "Failed to update profile"), { cause: error });
   }
 }

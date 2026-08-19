@@ -99,7 +99,7 @@ export function AdminGetInTouchPage() {
   });
 
   return (
-    <div className="flex-1 space-y-6 bg-[#F4F5F4] p-6 max-md:p-4 min-h-screen">
+    <div className="flex-1 space-y-6 bg-[#F4F5F4]  min-h-screen">
       {/* Header Section */}
       <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#E5E7EB] pb-5">
         <div className="flex items-center gap-3">

@@ -339,11 +339,10 @@ export function AdminPricingPage() {
       <div className="flex border-b border-[#e5e7eb] bg-white px-6 pt-2 rounded-t-2xl shadow-sm">
         <button
           onClick={() => setActiveTab("pending")}
-          className={`flex items-center gap-2 border-b-2 px-5 py-3 font-lato text-xs font-bold transition-colors ${
-            activeTab === "pending"
+          className={`flex items-center gap-2 border-b-2 px-5 py-3 font-lato text-xs font-bold transition-colors ${activeTab === "pending"
               ? "border-maseer-gold text-maseer-green"
               : "border-transparent text-gray-500 hover:text-maseer-green"
-          }`}
+            }`}
         >
           <Clock className="h-4 w-4 text-maseer-gold" />
           Pending Quotes (&gt; 45 km)
@@ -356,11 +355,10 @@ export function AdminPricingPage() {
 
         <button
           onClick={() => setActiveTab("fixed")}
-          className={`flex items-center gap-2 border-b-2 px-5 py-3 font-lato text-xs font-bold transition-colors ${
-            activeTab === "fixed"
+          className={`flex items-center gap-2 border-b-2 px-5 py-3 font-lato text-xs font-bold transition-colors ${activeTab === "fixed"
               ? "border-maseer-gold text-maseer-green"
               : "border-transparent text-gray-500 hover:text-maseer-green"
-          }`}
+            }`}
         >
           <MapPin className="h-4 w-4 text-maseer-green" />
           Fixed Rates (≤ 45 km)
@@ -368,11 +366,10 @@ export function AdminPricingPage() {
 
         <button
           onClick={() => setActiveTab("hourly")}
-          className={`flex items-center gap-2 border-b-2 px-5 py-3 font-lato text-xs font-bold transition-colors ${
-            activeTab === "hourly"
+          className={`flex items-center gap-2 border-b-2 px-5 py-3 font-lato text-xs font-bold transition-colors ${activeTab === "hourly"
               ? "border-maseer-gold text-maseer-green"
               : "border-transparent text-gray-500 hover:text-maseer-green"
-          }`}
+            }`}
         >
           <DollarSign className="h-4 w-4 text-maseer-green" />
           Hourly Rates
@@ -414,11 +411,10 @@ export function AdminPricingPage() {
                   return (
                     <div
                       key={quote.id}
-                      className={`relative flex flex-col justify-between rounded-2xl border p-5 shadow-sm transition hover:shadow-md ${
-                        isExpired
+                      className={`relative flex flex-col justify-between rounded-2xl border p-5 shadow-sm transition hover:shadow-md ${isExpired
                           ? "border-red-200 bg-red-50/30"
                           : "border-amber-200 bg-amber-50/20"
-                      }`}
+                        }`}
                     >
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
@@ -426,11 +422,10 @@ export function AdminPricingPage() {
                             Distance: {quote.distance_km} km
                           </span>
                           <span
-                            className={`rounded-full px-2.5 py-0.5 font-lato text-[10px] font-bold uppercase tracking-wider ${
-                              isExpired
+                            className={`rounded-full px-2.5 py-0.5 font-lato text-[10px] font-bold uppercase tracking-wider ${isExpired
                                 ? "bg-red-100 text-red-700"
                                 : "bg-amber-100 text-amber-800"
-                            }`}
+                              }`}
                           >
                             {quote.status}
                           </span>
@@ -478,11 +473,10 @@ export function AdminPricingPage() {
                             setQuoteAmount("");
                             setQuoteAdminNote("");
                           }}
-                          className={`rounded-xl px-4 py-2 font-lato text-xs font-bold text-white transition ${
-                            isExpired
+                          className={`rounded-xl px-4 py-2 font-lato text-xs font-bold text-white transition ${isExpired
                               ? "bg-gray-300 cursor-not-allowed"
                               : "bg-maseer-green hover:bg-maseer-green-deep"
-                          }`}
+                            }`}
                         >
                           Set Custom Price
                         </button>
@@ -550,11 +544,10 @@ export function AdminPricingPage() {
                         </td>
                         <td className="px-4 py-3.5">
                           <span
-                            className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
-                              item.is_active
+                            className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${item.is_active
                                 ? "bg-emerald-100 text-emerald-800"
                                 : "bg-gray-100 text-gray-600"
-                            }`}
+                              }`}
                           >
                             {item.is_active ? "Active" : "Inactive"}
                           </span>
@@ -641,11 +634,10 @@ export function AdminPricingPage() {
                         </td>
                         <td className="px-4 py-3.5">
                           <span
-                            className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
-                              item.is_active
+                            className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${item.is_active
                                 ? "bg-emerald-100 text-emerald-800"
                                 : "bg-gray-100 text-gray-600"
-                            }`}
+                              }`}
                           >
                             {item.is_active ? "Active" : "Inactive"}
                           </span>

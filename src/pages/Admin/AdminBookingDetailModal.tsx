@@ -172,9 +172,8 @@ export function AdminBookingDetailModal({
               <p className="text-[11px] font-bold uppercase tracking-wider text-maseer-muted leading-tight">
                 Booking Status
               </p>
-              <span className={`inline-block mt-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${
-                booking.booking_status === "confirmed" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
-              }`}>
+              <span className={`inline-block mt-1 rounded-full px-2.5 py-0.5 text-xs font-bold ${booking.booking_status === "confirmed" ? "bg-green-100 text-green-800" : "bg-yellow-100 text-yellow-800"
+                }`}>
                 {booking.booking_status || "Pending"}
               </span>
             </div>

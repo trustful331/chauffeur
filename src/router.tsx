@@ -30,6 +30,9 @@ import { AdminBookingPage } from "./pages/Admin/AdminBookingPage";
 import { AdminGetInTouchPage } from "./pages/Admin/AdminGetInTouchPage";
 import { AdminPricingPage } from "./pages/Admin/AdminPricingPage";
 
+import { ProfilePage } from "./pages/Profile/ProfilePage";
+import { ReservationsPage } from "./pages/Reservations/ReservationsPage";
+
 export const appRouter = createBrowserRouter([
   {
     path: "/",
@@ -43,6 +46,8 @@ export const appRouter = createBrowserRouter([
       { path: "corporate", element: <CorporatePage /> },
       { path: "contact", element: <ContactPage /> },
       { path: "about", element: <AboutPage /> },
+      { path: "profile", element: <RequireAuth><ProfilePage /></RequireAuth> },
+      { path: "reservations", element: <RequireAuth><ReservationsPage /></RequireAuth> },
       { path: "booking", element: <RequireAuth><BookingPage /></RequireAuth> },
       { path: "booking/payment/success", element: <RequireAuth><PaymentSuccessPage /></RequireAuth> },
       { path: "booking/payment/failure", element: <RequireAuth><PaymentFailurePage /></RequireAuth> },

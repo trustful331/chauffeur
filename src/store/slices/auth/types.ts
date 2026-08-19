@@ -4,6 +4,7 @@ export type AuthUser = {
   email: string;
   currentRole: string;
   phone_number?: string;
+  profile_image_url?: string;
 };
 
 export type AuthState = {
