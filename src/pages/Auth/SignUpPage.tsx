@@ -69,7 +69,7 @@ export function SignUpPage() {
         toast.success(
           res.message || "OTP sent to your email. Verify to activate your account."
         );
-        navigate("/otp-verify", { state: { email: data.email.trim() } });
+        navigate("/otp-verify", { state: { email: data.email.trim(), from: "signup" } });
       } else if (res.session) {
         dispatch(setSession(res.session));
         navigate("/", { replace: true });

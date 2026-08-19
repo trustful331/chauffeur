@@ -57,7 +57,7 @@ export function ForgotPasswordPage() {
       toast.success("OTP sent to your email!");
       // Pass email forward via state so OTP and reset pages can use it
       navigate("/otp-verify", {
-        state: { email: data.email.trim() },
+        state: { email: data.email.trim(), from: "forgot-password" },
         replace: false,
       });
     } catch (error) {

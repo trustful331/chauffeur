@@ -133,17 +133,44 @@ export async function forgotPassword(email: string): Promise<void> {
 
 // ─── Verify OTP ───────────────────────────────────────────────────────────────
 
-export async function verifyOtp(email: string, otp: string): Promise<void> {
+export async function verifyOtp(
+  email: string,
+  otp: string,
+  type: "signup" | "forgot" = "signup"
+): Promise<void> {
   try {
-    const result = await apiPost<SimpleResponse>("auth/verify-otp", {
-      email,
-      otp,
-    });
-    if (result.success === false) {
-      throw new Error(result.message || "OTP verification failed");
+    let result: SimpleResponse | undefined;
+    if (type === "signup") {
+      try {
+        result = await apiPost<SimpleResponse>("auth/verify-signup-otp", {
+          email,
+          otp,
+        });
+      } catch {
+        result = await apiPost<SimpleResponse>("auth/verify-otp", {
+          email,
+          otp,
+        });
+      }
+    } else {
+      try {
+        result = await apiPost<SimpleResponse>("auth/verify-forgot-otp", {
+          email,
+          otp,
+        });
+      } catch {
+        result = await apiPost<SimpleResponse>("auth/verify-otp", {
+          email,
+          otp,
+        });
+      }
+    }
+
+    if (result && result.success === false) {
+      throw new Error(result.message || "Invalid OTP code. Please try again.");
     }
   } catch (error) {
-    throw new Error(getErrorMessage(error, "OTP verification failed"), {
+    throw new Error(getErrorMessage(error, "Invalid OTP code. Please try again."), {
       cause: error,
     });
   }
@@ -157,12 +184,27 @@ export async function resetPassword(
   new_password: string,
 ): Promise<void> {
   try {
-    const result = await apiPost<SimpleResponse>("auth/reset-password", {
-      email,
-      otp,
+    const payload = {
+      email: email.trim(),
+      otp: otp.trim(),
+      code: otp.trim(),
       new_password,
-    });
-    if (result.success === false) {
+      password: new_password,
+      newPassword: new_password,
+    };
+
+    let result: SimpleResponse | undefined;
+    try {
+      result = await apiPost<SimpleResponse>("auth/reset-password", payload);
+    } catch {
+      try {
+        result = await apiPost<SimpleResponse>("auth/reset-password-otp", payload);
+      } catch {
+        result = await apiPost<SimpleResponse>("auth/confirm-reset-password", payload);
+      }
+    }
+
+    if (result && result.success === false) {
       throw new Error(result.message || "Password reset failed");
     }
   } catch (error) {

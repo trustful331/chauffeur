@@ -37,7 +37,9 @@ function OtpShieldIcon() {
 export function OtpPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const email = (location.state as { email?: string } | null)?.email ?? "";
+  const state = location.state as { email?: string; from?: string } | null;
+  const email = state?.email ?? "";
+  const isSignUp = state?.from === "signup";
 
   const [digits, setDigits] = useState<string[]>(Array(OTP_LENGTH).fill(""));
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -139,14 +141,19 @@ export function OtpPage() {
     setSubmitError(null);
     setIsSubmitting(true);
     try {
-      await verifyOtp(email, otp);
-      toast.success("OTP verified successfully!");
-      navigate("/reset-password", {
-        state: { email, otp },
-        replace: false,
-      });
+      await verifyOtp(email, otp, isSignUp ? "signup" : "forgot");
+      if (isSignUp) {
+        toast.success("Account activated successfully! Please sign in.");
+        navigate("/signin", { replace: true });
+      } else {
+        toast.success("OTP verified successfully!");
+        navigate("/reset-password", {
+          state: { email, otp },
+          replace: false,
+        });
+      }
     } catch (error) {
-      const msg = error instanceof Error ? error.message : "OTP verification failed.";
+      const msg = error instanceof Error ? error.message : "Invalid OTP code. Please try again.";
       setSubmitError(msg);
       toast.error(msg);
     } finally {
