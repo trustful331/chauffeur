@@ -905,7 +905,7 @@ export function BookingFormBody({
                   </span>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-56 overflow-y-auto no-scrollbar pr-1">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3  no-scrollbar pr-1">
                   {availableVehicles.map((veh) => {
                     const isSelected = selectedVehicleId === veh.id;
                     return (
@@ -962,12 +962,6 @@ export function BookingFormBody({
                   })}
                 </div>
               </div>
-            )}
-
-            {bookingError && (
-              <p className="mt-4 text-center font-lato text-[12px] text-red-600" role="alert">
-                {bookingError}
-              </p>
             )}
 
             {/* next step button */}
@@ -1291,9 +1285,9 @@ export function BookingModal({
       />
 
       {/* panel */}
-      <div className="relative z-10 h-[620px] w-full max-w-[1000px] overflow-y-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden rounded-[32px] bg-white shadow-[0_24px_64px_rgba(0,0,0,0.22)] max-md:h-auto max-md:max-h-[92vh] max-md:rounded-2xl">
-        {/* header */}
-        <div className="flex items-center justify-between px-8 pb-4 pt-6 max-md:px-4">
+      <div className="relative z-10 flex flex-col h-[650px] w-full max-w-[1000px] overflow-hidden rounded-[32px] bg-white shadow-[0_24px_64px_rgba(0,0,0,0.22)] max-md:h-[88vh] max-md:rounded-2xl">
+        {/* fixed header */}
+        <div className="flex shrink-0 items-center justify-between px-8 pb-4 pt-6 max-md:px-4 bg-white z-10">
           <div> 
             <h2 className="font-serif text-[22px] font-semibold text-maseer-green-text">
               Book Your Ride 
@@ -1314,15 +1308,17 @@ export function BookingModal({
           </button>
         </div>
 
-        <hr className="border-maseer-line/50" />
+        <hr className="shrink-0 border-maseer-line/50" />
 
-        {/* form */}
-        <BookingFormBody
-          vehicleId={vehicleId}
-          vehicleName={vehicleName}
-          onSuccess={onClose}
-          initialData={initialData}
-        />
+        {/* scrollable body */}
+        <div className="flex-1 overflow-y-auto no-scrollbar [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          <BookingFormBody
+            vehicleId={vehicleId}
+            vehicleName={vehicleName}
+            onSuccess={onClose}
+            initialData={initialData}
+          />
+        </div>
       </div>
     </div>
   );

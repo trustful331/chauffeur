@@ -35,7 +35,6 @@ export function SignInPage() {
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  const [submitError, setSubmitError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
@@ -73,7 +72,6 @@ export function SignInPage() {
   });
 
   const onSubmit = async (data: SignInFormValues) => {
-    setSubmitError(null);
     setIsSubmitting(true);
 
     try {
@@ -87,7 +85,6 @@ export function SignInPage() {
       }
     } catch (error) {
       const msg = error instanceof Error ? error.message : "Sign in failed. Try again.";
-      setSubmitError(msg);
       toast.error(msg);
     } finally {
       setIsSubmitting(false);
@@ -172,12 +169,6 @@ export function SignInPage() {
             Forgot password?
           </Link>
         </div>
-
-        {submitError ? (
-          <p className="font-lato text-[13px] text-red-600" role="alert">
-            {submitError}
-          </p>
-        ) : null}
 
         <LoadingButton
           type="submit"

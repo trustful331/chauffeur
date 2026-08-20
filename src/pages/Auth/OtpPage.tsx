@@ -249,14 +249,6 @@ export function OtpPage() {
           )}
         </div>
 
-        {submitError && (
-          <div className="rounded-xl bg-red-50 px-4 py-3">
-            <p className="font-lato text-[13px] text-red-600" role="alert">
-              {submitError}
-            </p>
-          </div>
-        )}
-
         <LoadingButton
           type="submit"
           loading={isSubmitting}

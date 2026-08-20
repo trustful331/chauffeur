@@ -43,11 +43,11 @@ function parseAuthResponse(result: AuthApiResponse, email = ""): AuthSession {
   return {
     token,
     user: {
-      id: Number(raw.id ?? 0),
+      id: (raw.id ?? 0) as string | number,
       full_name: String(raw.full_name ?? raw.name ?? "User"),
       email: String(raw.email ?? email),
       currentRole: String(raw.role ?? raw.currentRole ?? "customer"),
-      phone_number: raw.phone_number as string | undefined,
+      phone_number: (raw.phone_number as string | undefined) ?? undefined,
     },
   };
 }
@@ -69,6 +69,31 @@ export async function signIn(email: string, password: string) {
     throw new Error(getErrorMessage(error, "Login failed"), { cause: error });
   }
 }
+
+export async function googleAuth(idToken: string): Promise<AuthSession> {
+  try {
+    const result = await apiPost<AuthApiResponse>("auth/signup/google", {
+      idToken,
+      id_token: idToken,
+    });
+    return parseAuthResponse(result);
+  } catch (error) {
+    throw new Error(getErrorMessage(error, "Google authentication failed"), { cause: error });
+  }
+}
+
+export async function facebookAuth(accessToken: string): Promise<AuthSession> {
+  try {
+    const result = await apiPost<AuthApiResponse>("auth/signup/facebook", {
+      accessToken,
+      access_token: accessToken,
+    });
+    return parseAuthResponse(result);
+  } catch (error) {
+    throw new Error(getErrorMessage(error, "Facebook authentication failed"), { cause: error });
+  }
+}
+
 
 export async function signUp(data: {
   full_name: string;
@@ -133,6 +158,24 @@ export async function forgotPassword(email: string): Promise<void> {
 
 // ─── Verify OTP ───────────────────────────────────────────────────────────────
 
+function formatOtpError(error: unknown, fallback = "Your OTP code is incorrect. Please try again."): string {
+  const msg = getErrorMessage(error, fallback);
+  const lower = msg.toLowerCase();
+
+  if (
+    lower.includes("no otp found") ||
+    lower.includes("invalid otp") ||
+    lower.includes("incorrect otp") ||
+    lower.includes("call post") ||
+    lower.includes("first") ||
+    lower.includes("expired")
+  ) {
+    return "Your OTP code is incorrect or expired. Please check and try again.";
+  }
+
+  return msg;
+}
+
 export async function verifyOtp(
   email: string,
   otp: string,
@@ -167,10 +210,10 @@ export async function verifyOtp(
     }
 
     if (result && result.success === false) {
-      throw new Error(result.message || "Invalid OTP code. Please try again.");
+      throw new Error(result.message || "Your OTP code is incorrect. Please try again.");
     }
   } catch (error) {
-    throw new Error(getErrorMessage(error, "Invalid OTP code. Please try again."), {
+    throw new Error(formatOtpError(error), {
       cause: error,
     });
   }
@@ -208,7 +251,7 @@ export async function resetPassword(
       throw new Error(result.message || "Password reset failed");
     }
   } catch (error) {
-    throw new Error(getErrorMessage(error, "Password reset failed"), {
+    throw new Error(formatOtpError(error, "Password reset failed. Please check your OTP code."), {
       cause: error,
     });
   }

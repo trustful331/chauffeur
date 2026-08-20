@@ -1,4 +1,12 @@
 import type { ReactNode } from "react";
+import { useState } from "react";
+import { useGoogleLogin } from "@react-oauth/google";
+import toast from "react-hot-toast";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { googleAuth } from "src/api/auth";
+import { GOOGLE_CLIENT_ID } from "src/config/env";
+import { useAppDispatch } from "src/store/hooks";
+import { setSession } from "src/store/slices/auth";
 
 export function FieldError({ message }: { message?: string }) {
   if (!message) return null;
@@ -59,12 +67,66 @@ type SocialAuthButtonsProps = {
 };
 
 export function SocialAuthButtons({ mode }: SocialAuthButtonsProps) {
-  const action = mode === "signin" ? "Sign in" : "Sign up";
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const [loading, setLoading] = useState(false);
 
-  const handleSocialAuth = (provider: string) => {
-    console.log(
-      `[Auth] ${action} with ${provider} — static handler (wire Redux/OAuth later)`,
-    );
+  const redirectTo =
+    (location.state as { from?: string } | null)?.from ||
+    searchParams.get("redirect") ||
+    "/";
+
+  const handleGoogleToken = async (idToken: string) => {
+    setLoading(true);
+    try {
+      const session = await googleAuth(idToken);
+      dispatch(setSession(session));
+      toast.success(
+        mode === "signin"
+          ? "Signed in with Google successfully!"
+          : "Account created with Google successfully!",
+      );
+      if (session.user.currentRole === "admin") {
+        navigate("/admin/dashboard", { replace: true });
+      } else {
+        navigate(redirectTo, { replace: true });
+      }
+    } catch (error) {
+      const msg =
+        error instanceof Error ? error.message : "Google authentication failed";
+      toast.error(msg);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const loginWithGoogle = useGoogleLogin({
+    onSuccess: (tokenResponse) => {
+      const token = tokenResponse.access_token;
+      if (token) {
+        handleGoogleToken(token);
+      } else {
+        toast.error("No token received from Google");
+      }
+    },
+    onError: (error) => {
+      console.error("Google Auth Error:", error);
+      toast.error("Google authentication failed or was cancelled");
+    },
+  });
+
+  const handleSocialAuth = (providerId: string) => {
+    if (providerId === "google") {
+      if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === "not-configured") {
+        toast.error(
+          "Google Client ID is missing. Please set VITE_GOOGLE_CLIENT_ID in your .env file.",
+        );
+        return;
+      }
+      loginWithGoogle();
+    }
   };
 
   return (
@@ -73,16 +135,20 @@ export function SocialAuthButtons({ mode }: SocialAuthButtonsProps) {
         <button
           key={provider.id}
           type="button"
-          onClick={() => handleSocialAuth(provider.label)}
-          className="auth-social-btn"
+          disabled={loading}
+          onClick={() => handleSocialAuth(provider.id)}
+          className="auth-social-btn disabled:cursor-not-allowed disabled:opacity-60"
         >
           {provider.icon}
-          <span>Continue with {provider.label}</span>
+          <span>
+            {loading ? "Connecting..." : `Continue with ${provider.label}`}
+          </span>
         </button>
       ))}
     </div>
   );
 }
+
 
 export function AuthField({
   label,

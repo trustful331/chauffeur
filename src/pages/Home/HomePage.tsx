@@ -1046,7 +1046,7 @@ export function HomePage() {
                 loadingText="Booking..."
                 className="mx-auto mt-8 block w-full max-w-[420px] rounded-xl bg-maseer-green py-3.5 font-lato text-[16px] font-semibold text-white transition hover:bg-maseer-green-deep disabled:cursor-not-allowed disabled:opacity-70"
               >
-                Book Your Ride
+                Book Your Ride 
               </LoadingButton>
             </div>
           </form>
