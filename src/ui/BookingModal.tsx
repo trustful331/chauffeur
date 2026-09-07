@@ -677,9 +677,15 @@ export function BookingFormBody({
                 name="pickup"
                 control={control}
                 rules={{
-                  validate: (value) =>
-                    value.address.trim().length >= 2 ||
-                    "Pick up location is required",
+                  validate: (value) => {
+                    if (value.address.trim().length < 2) {
+                      return "Pick up location is required";
+                    }
+                    if (value.latitude == null || value.longitude == null) {
+                      return "Please set pick up location on the map.";
+                    }
+                    return true;
+                  },
                 }}
                 render={({ field }) => (
                   <LocationMapField
@@ -697,9 +703,15 @@ export function BookingFormBody({
                   name="dropoff"
                   control={control}
                   rules={{
-                    validate: (value) =>
-                      value.address.trim().length >= 2 ||
-                      "Drop off location is required",
+                    validate: (value) => {
+                      if (value.address.trim().length < 2) {
+                        return "Drop off location is required";
+                      }
+                      if (value.latitude == null || value.longitude == null) {
+                        return "Please set drop off location on the map.";
+                      }
+                      return true;
+                    },
                   }}
                   render={({ field }) => (
                     <LocationMapField

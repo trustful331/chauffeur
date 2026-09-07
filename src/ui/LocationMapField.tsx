@@ -481,7 +481,11 @@ export function LocationMapField({
         ].join(" ")}
       >
         <span className="text-primary">
-          <MapPinIcon className="h-[18px] w-[18px]" />
+          {isDropOff ? (
+            <Send className="h-[18px] w-[18px] shrink-0" />
+          ) : (
+            <MapPinIcon className="h-[18px] w-[18px]" />
+          )}
         </span>
         <span
           className={[
