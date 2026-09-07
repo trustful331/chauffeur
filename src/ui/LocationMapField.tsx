@@ -5,37 +5,17 @@ import {
   DialogTitle,
   Description,
 } from "@headlessui/react";
-import L from "leaflet";
-import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
-import markerIcon from "leaflet/dist/images/marker-icon.png";
-import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import type { BookingLocation } from "src/api/booking";
 import { Spinner } from "./Spinner";
 import { Send } from "lucide-react";
-import "leaflet/dist/leaflet.css";
 
-/**
- * Google Places (search) uses the web key.
- * Interactive map uses Leaflet/OSM so the modal always shows a working map
- * even when Maps JavaScript API / SDK key is blocked in the browser
- * ("Sorry! Something went wrong").
- * Payload stays: { address, latitude, longitude }.
- */
+/** Temporary: move to env after delivery hardening. */
+const GOOGLE_MAPS_SDK_KEY = "AIzaSyDQYVRV6p9mpGg6gbSocIhObo_1N7mIzC8";
 const GOOGLE_PLACES_WEB_KEY = "AIzaSyAzjGfhK15449gg6WqRtIGJR7j9_-LNwhs";
 
-const DEFAULT_CENTER: [number, number] = [24.7136, 46.6753];
+const DEFAULT_CENTER = { lat: 24.7136, lng: 46.6753 };
 const DEFAULT_ZOOM = 11;
 const SELECTED_ZOOM = 15;
-
-const defaultIcon = L.icon({
-  iconUrl: markerIcon,
-  iconRetinaUrl: markerIcon2x,
-  shadowUrl: markerShadow,
-  iconSize: [25, 41],
-  iconAnchor: [12, 41],
-});
-
-L.Marker.prototype.options.icon = defaultIcon;
 
 const emptyDraft = (): BookingLocation => ({
   address: "",
@@ -56,6 +36,181 @@ type LocationMapFieldProps = {
   error?: string;
   required?: boolean;
 };
+
+type GoogleLatLngLiteral = { lat: number; lng: number };
+
+type GoogleMapInstance = {
+  setCenter: (center: GoogleLatLngLiteral) => void;
+  setZoom: (zoom: number) => void;
+  panTo: (center: GoogleLatLngLiteral) => void;
+  addListener: (
+    eventName: string,
+    handler: (event: {
+      latLng: { lat: () => number; lng: () => number } | null;
+    }) => void,
+  ) => { remove: () => void };
+};
+
+type GoogleMarkerInstance = {
+  setMap: (map: GoogleMapInstance | null) => void;
+  setPosition: (position: GoogleLatLngLiteral) => void;
+  addListener: (
+    eventName: string,
+    handler: () => void,
+  ) => { remove: () => void };
+  getPosition: () => { lat: () => number; lng: () => number } | null;
+};
+
+type GoogleMapsNamespace = {
+  Map: new (
+    el: HTMLElement,
+    opts: {
+      center: GoogleLatLngLiteral;
+      zoom: number;
+      mapTypeControl?: boolean;
+      streetViewControl?: boolean;
+      fullscreenControl?: boolean;
+      clickableIcons?: boolean;
+      gestureHandling?: string;
+      zoomControl?: boolean;
+    },
+  ) => GoogleMapInstance;
+  Marker: new (opts: {
+    map: GoogleMapInstance;
+    position: GoogleLatLngLiteral;
+    draggable?: boolean;
+    animation?: number;
+  }) => GoogleMarkerInstance;
+  Geocoder: new () => {
+    geocode: (
+      request: { location: GoogleLatLngLiteral },
+      callback: (
+        results: Array<{ formatted_address: string }> | null,
+        status: string,
+      ) => void,
+    ) => void;
+  };
+  Animation?: { DROP: number };
+  event: {
+    trigger: (instance: GoogleMapInstance, eventName: string) => void;
+  };
+};
+
+declare global {
+  interface Window {
+    google?: {
+      maps: GoogleMapsNamespace;
+    };
+    __maseerGoogleMapsPromise?: Promise<GoogleMapsNamespace>;
+    gm_authFailure?: () => void;
+  }
+}
+
+function waitForSize(el: HTMLElement, attempts = 40): Promise<boolean> {
+  return new Promise((resolve) => {
+    const tick = () => {
+      if (el.clientWidth > 0 && el.clientHeight > 0) {
+        resolve(true);
+        return;
+      }
+      attempts -= 1;
+      if (attempts <= 0) {
+        resolve(false);
+        return;
+      }
+      window.setTimeout(tick, 50);
+    };
+    tick();
+  });
+}
+
+function loadGoogleMapsSdk(apiKey: string): Promise<GoogleMapsNamespace> {
+  if (window.google?.maps) {
+    return Promise.resolve(window.google.maps);
+  }
+
+  if (window.__maseerGoogleMapsPromise) {
+    return window.__maseerGoogleMapsPromise;
+  }
+
+  window.__maseerGoogleMapsPromise = new Promise((resolve, reject) => {
+    const fail = (message: string) => {
+      window.__maseerGoogleMapsPromise = undefined;
+      document.querySelector("script[data-maseer-google-maps]")?.remove();
+      reject(new Error(message));
+    };
+
+    const existing = document.querySelector<HTMLScriptElement>(
+      "script[data-maseer-google-maps]",
+    );
+    if (existing) {
+      existing.addEventListener("load", () => {
+        if (window.google?.maps) resolve(window.google.maps);
+        else fail("Google Maps failed to load.");
+      });
+      existing.addEventListener("error", () =>
+        fail("Google Maps script failed to load."),
+      );
+      return;
+    }
+
+    const previousAuthFailure = window.gm_authFailure;
+    window.gm_authFailure = () => {
+      previousAuthFailure?.();
+      fail(
+        "Google Maps key rejected. Enable Maps JavaScript API + billing, and allow this site in HTTP referrers (http://localhost:5173/*).",
+      );
+    };
+
+    const script = document.createElement("script");
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(
+      apiKey,
+    )}&v=weekly`;
+    script.async = true;
+    script.defer = true;
+    script.dataset.maseerGoogleMaps = "true";
+    script.onload = () => {
+      if (window.google?.maps) resolve(window.google.maps);
+      else fail("Google Maps failed to initialize.");
+    };
+    script.onerror = () => fail("Google Maps script failed to load.");
+    document.head.appendChild(script);
+  });
+
+  return window.__maseerGoogleMapsPromise;
+}
+
+/** Prefer Maps SDK key; fall back to Places web key if SDK key is blocked in browser. */
+async function loadMaps(forceKey?: string): Promise<GoogleMapsNamespace> {
+  if (!forceKey && window.google?.maps) {
+    return window.google.maps;
+  }
+
+  if (forceKey) {
+    window.__maseerGoogleMapsPromise = undefined;
+    document.querySelector("script[data-maseer-google-maps]")?.remove();
+    // Force reload — clear cached maps namespace from a bad key if needed
+    if (window.google) {
+      delete (window as { google?: unknown }).google;
+    }
+    return loadGoogleMapsSdk(forceKey);
+  }
+
+  try {
+    return await loadGoogleMapsSdk(GOOGLE_MAPS_SDK_KEY);
+  } catch (sdkError) {
+    window.__maseerGoogleMapsPromise = undefined;
+    document.querySelector("script[data-maseer-google-maps]")?.remove();
+    if (window.google) {
+      delete (window as { google?: unknown }).google;
+    }
+    try {
+      return await loadGoogleMapsSdk(GOOGLE_PLACES_WEB_KEY);
+    } catch {
+      throw sdkError;
+    }
+  }
+}
 
 async function searchPlaces(query: string): Promise<PlaceSuggestion[]> {
   if (!query.trim()) return [];
@@ -150,45 +305,22 @@ async function getPlaceLocation(
   };
 }
 
-async function reverseGeocodeGoogle(lat: number, lng: number): Promise<string> {
-  try {
-    const response = await fetch(
-      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${encodeURIComponent(
-        GOOGLE_PLACES_WEB_KEY,
-      )}`,
-    );
-    if (!response.ok) return "";
-    const data = (await response.json()) as {
-      status?: string;
-      results?: Array<{ formatted_address?: string }>;
-    };
-    if (data.status === "OK" && data.results?.[0]?.formatted_address) {
-      return data.results[0].formatted_address;
-    }
-  } catch {
-    // fall through
-  }
-  return "";
-}
+async function reverseGeocode(
+  maps: GoogleMapsNamespace,
+  lat: number,
+  lng: number,
+): Promise<string> {
+  const geocoder = new maps.Geocoder();
 
-async function reverseGeocodeOsm(lat: number, lng: number): Promise<string> {
-  try {
-    const response = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`,
-      { headers: { Accept: "application/json" } },
-    );
-    if (!response.ok) return "";
-    const data = (await response.json()) as { display_name?: string };
-    return data.display_name ?? "";
-  } catch {
-    return "";
-  }
-}
-
-async function reverseGeocode(lat: number, lng: number): Promise<string> {
-  const fromGoogle = await reverseGeocodeGoogle(lat, lng);
-  if (fromGoogle) return fromGoogle;
-  return reverseGeocodeOsm(lat, lng);
+  return new Promise((resolve) => {
+    geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+      if (status === "OK" && results?.[0]?.formatted_address) {
+        resolve(results[0].formatted_address);
+        return;
+      }
+      resolve("");
+    });
+  });
 }
 
 function MapPinIcon({ className = "h-5 w-5" }: { className?: string }) {
@@ -228,8 +360,11 @@ export function LocationMapField({
   required = false,
 }: LocationMapFieldProps) {
   const mapHostRef = useRef<HTMLDivElement>(null);
-  const mapRef = useRef<L.Map | null>(null);
-  const markerRef = useRef<L.Marker | null>(null);
+  const mapRef = useRef<GoogleMapInstance | null>(null);
+  const markerRef = useRef<GoogleMarkerInstance | null>(null);
+  const clickListenerRef = useRef<{ remove: () => void } | null>(null);
+  const dragListenerRef = useRef<{ remove: () => void } | null>(null);
+  const mapsApiRef = useRef<GoogleMapsNamespace | null>(null);
   const onMapPickRef = useRef<(lat: number, lng: number) => void>(() => {});
 
   const [isOpen, setIsOpen] = useState(false);
@@ -269,31 +404,41 @@ export function LocationMapField({
     setIsPinLoading(false);
   };
 
-  const applyDraftToMarker = useCallback((next: BookingLocation) => {
-    if (!mapRef.current) return;
+  const applyDraftToMarker = useCallback(
+    (next: BookingLocation, maps: GoogleMapsNamespace) => {
+      if (!mapRef.current) return;
 
-    if (next.latitude == null || next.longitude == null) {
-      markerRef.current?.remove();
-      markerRef.current = null;
-      return;
-    }
+      if (next.latitude == null || next.longitude == null) {
+        markerRef.current?.setMap(null);
+        markerRef.current = null;
+        return;
+      }
 
-    const position: L.LatLngExpression = [next.latitude, next.longitude];
-    mapRef.current.setView(position, SELECTED_ZOOM);
+      const position = { lat: next.latitude, lng: next.longitude };
+      mapRef.current.panTo(position);
+      mapRef.current.setZoom(SELECTED_ZOOM);
 
-    if (!markerRef.current) {
-      markerRef.current = L.marker(position, { draggable: true }).addTo(
-        mapRef.current,
-      );
-      markerRef.current.on("dragend", () => {
-        const latLng = markerRef.current?.getLatLng();
-        if (!latLng) return;
-        onMapPickRef.current(latLng.lat, latLng.lng);
-      });
-    } else {
-      markerRef.current.setLatLng(position);
-    }
-  }, []);
+      if (!markerRef.current) {
+        const marker = new maps.Marker({
+          map: mapRef.current,
+          position,
+          draggable: true,
+          animation: maps.Animation?.DROP,
+        });
+        dragListenerRef.current?.remove();
+        dragListenerRef.current = marker.addListener("dragend", () => {
+          const pos = marker.getPosition();
+          if (!pos) return;
+          onMapPickRef.current(pos.lat(), pos.lng());
+        });
+        markerRef.current = marker;
+      } else {
+        markerRef.current.setPosition(position);
+        markerRef.current.setMap(mapRef.current);
+      }
+    },
+    [],
+  );
 
   const handleMapPick = useCallback(
     async (lat: number, lng: number) => {
@@ -308,10 +453,14 @@ export function LocationMapField({
         longitude: lng,
       };
       setDraft(optimistic);
-      applyDraftToMarker(optimistic);
+      if (mapsApiRef.current) {
+        applyDraftToMarker(optimistic, mapsApiRef.current);
+      }
 
       try {
-        const address = await reverseGeocode(lat, lng);
+        const maps = mapsApiRef.current ?? (await loadMaps());
+        mapsApiRef.current = maps;
+        const address = await reverseGeocode(maps, lat, lng);
         const resolved: BookingLocation = {
           address: address || optimistic.address,
           latitude: lat,
@@ -319,7 +468,7 @@ export function LocationMapField({
         };
         setDraft(resolved);
         setQuery(resolved.address);
-        applyDraftToMarker(resolved);
+        applyDraftToMarker(resolved, maps);
       } catch {
         setDraft(optimistic);
         setQuery(optimistic.address);
@@ -347,7 +496,9 @@ export function LocationMapField({
         setDraft(place);
         setQuery(place.address);
         setSuggestions([]);
-        applyDraftToMarker(place);
+        if (mapsApiRef.current) {
+          applyDraftToMarker(place, mapsApiRef.current);
+        }
       } catch {
         setMapError("Could not resolve that place. Tap the map instead.");
       } finally {
@@ -389,78 +540,201 @@ export function LocationMapField({
     return () => window.clearTimeout(timer);
   }, [query, canSearch]);
 
-  // Leaflet map — always visible inside modal (no Google JS key required)
   useEffect(() => {
     if (!isOpen) {
-      if (mapRef.current) {
-        mapRef.current.remove();
-        mapRef.current = null;
-      }
+      clickListenerRef.current?.remove();
+      clickListenerRef.current = null;
+      dragListenerRef.current?.remove();
+      dragListenerRef.current = null;
+      markerRef.current?.setMap(null);
       markerRef.current = null;
+      mapRef.current = null;
+      mapsApiRef.current = null;
       return;
     }
 
     let cancelled = false;
-    let map: L.Map | null = null;
+
+    const destroyMap = () => {
+      clickListenerRef.current?.remove();
+      clickListenerRef.current = null;
+      dragListenerRef.current?.remove();
+      dragListenerRef.current = null;
+      markerRef.current?.setMap(null);
+      markerRef.current = null;
+      mapRef.current = null;
+      if (mapHostRef.current) {
+        mapHostRef.current.innerHTML = "";
+      }
+    };
+
+    const initMap = async () => {
+      if (!mapHostRef.current) return;
+
+      try {
+        setMapReady(false);
+        setMapError(null);
+
+        const sized = await waitForSize(mapHostRef.current);
+        if (cancelled || !mapHostRef.current) return;
+        if (!sized) {
+          setMapError("Map container failed to size. Close and reopen.");
+          return;
+        }
+
+        const maps = await loadMaps();
+        if (cancelled || !mapHostRef.current) return;
+
+        destroyMap();
+        mapsApiRef.current = maps;
+
+        const center =
+          draft.latitude != null && draft.longitude != null
+            ? { lat: draft.latitude, lng: draft.longitude }
+            : DEFAULT_CENTER;
+
+        const map = new maps.Map(mapHostRef.current, {
+          center,
+          zoom:
+            draft.latitude != null && draft.longitude != null
+              ? SELECTED_ZOOM
+              : DEFAULT_ZOOM,
+          mapTypeControl: false,
+          streetViewControl: false,
+          fullscreenControl: false,
+          clickableIcons: false,
+          gestureHandling: "greedy",
+          zoomControl: true,
+        });
+
+        mapRef.current = map;
+
+        clickListenerRef.current = map.addListener("click", (event) => {
+          const latLng = event.latLng;
+          if (!latLng) return;
+          onMapPickRef.current(latLng.lat(), latLng.lng());
+        });
+
+        if (draft.latitude != null && draft.longitude != null) {
+          applyDraftToMarker(draft, maps);
+        }
+
+        const refresh = () => {
+          if (cancelled || !mapRef.current) return;
+          maps.event.trigger(mapRef.current, "resize");
+          mapRef.current.setCenter(center);
+        };
+
+        window.setTimeout(refresh, 60);
+        window.setTimeout(refresh, 250);
+
+        // Detect Google's "Sorry! Something went wrong" and retry once with web key
+        window.setTimeout(() => {
+          if (cancelled || !mapHostRef.current) return;
+          const failed = Boolean(
+            mapHostRef.current.querySelector(".gm-err-container, .gm-error"),
+          );
+          if (!failed) {
+            setMapReady(true);
+            setMapError(null);
+            return;
+          }
+
+          void (async () => {
+            try {
+              destroyMap();
+              const maps = await loadMaps(GOOGLE_PLACES_WEB_KEY);
+              if (cancelled || !mapHostRef.current) return;
+              mapsApiRef.current = maps;
+
+              const retryCenter =
+                draft.latitude != null && draft.longitude != null
+                  ? { lat: draft.latitude, lng: draft.longitude }
+                  : DEFAULT_CENTER;
+
+              const retryMap = new maps.Map(mapHostRef.current, {
+                center: retryCenter,
+                zoom:
+                  draft.latitude != null && draft.longitude != null
+                    ? SELECTED_ZOOM
+                    : DEFAULT_ZOOM,
+                mapTypeControl: false,
+                streetViewControl: false,
+                fullscreenControl: false,
+                clickableIcons: false,
+                gestureHandling: "greedy",
+                zoomControl: true,
+              });
+              mapRef.current = retryMap;
+              clickListenerRef.current = retryMap.addListener("click", (event) => {
+                const latLng = event.latLng;
+                if (!latLng) return;
+                onMapPickRef.current(latLng.lat(), latLng.lng());
+              });
+              if (draft.latitude != null && draft.longitude != null) {
+                applyDraftToMarker(draft, maps);
+              }
+              window.setTimeout(() => {
+                if (!cancelled && mapRef.current) {
+                  maps.event.trigger(mapRef.current, "resize");
+                  mapRef.current.setCenter(retryCenter);
+                }
+              }, 80);
+
+              window.setTimeout(() => {
+                if (cancelled || !mapHostRef.current) return;
+                const stillFailed = Boolean(
+                  mapHostRef.current.querySelector(
+                    ".gm-err-container, .gm-error",
+                  ),
+                );
+                if (stillFailed) {
+                  setMapReady(false);
+                  setMapError(
+                    "Google Map tiles failed on both keys. Enable Maps JavaScript API and add this site to HTTP referrers.",
+                  );
+                } else {
+                  setMapReady(true);
+                  setMapError(null);
+                }
+              }, 1200);
+            } catch (retryErr) {
+              if (!cancelled) {
+                setMapReady(false);
+                setMapError(
+                  retryErr instanceof Error
+                    ? retryErr.message
+                    : "Google Maps failed to load.",
+                );
+              }
+            }
+          })();
+        }, 1200);
+
+        if (!cancelled) {
+          setMapReady(true);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setMapReady(false);
+          setMapError(
+            err instanceof Error
+              ? err.message
+              : "Google Maps failed to load. Check API key / billing.",
+          );
+        }
+      }
+    };
 
     const boot = window.setTimeout(() => {
-      if (cancelled || !mapHostRef.current) return;
-
-      const center: [number, number] =
-        draft.latitude != null && draft.longitude != null
-          ? [draft.latitude, draft.longitude]
-          : DEFAULT_CENTER;
-
-      map = L.map(mapHostRef.current, {
-        center,
-        zoom:
-          draft.latitude != null && draft.longitude != null
-            ? SELECTED_ZOOM
-            : DEFAULT_ZOOM,
-        scrollWheelZoom: true,
-      });
-
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-        maxZoom: 19,
-      }).addTo(map);
-
-      map.on("click", (event) => {
-        onMapPickRef.current(event.latlng.lat, event.latlng.lng);
-      });
-
-      mapRef.current = map;
-
-      if (draft.latitude != null && draft.longitude != null) {
-        applyDraftToMarker(draft);
-      }
-
-      // Modal layout needs an invalidate after paint
-      window.setTimeout(() => {
-        if (!cancelled && map) {
-          map.invalidateSize();
-          map.setView(center, map.getZoom());
-        }
-      }, 80);
-      window.setTimeout(() => {
-        if (!cancelled && map) map.invalidateSize();
-      }, 300);
-
-      if (!cancelled) {
-        setMapReady(true);
-        setMapError(null);
-      }
-    }, 80);
+      void initMap();
+    }, 100);
 
     return () => {
       cancelled = true;
       window.clearTimeout(boot);
-      if (map) {
-        map.remove();
-      }
-      mapRef.current = null;
-      markerRef.current = null;
+      destroyMap();
+      mapsApiRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen]);
@@ -512,7 +786,6 @@ export function LocationMapField({
         </p>
       ) : null}
 
-      {/* Above BookingModal (z-[999]) so picker works from booking flow too */}
       <Dialog open={isOpen} onClose={closeModal} className="relative z-[1100]">
         <div
           className="fixed inset-0 bg-[#062111]/55 backdrop-blur-[2px]"
@@ -529,7 +802,7 @@ export function LocationMapField({
                       {label}
                     </DialogTitle>
                     <Description className="mt-1 font-lato text-sm text-white/75">
-                      Search an address or tap the map to drop a pin.
+                      Search an address or tap the Google Map to drop a pin.
                     </Description>
                   </div>
                   <button
@@ -559,7 +832,7 @@ export function LocationMapField({
                         latitude: null,
                         longitude: null,
                       }));
-                      markerRef.current?.remove();
+                      markerRef.current?.setMap(null);
                       markerRef.current = null;
                     }}
                     placeholder={placeholder}
@@ -596,18 +869,18 @@ export function LocationMapField({
                 </div>
 
                 <div className="overflow-hidden rounded-2xl border border-[#e5e7eb] bg-[#f3f4f6]">
-                  <div className="relative z-0 h-[340px] w-full sm:h-[400px]">
+                  <div className="relative h-[340px] w-full sm:h-[400px]">
                     <div ref={mapHostRef} className="h-full w-full" />
-                    {!mapReady ? (
+                    {!mapReady && !mapError ? (
                       <div className="absolute inset-0 flex items-center justify-center bg-white/70">
                         <div className="flex items-center gap-2 font-lato text-sm text-maseer-muted">
                           <Spinner size="sm" />
-                          Loading map...
+                          Loading Google Map...
                         </div>
                       </div>
                     ) : null}
                     {isPinLoading ? (
-                      <div className="absolute bottom-4 left-1/2 z-[500] -translate-x-1/2 rounded-full bg-white px-4 py-2 font-lato text-xs font-semibold text-maseer-green shadow-lg">
+                      <div className="absolute bottom-4 left-1/2 z-10 -translate-x-1/2 rounded-full bg-white px-4 py-2 font-lato text-xs font-semibold text-maseer-green shadow-lg">
                         Finding address for this pin...
                       </div>
                     ) : null}
