@@ -11,6 +11,7 @@ import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 import type { BookingLocation } from "src/api/booking";
 import { Spinner } from "./Spinner";
+import { Send } from "lucide-react";
 import "leaflet/dist/leaflet.css";
 
 /**
@@ -241,6 +242,7 @@ export function LocationMapField({
   const [mapError, setMapError] = useState<string | null>(null);
   const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
 
+  const isDropOff = label.toLowerCase().includes("drop off");
   const hasPinnedLocation =
     draft.latitude != null && draft.longitude != null;
   const canSearch = isOpen && query.trim().length >= 2;
