@@ -393,24 +393,24 @@ export function ServicesPage() {
 
   const finalFeatured = featuredCoverage.length > 0
     ? featuredCoverage.map((item, index) => ({
-        title: item.title,
-        text: item.description,
-        image: item.image_url || "",
-        span: index % 2 === 0 ? "col-span-7" : "col-span-5"
-      }))
+      title: item.title,
+      text: item.description,
+      image: item.image_url || "",
+      span: index % 2 === 0 ? "col-span-7" : "col-span-5"
+    }))
     : [];
 
   const COVERAGE_LARGE = finalFeatured.length > 0 ? finalFeatured.slice(0, 2) : fallbackCoverageLarge;
-  const COVERAGE_SMALL = finalFeatured.length > 0 
-    ? finalFeatured.slice(2) 
+  const COVERAGE_SMALL = finalFeatured.length > 0
+    ? finalFeatured.slice(2)
     : fallbackCoverageSmall;
 
   const ITINERARY_CARDS = itineraryCoverage.length > 0
     ? itineraryCoverage.map(item => ({
-        title: item.title,
-        text: item.description,
-        icon: item.icon_key || "briefcase"
-      }))
+      title: item.title,
+      text: item.description,
+      icon: item.icon_key || "briefcase"
+    }))
     : fallbackItineraryCards;
 
   return (
@@ -451,10 +451,10 @@ export function ServicesPage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <SplitHeading 
-              before={dynamicHeading ? dynamicHeading.split(" ").slice(0, -1).join(" ") + ", " : "Our, "} 
-              accent={dynamicHeading ? dynamicHeading.split(" ").slice(-1)[0] : "Service Coverage"} 
-              align="left" 
+            <SplitHeading
+              before={dynamicHeading ? dynamicHeading.split(" ").slice(0, -1).join(" ") + ", " : "Our, "}
+              accent={dynamicHeading ? dynamicHeading.split(" ").slice(-1)[0] : "Service Coverage"}
+              align="left"
             />
             {isAdmin && (
               <button

@@ -32,6 +32,7 @@ import {
 import type { AuthUser } from "src/store/slices/auth/types";
 import { MaseerLogo } from "./MaseerLogo";
 import { fetchPendingQuotes } from "src/api/pricing";
+import { NotificationDropdown } from "./NotificationDropdown";
 
 export function AdminLayout() {
   const dispatch = useAppDispatch();
@@ -40,11 +41,9 @@ export function AdminLayout() {
   const adminUser = useAppSelector(selectAuthUser) as AuthUser | "";
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [pendingQuoteCount, setPendingQuoteCount] = useState<number>(0);
 
   const profileRef = useRef<HTMLDivElement>(null);
-  const notificationsRef = useRef<HTMLDivElement>(null);
 
   // Poll for pending quotes count
   useEffect(() => {
@@ -75,12 +74,6 @@ export function AdminLayout() {
       ) {
         setProfileDropdownOpen(false);
       }
-      if (
-        notificationsRef.current &&
-        !notificationsRef.current.contains(event.target as Node)
-      ) {
-        setNotificationsOpen(false);
-      }
     }
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
@@ -101,6 +94,7 @@ export function AdminLayout() {
     { to: "/admin/services", label: "Service Coverage", icon: MapPin },
     { to: "/admin/get-in-touch", label: "Get In Touch", icon: PhoneCall },
     { to: "/admin/reviews", label: "Customer Reviews", icon: MessageSquare },
+    { to: "/admin/notifications", label: "Notifications", icon: Bell },
   ];
 
   const handleSignOut = async () => {
@@ -118,29 +112,7 @@ export function AdminLayout() {
     return activeItem ? activeItem.label : "Admin Panel";
   };
 
-  const mockNotifications = [
-    {
-      id: 1,
-      title: "New Booking Request",
-      description: "Booking #1042 received from Sarah Jenkins.",
-      time: "5m ago",
-      unread: true,
-    },
-    {
-      id: 2,
-      title: "Driver Online",
-      description: "Chauffeur David Miller is now active.",
-      time: "20m ago",
-      unread: true,
-    },
-    {
-      id: 3,
-      title: "Fleet Service Alert",
-      description: "Mercedes S-Class (TX-904) due for service.",
-      time: "2h ago",
-      unread: false,
-    },
-  ];
+
 
   return (
     <div className="min-h-screen bg-[#F4F5F4] lg:flex">
@@ -405,61 +377,7 @@ export function AdminLayout() {
             <div className="h-4 w-[1px] bg-gray-200" />
 
             {/* Notifications */}
-            <div className="relative" ref={notificationsRef}>
-              <button
-                onClick={() => setNotificationsOpen(!notificationsOpen)}
-                className={`relative flex h-10 w-10 items-center justify-center rounded-full border transition hover:bg-maseer-surface-card ${
-                  notificationsOpen
-                    ? "border-maseer-gold bg-maseer-surface-card text-maseer-gold"
-                    : "border-[#E5E7EB] bg-white text-[#1a2e1f]"
-                }`}
-                aria-label="Notifications"
-              >
-                <Bell className="h-5 w-5" />
-                <span className="absolute right-2.5 top-2.5 flex h-2 w-2">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-400 opacity-75"></span>
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-red-500"></span>
-                </span>
-              </button>
-
-              {notificationsOpen && (
-                <div className="absolute right-0 mt-2.5 w-[320px] origin-top-right rounded-2xl border border-maseer-line bg-white p-4 shadow-card ring-1 ring-black/5 transition-all">
-                  <div className="mb-3 flex items-center justify-between border-b border-maseer-line pb-2">
-                    <h3 className="font-lato text-sm font-bold text-maseer-green-text">
-                      Notifications
-                    </h3>
-                    <span className="rounded bg-red-50 px-2 py-0.5 font-lato text-[10px] font-semibold text-red-600">
-                      2 New
-                    </span>
-                  </div>
-                  <div className="flex flex-col gap-2 max-h-[240px] overflow-y-auto">
-                    {mockNotifications.map((notif) => (
-                      <div
-                        key={notif.id}
-                        className={`flex flex-col gap-0.5 rounded-xl p-2.5 transition hover:bg-maseer-surface-card ${
-                          notif.unread ? "bg-maseer-surface-card" : ""
-                        }`}
-                      >
-                        <div className="flex items-start justify-between gap-2">
-                          <p className="font-lato text-[12px] font-bold text-maseer-green-text leading-tight">
-                            {notif.title}
-                          </p>
-                          <span className="shrink-0 font-lato text-[10px] text-maseer-muted">
-                            {notif.time}
-                          </span>
-                        </div>
-                        <p className="font-lato text-[11px] text-maseer-muted leading-snug">
-                          {notif.description}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                  <button className="mt-3 w-full border-t border-maseer-line pt-2 text-center font-lato text-[11px] font-bold text-maseer-gold hover:text-maseer-gold-bright transition">
-                    Mark all as read
-                  </button>
-                </div>
-              )}
-            </div>
+            <NotificationDropdown align="right" />
 
             {/* Profile Dropdown */}
             {adminUser && typeof adminUser === "object" && (

@@ -10,7 +10,7 @@ export type BookingItem = {
   dropoff_latitude?: number | null;
   dropoff_longitude?: number | null;
   fleet_name?: string;
-  fleet?: { vehicle_name?: string; category?: string; [key: string]: unknown };
+  fleet?: { vehicle_name?: string; category?: string;[key: string]: unknown };
   date_and_time?: string;
   pickup_date?: string;
   pickup_time?: string;
@@ -45,7 +45,7 @@ export function saveLocalBooking(booking: Partial<BookingItem> & Record<string, 
   try {
     const raw = localStorage.getItem(LOCAL_STORAGE_BOOKINGS_KEY);
     const existing: BookingItem[] = raw ? JSON.parse(raw) : [];
-    
+
     const fleetName =
       (booking.fleet_name as string) ||
       (booking.fleet as any)?.vehicle_name ||
@@ -122,16 +122,43 @@ export function formatBookingDate(item: BookingItem): string {
   });
 }
 
-export async function fetchBookings(): Promise<BookingResponse> {
+function parseBookingList(res: any): BookingItem[] {
+  if (!res) return [];
+  if (Array.isArray(res)) return res;
+  if (Array.isArray(res.data)) return res.data;
+  if (Array.isArray(res.bookings)) return res.bookings;
+  if (Array.isArray(res.data?.bookings)) return res.data.bookings;
+  if (Array.isArray(res.data?.data)) return res.data.data;
+  return [];
+}
+
+export async function fetchBookings(status = "all"): Promise<BookingResponse> {
   let apiBookings: BookingItem[] = [];
+  let apiError: string | null = null;
 
   try {
-    const response = await apiGet<BookingResponse>("booking/get");
-    if (response && response.success && Array.isArray(response.data)) {
-      apiBookings = response.data;
+    // 1. First attempt: backend endpoint with ?status=all (or requested status)
+    const endpoint = status ? `booking/get?status=${status}` : "booking/get";
+    const response = await apiGet<any>(endpoint);
+    const list = parseBookingList(response);
+    if (list.length > 0) {
+      apiBookings = list;
+    } else {
+      // Fallback: try plain booking/get if status parameter returned empty
+      const fallback = await apiGet<any>("booking/get");
+      apiBookings = parseBookingList(fallback);
     }
-  } catch (error) {
-    console.warn("Failed to fetch remote bookings:", error);
+  } catch (error: any) {
+    console.warn("Failed to fetch remote bookings with query:", error);
+    apiError = error?.response?.data?.message || error?.message || null;
+
+    // Secondary fallback: plain booking/get
+    try {
+      const fallback = await apiGet<any>("booking/get");
+      apiBookings = parseBookingList(fallback);
+    } catch {
+      // Ignore secondary fallback error
+    }
   }
 
   let localBookings: BookingItem[] = [];
@@ -158,6 +185,7 @@ export async function fetchBookings(): Promise<BookingResponse> {
     success: true,
     count: merged.length,
     data: merged,
+    message: apiError || undefined,
   };
 }
 

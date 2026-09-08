@@ -4,6 +4,7 @@ import { useAppSelector } from "src/store/hooks";
 import { selectIsAuthenticated } from "src/store/slices/auth/selectors";
 import { MaseerLogo } from "./MaseerLogo";
 import { UserProfileDropdown } from "./UserProfileDropdown";
+import { NotificationDropdown } from "./NotificationDropdown";
 
 const navItems = [
   { to: "/", label: "Home", end: true },
@@ -152,7 +153,10 @@ export function MainLayout() {
 
           <div className="flex items-center gap-2 sm:gap-4 md:gap-5">
             {isAuthenticated ? (
-              <UserProfileDropdown />
+              <div className="flex items-center gap-2 sm:gap-3">
+                <NotificationDropdown align="right" />
+                <UserProfileDropdown />
+              </div>
             ) : (
               <Link
                 to="/signin"

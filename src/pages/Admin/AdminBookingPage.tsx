@@ -77,6 +77,12 @@ export function AdminBookingPage() {
 
   useEffect(() => {
     loadBookings();
+
+    const handleFocus = () => {
+      loadBookings();
+    };
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
   }, []);
 
   const handleOpenDetails = (item: BookingItem) => {
@@ -122,9 +128,17 @@ export function AdminBookingPage() {
       fleetName.toLowerCase().includes(filterClass.toLowerCase()) ||
       ((item.fleet?.category as string) || "").toLowerCase().includes(filterClass.toLowerCase());
 
+    const itemStatus = (item.booking_status || "upcoming").toLowerCase().trim();
+    const normalizedStatus =
+      itemStatus === "confirmed" || itemStatus === "pending" || itemStatus === "paid" || itemStatus === "active"
+        ? "upcoming"
+        : itemStatus === "canceled"
+        ? "cancelled"
+        : itemStatus;
+
     const matchesStatus =
       filterStatus === "all" ||
-      (item.booking_status || "upcoming").toLowerCase() === filterStatus.toLowerCase();
+      normalizedStatus === filterStatus.toLowerCase();
 
     return matchesSearch && matchesClass && matchesStatus;
   });
@@ -287,7 +301,13 @@ export function AdminBookingPage() {
             </thead>
             <tbody className="divide-y divide-[#E5E7EB] bg-white">
               {filteredItems.map((item) => {
-                const status = (item.booking_status || "upcoming").toLowerCase();
+                const rawStatus = (item.booking_status || "upcoming").toLowerCase().trim();
+                const status =
+                  rawStatus === "confirmed" || rawStatus === "pending" || rawStatus === "paid" || rawStatus === "active"
+                    ? "upcoming"
+                    : rawStatus === "canceled"
+                    ? "cancelled"
+                    : rawStatus;
                 const fleetName = getBookingFleetName(item);
 
                 return (
@@ -333,15 +353,14 @@ export function AdminBookingPage() {
                       <select
                         value={status}
                         onChange={(e) => handleStatusChange(item.id, e.target.value)}
-                        className={`rounded-full px-3 py-1 text-xs font-bold border outline-none cursor-pointer shadow-2xs transition ${
-                          status === "completed"
+                        className={`rounded-full px-3 py-1 text-xs font-bold border outline-none cursor-pointer shadow-2xs transition ${status === "completed"
                             ? "bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100"
                             : status === "inprogress"
-                            ? "bg-blue-50 text-blue-800 border-blue-300 hover:bg-blue-100"
-                            : status === "cancelled" || status === "canceled"
-                            ? "bg-red-50 text-red-800 border-red-300 hover:bg-red-100"
-                            : "bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100"
-                        }`}
+                              ? "bg-blue-50 text-blue-800 border-blue-300 hover:bg-blue-100"
+                              : status === "cancelled" || status === "canceled"
+                                ? "bg-red-50 text-red-800 border-red-300 hover:bg-red-100"
+                                : "bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100"
+                          }`}
                       >
                         <option value="upcoming">Upcoming</option>
                         <option value="inprogress">In Progress</option>

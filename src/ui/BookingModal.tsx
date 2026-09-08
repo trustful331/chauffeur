@@ -383,11 +383,11 @@ export function BookingFormBody({
             setQuoteData((prev) =>
               prev
                 ? {
-                    ...prev,
-                    status: "priced",
-                    amount: res.data.amount,
-                    requires_admin_price: false,
-                  }
+                  ...prev,
+                  status: "priced",
+                  amount: res.data.amount,
+                  requires_admin_price: false,
+                }
                 : null
             );
             toast.success(`Admin has approved your custom rate: ${res.data.amount} KWD!`);
@@ -426,7 +426,7 @@ export function BookingFormBody({
 
   const handleNextStep = async () => {
     setBookingError(null);
-    
+
     // Validate Step 1 fields
     const fieldsToValidate: Array<keyof BookingForm> = [
       "pickup",
@@ -1206,8 +1206,8 @@ export function BookingFormBody({
                             {quoteData.pricing_mode === "hourly"
                               ? "Hourly Rate"
                               : quoteData.pricing_mode === "fixed"
-                              ? "Fixed Rate (≤ 45 km)"
-                              : "Admin Custom Quote"}
+                                ? "Fixed Rate (≤ 45 km)"
+                                : "Admin Custom Quote"}
                           </span>
                         )}
                       </div>
@@ -1300,9 +1300,9 @@ export function BookingModal({
       <div className="relative z-10 flex flex-col h-[650px] w-full max-w-[1000px] overflow-hidden rounded-[32px] bg-white shadow-[0_24px_64px_rgba(0,0,0,0.22)] max-md:h-[88vh] max-md:rounded-2xl">
         {/* fixed header */}
         <div className="flex shrink-0 items-center justify-between px-8 pb-4 pt-6 max-md:px-4 bg-white z-10">
-          <div> 
+          <div>
             <h2 className="font-serif text-[22px] font-semibold text-maseer-green-text">
-              Book Your Ride 
+              Book Your Ride
             </h2>
             {vehicleName && (
               <p className="mt-0.5 font-lato text-[13px] text-maseer-muted">

@@ -251,7 +251,7 @@ function ServiceCardIcon({
 }) {
   const className = "h-5 w-5 text-primary";
   const normalizedType = type.toLowerCase();
-  
+
   if (normalizedType === "airplane" || normalizedType === "plane") {
     return (
       <svg className={className} viewBox="0 0 20 20" fill="none" aria-hidden>
@@ -612,12 +612,12 @@ export function HomePage() {
     getReviews();
   }, []);
 
-  const finalFeatured = (featuredCoverage.length > 0 
+  const finalFeatured = (featuredCoverage.length > 0
     ? featuredCoverage.map(item => ({
-        title: item.title,
-        subtitle: item.description,
-        image: item.image_url || ""
-      }))
+      title: item.title,
+      subtitle: item.description,
+      image: item.image_url || ""
+    }))
     : fallbackFeatured).slice(0, 5);
 
   const coverageLarge = finalFeatured.slice(0, 2);
@@ -625,21 +625,21 @@ export function HomePage() {
 
   const servicesCards = itineraryCoverage.length > 0
     ? itineraryCoverage.map(item => ({
-        id: item.id as number | undefined,
-        title: item.title,
-        text: item.description,
-        icon: item.icon_key || "briefcase"
-      }))
+      id: item.id as number | undefined,
+      title: item.title,
+      text: item.description,
+      icon: item.icon_key || "briefcase"
+    }))
     : fallbackServicesCards;
 
   const finalReviews = customerReviews.length > 0
     ? customerReviews.map(item => ({
-        rating: item.star_rating,
-        title: item.review_title,
-        quote: item.review_content,
-        name: item.customer_name,
-        avatar: item.customer_image_url || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80"
-      }))
+      rating: item.star_rating,
+      title: item.review_title,
+      quote: item.review_content,
+      name: item.customer_name,
+      avatar: item.customer_image_url || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80"
+    }))
     : reviews;
 
   const dynamicHeading = featuredCoverage[0]?.section_heading;
@@ -772,12 +772,12 @@ export function HomePage() {
                       "font-lato py-4 text-center text-[13px] font-semibold transition-colors max-md:px-2 max-md:py-3 max-md:text-[11px]",
                       isActive
                         ? [
-                            "bg-maseer-green text-white",
-                            index === 0 ? "rounded-tl-[16px]" : "",
-                            index === BOOKING_TABS.length - 1
-                              ? "rounded-tr-[32px]"
-                              : "",
-                          ].join(" ")
+                          "bg-maseer-green text-white",
+                          index === 0 ? "rounded-tl-[16px]" : "",
+                          index === BOOKING_TABS.length - 1
+                            ? "rounded-tr-[32px]"
+                            : "",
+                        ].join(" ")
                         : "bg-[#FFF9EB] text-primary",
                       !isActive && index > 0
                         ? "border-l border-primary/20"
@@ -1058,7 +1058,7 @@ export function HomePage() {
                 loadingText="Booking..."
                 className="mx-auto mt-8 block w-full max-w-[420px] rounded-xl bg-maseer-green py-3.5 font-lato text-[16px] font-semibold text-white transition hover:bg-maseer-green-deep disabled:cursor-not-allowed disabled:opacity-70"
               >
-                Book Your Ride 
+                Book Your Ride
               </LoadingButton>
             </div>
           </form>
@@ -1195,7 +1195,7 @@ export function HomePage() {
           </p>
         </div>
         <div className="flex items-center gap-3">
-          <GoldHeading 
+          <GoldHeading
             before={dynamicHeading ? dynamicHeading.split(" ").slice(0, -1).join(" ") + ", " : "Our, "}
             accent={dynamicHeading ? dynamicHeading.split(" ").slice(-1)[0] : "Service Coverage"}
           />
@@ -1382,7 +1382,7 @@ export function HomePage() {
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <GoldHeading 
+            <GoldHeading
               before={reviewHeading ? reviewHeading.split(" ").slice(0, -1).join(" ") + ", " : "What our, "}
               accent={reviewHeading ? reviewHeading.split(" ").slice(-1)[0] : "Customers Say"}
             />

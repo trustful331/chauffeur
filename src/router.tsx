@@ -32,6 +32,7 @@ import { AdminPricingPage } from "./pages/Admin/AdminPricingPage";
 
 import { ProfilePage } from "./pages/Profile/ProfilePage";
 import { ReservationsPage } from "./pages/Reservations/ReservationsPage";
+import { NotificationsPage } from "./pages/Notifications/NotificationsPage";
 
 export const appRouter = createBrowserRouter([
   {
@@ -48,6 +49,7 @@ export const appRouter = createBrowserRouter([
       { path: "about", element: <AboutPage /> },
       { path: "profile", element: <RequireAuth><ProfilePage /></RequireAuth> },
       { path: "reservations", element: <RequireAuth><ReservationsPage /></RequireAuth> },
+      { path: "notifications", element: <RequireAuth><NotificationsPage /></RequireAuth> },
       { path: "booking", element: <RequireAuth><BookingPage /></RequireAuth> },
       { path: "booking/payment/success", element: <RequireAuth><PaymentSuccessPage /></RequireAuth> },
       { path: "booking/payment/failure", element: <RequireAuth><PaymentFailurePage /></RequireAuth> },
@@ -85,6 +87,7 @@ export const appRouter = createBrowserRouter([
       { path: "pricing", element: <AdminPricingPage /> },
       { path: "get-in-touch", element: <AdminGetInTouchPage /> },
       { path: "reviews", element: <AdminCustomerReviewPage /> },
+      { path: "notifications", element: <NotificationsPage /> },
     ],
   },
 ]);
