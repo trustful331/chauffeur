@@ -517,15 +517,15 @@ export function NotificationDropdown({
           </div>
 
           {/* Footer */}
-          <div className="flex items-center justify-between border-t border-gray-100 bg-[#FAF9F5] px-4 py-2.5">
-            <button
+          <div className="flex items-center justify-end border-t border-gray-100 bg-[#FAF9F5] px-4 py-2.5">
+            {/* <button
               type="button"
               onClick={handleTestNotification}
               className="text-[10.5px] font-bold text-maseer-gold hover:text-maseer-green hover:underline transition"
               title="Test real-time toast and push notification"
             >
               ⚡ Test Notification
-            </button>
+            </button> */}
             <button
               type="button"
               onClick={() => {
