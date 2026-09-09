@@ -162,7 +162,7 @@ export async function getFleetIdForCategory(categoryName: string): Promise<strin
   } catch (error) {
     console.error("Failed to map category to dynamic fleet_id, using fallback:", error);
   }
-  
+
   // Fallbacks: Map static names to standard IDs
   const fallbackMap: Record<string, string> = {
     "Economy Class": "lexus-es",

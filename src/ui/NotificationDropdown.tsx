@@ -1,8 +1,8 @@
-import { useState, useEffect, useRef, useTransition } from "react";
+import { useState, useEffect, useRef, startTransition } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   Bell,
-  Check,
   CheckCheck,
   Car,
   Clock,
@@ -19,9 +19,12 @@ import {
   markNotificationAsRead,
   markAllNotificationsAsRead,
   formatNotificationTime,
+  registerDeviceToken,
   type NotificationItem,
   type NotificationType,
 } from "src/api/notification";
+import { requestFCMToken } from "src/config/firebase";
+import { playNotificationSound } from "src/config/sound";
 import { useAppSelector } from "src/store/hooks";
 import { selectAuthUser, selectIsAuthenticated } from "src/store/slices/auth/selectors";
 import type { AuthUser } from "src/store/slices/auth/types";
@@ -46,7 +49,6 @@ export function NotificationDropdown({
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isMarkingAll, setIsMarkingAll] = useState(false);
-  const [isPending, startTransition] = useTransition();
 
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -65,6 +67,8 @@ export function NotificationDropdown({
     };
   }, [isOpen]);
 
+  const knownNotificationIdsRef = useRef<Set<string> | null>(null);
+
   // Fetch notifications
   const loadNotifications = async (silent = false) => {
     if (!isAuthenticated) return;
@@ -72,6 +76,38 @@ export function NotificationDropdown({
     try {
       const res = await fetchNotifications({ limit: 40 });
       if (res && res.success && Array.isArray(res.data)) {
+        // Detect newly arrived unread notifications from DB
+        if (knownNotificationIdsRef.current !== null) {
+          const freshUnread = res.data.filter(
+            (n) => !knownNotificationIdsRef.current!.has(n.id) && !n.is_read
+          );
+          if (freshUnread.length > 0) {
+            playNotificationSound();
+            freshUnread.forEach((item) => {
+              toast(
+                (t) => (
+                  <div
+                    onClick={() => {
+                      toast.dismiss(t.id);
+                      handleItemClick(item);
+                    }}
+                    className="cursor-pointer font-lato"
+                  >
+                    <p className="font-bold text-sm text-[#062111]">{item.title}</p>
+                    <p className="text-xs text-gray-600 mt-0.5">{item.message}</p>
+                  </div>
+                ),
+                {
+                  duration: 6000,
+                  position: "top-right",
+                  icon: "🔔",
+                }
+              );
+            });
+          }
+        }
+        knownNotificationIdsRef.current = new Set(res.data.map((n) => n.id));
+
         startTransition(() => {
           setNotifications(res.data);
           setUnreadCount(
@@ -88,16 +124,24 @@ export function NotificationDropdown({
     }
   };
 
-  // Initial load + periodic poll every 20 seconds
+  // Initial load + periodic poll every 5 seconds + real-time push event
   useEffect(() => {
     if (!isAuthenticated) return;
     loadNotifications(true);
 
     const interval = setInterval(() => {
       loadNotifications(true);
-    }, 20_000);
+    }, 5_000);
 
-    return () => clearInterval(interval);
+    const onPushReceived = () => {
+      loadNotifications(true);
+    };
+    window.addEventListener("app:notification_received", onPushReceived);
+
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener("app:notification_received", onPushReceived);
+    };
   }, [isAuthenticated]);
 
   // Reload fresh when opening dropdown
@@ -153,6 +197,35 @@ export function NotificationDropdown({
       loadNotifications(true);
     } finally {
       setIsMarkingAll(false);
+    }
+  };
+
+  const handleTestNotification = () => {
+    const payload = {
+      notification: {
+        title: "🚗 New Booking Update (Test Alert)",
+        body: "Your booking status has been updated. Chauffeur assigned!",
+      },
+      data: {
+        link: isCurrentlyInAdmin ? "/admin/bookings" : "/reservations",
+      },
+    };
+
+    playNotificationSound();
+
+    // Triggers the real-time Foreground Toast Listener
+    window.dispatchEvent(new CustomEvent("app:notification_received", { detail: payload }));
+
+    // Also trigger native browser notification if granted
+    if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+      try {
+        new Notification("🚗 New Booking Update (Test Alert)", {
+          body: "Your booking status has been updated. Chauffeur assigned!",
+          icon: "/favicon.svg",
+        });
+      } catch (err) {
+        console.warn("Native push test:", err);
+      }
     }
   };
 
@@ -333,6 +406,37 @@ export function NotificationDropdown({
             </button>
           </div>
 
+          {/* Web Push Permission Banner */}
+          {typeof window !== "undefined" && "Notification" in window && Notification.permission === "default" && (
+            <div className="flex items-center justify-between bg-amber-50/80 px-4 py-2 border-b border-amber-200/60 text-xs text-amber-900">
+              <div className="flex items-center gap-2">
+                <Bell className="h-3.5 w-3.5 text-amber-700 shrink-0" />
+                <span className="font-medium text-[11px]">Get browser push notifications</span>
+              </div>
+              <button
+                type="button"
+                onClick={async () => {
+                  const token = await requestFCMToken();
+                  if (token) {
+                    await registerDeviceToken(token, "web");
+                    toast.success("Push notifications enabled!");
+                    setNotifications((prev) => [...prev]);
+                  }
+                }}
+                className="rounded-md bg-maseer-gold px-2.5 py-1 text-[11px] font-bold text-[#062111] hover:bg-amber-400 transition cursor-pointer shadow-xs"
+              >
+                Enable
+              </button>
+            </div>
+          )}
+
+          {typeof window !== "undefined" && "Notification" in window && Notification.permission === "denied" && (
+            <div className="flex items-center gap-2 bg-red-50/90 px-4 py-2 border-b border-red-200 text-[11px] text-red-700">
+              <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-red-500" />
+              <span>Notifications blocked in browser. Click padlock 🔒 in URL bar to Allow.</span>
+            </div>
+          )}
+
           {/* Notification List */}
           <div className="max-h-[360px] overflow-y-auto divide-y divide-gray-100/70">
             {isLoading && notifications.length === 0 ? (
@@ -414,16 +518,21 @@ export function NotificationDropdown({
 
           {/* Footer */}
           <div className="flex items-center justify-between border-t border-gray-100 bg-[#FAF9F5] px-4 py-2.5">
-            <span className="text-[10.5px] font-semibold text-gray-500">
-              Click to view details
-            </span>
+            <button
+              type="button"
+              onClick={handleTestNotification}
+              className="text-[10.5px] font-bold text-maseer-gold hover:text-maseer-green hover:underline transition"
+              title="Test real-time toast and push notification"
+            >
+              ⚡ Test Notification
+            </button>
             <button
               type="button"
               onClick={() => {
                 setIsOpen(false);
                 navigate(isAdmin ? "/admin/notifications" : "/notifications");
               }}
-              className="text-[11px] font-bold text-maseer-gold hover:text-maseer-green transition flex items-center gap-1"
+              className="text-[11px] font-bold text-maseer-green hover:text-maseer-gold transition flex items-center gap-1"
             >
               <span>View all</span>
               <span>→</span>

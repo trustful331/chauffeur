@@ -1,5 +1,7 @@
 import { apiGet, apiPost, apiPut, getErrorMessage } from "src/config/axios";
 import type { AuthUser } from "src/store/slices/auth/types";
+import { unregisterDeviceToken } from "./notification";
+import { removeFCMToken } from "src/config/firebase";
 
 type AuthApiResponse = {
   success?: boolean;
@@ -159,6 +161,20 @@ export async function signUp(data: {
 }
 
 export async function signOut() {
+  const token = typeof window !== "undefined" ? localStorage.getItem("fcm_device_token") : null;
+  if (token) {
+    try {
+      await unregisterDeviceToken(token);
+    } catch {
+      // ignore
+    }
+    try {
+      await removeFCMToken();
+    } catch {
+      // ignore
+    }
+  }
+
   try {
     await apiPost("auth/logout");
   } catch {

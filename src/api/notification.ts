@@ -1,4 +1,4 @@
-import { apiGet, getErrorMessage } from "src/config/axios";
+import { apiGet, apiPost, apiDelete, getErrorMessage } from "src/config/axios";
 
 export type NotificationType =
   | "booking_created"
@@ -135,5 +135,43 @@ export function formatNotificationTime(dateStr?: string | null): string {
     return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   } catch {
     return dateStr;
+  }
+}
+
+/**
+ * 5) Register device FCM token with backend
+ * POST /api/notifications/device-token
+ */
+export async function registerDeviceToken(
+  token: string,
+  platform: "web" | "android" | "ios" = "web"
+): Promise<boolean> {
+  try {
+    const response = await apiPost<SimpleNotificationResponse>("notifications/device-token", {
+      token,
+      platform,
+    });
+    console.log("[FCM] Device token registered with backend successfully:", response);
+    return response?.success !== false;
+  } catch (error) {
+    console.error("[FCM] Failed to register device token with backend:", error);
+    return false;
+  }
+}
+
+/**
+ * 6) Unregister device FCM token on logout
+ * DELETE /api/notifications/device-token
+ */
+export async function unregisterDeviceToken(token: string): Promise<boolean> {
+  try {
+    const response = await apiDelete<SimpleNotificationResponse>("notifications/device-token", {
+      token,
+    });
+    console.log("[FCM] Device token unregistered from backend:", response);
+    return response?.success !== false;
+  } catch (error) {
+    console.warn("[FCM] Failed to unregister device token:", error);
+    return false;
   }
 }

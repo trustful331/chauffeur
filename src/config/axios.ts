@@ -68,8 +68,8 @@ export async function apiPut<T>(url: string, body?: object) {
   return data;
 }
 
-export async function apiDelete<T>(url: string) {
-  const { data } = await client.delete<T>(url);
+export async function apiDelete<T>(url: string, body?: object) {
+  const { data } = await client.delete<T>(url, body ? { data: body } : undefined);
   return data;
 }
 

@@ -598,6 +598,9 @@ export function BookingFormBody({
       // 6. Store booking ID in localStorage for redirect page retrieval
       localStorage.setItem("pending_booking_id", bookingId);
 
+      // Trigger instant notifications refresh
+      window.dispatchEvent(new CustomEvent("app:notification_received"));
+
       // 6. Pay booking to get MyFatoorah checkout URL
       const payResult = await payBooking(bookingId, {
         amount,

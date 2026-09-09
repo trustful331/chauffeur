@@ -11,6 +11,8 @@ import {
 import { signIn } from "src/api/auth";
 import { setSession } from "src/store/slices/auth";
 import { useAppDispatch, useAppSelector } from "src/store/hooks";
+import { requestFCMToken } from "src/config/firebase";
+import { registerDeviceToken } from "src/api/notification";
 import {
   selectIsAuthenticated,
   selectAuthUser,
@@ -78,6 +80,19 @@ export function SignInPage() {
       const session = await signIn(data.email.trim(), data.password);
       dispatch(setSession(session));
       toast.success("Signed in successfully!");
+
+      // Request browser push permission within the login button click gesture
+      if (typeof window !== "undefined" && "Notification" in window && Notification.permission !== "denied") {
+        try {
+          const token = await requestFCMToken();
+          if (token) {
+            await registerDeviceToken(token, "web");
+          }
+        } catch (fcmErr) {
+          console.warn("[FCM] Login token request:", fcmErr);
+        }
+      }
+
       if (session.user.currentRole === "admin") {
         navigate("/admin/dashboard", { replace: true });
       } else {

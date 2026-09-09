@@ -47,6 +47,11 @@ export function AdminBookingPage() {
         )
       );
       setTimeout(() => setSuccessMessage(null), 3000);
+
+      // Trigger instant notifications refresh
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent("app:notification_received"));
+      }, 600);
     } catch (err: any) {
       setError(err?.message || "Failed to update booking status.");
     }
@@ -133,8 +138,8 @@ export function AdminBookingPage() {
       itemStatus === "confirmed" || itemStatus === "pending" || itemStatus === "paid" || itemStatus === "active"
         ? "upcoming"
         : itemStatus === "canceled"
-        ? "cancelled"
-        : itemStatus;
+          ? "cancelled"
+          : itemStatus;
 
     const matchesStatus =
       filterStatus === "all" ||
@@ -306,8 +311,8 @@ export function AdminBookingPage() {
                   rawStatus === "confirmed" || rawStatus === "pending" || rawStatus === "paid" || rawStatus === "active"
                     ? "upcoming"
                     : rawStatus === "canceled"
-                    ? "cancelled"
-                    : rawStatus;
+                      ? "cancelled"
+                      : rawStatus;
                 const fleetName = getBookingFleetName(item);
 
                 return (
@@ -354,12 +359,12 @@ export function AdminBookingPage() {
                         value={status}
                         onChange={(e) => handleStatusChange(item.id, e.target.value)}
                         className={`rounded-full px-3 py-1 text-xs font-bold border outline-none cursor-pointer shadow-2xs transition ${status === "completed"
-                            ? "bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100"
-                            : status === "inprogress"
-                              ? "bg-blue-50 text-blue-800 border-blue-300 hover:bg-blue-100"
-                              : status === "cancelled" || status === "canceled"
-                                ? "bg-red-50 text-red-800 border-red-300 hover:bg-red-100"
-                                : "bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100"
+                          ? "bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100"
+                          : status === "inprogress"
+                            ? "bg-blue-50 text-blue-800 border-blue-300 hover:bg-blue-100"
+                            : status === "cancelled" || status === "canceled"
+                              ? "bg-red-50 text-red-800 border-red-300 hover:bg-red-100"
+                              : "bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100"
                           }`}
                       >
                         <option value="upcoming">Upcoming</option>

@@ -7,6 +7,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <Toaster
         position="top-right"
+        containerStyle={{ zIndex: 999999 }}
         gutter={12}
         toastOptions={{
           duration: 4500,

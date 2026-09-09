@@ -33,8 +33,10 @@ import type { AuthUser } from "src/store/slices/auth/types";
 import { MaseerLogo } from "./MaseerLogo";
 import { fetchPendingQuotes } from "src/api/pricing";
 import { NotificationDropdown } from "./NotificationDropdown";
+import { useFirebaseMessaging } from "src/hooks/useFirebaseMessaging";
 
 export function AdminLayout() {
+  useFirebaseMessaging();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const location = useLocation();

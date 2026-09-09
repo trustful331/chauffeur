@@ -5,6 +5,7 @@ import { selectIsAuthenticated } from "src/store/slices/auth/selectors";
 import { MaseerLogo } from "./MaseerLogo";
 import { UserProfileDropdown } from "./UserProfileDropdown";
 import { NotificationDropdown } from "./NotificationDropdown";
+import { useFirebaseMessaging } from "src/hooks/useFirebaseMessaging";
 
 const navItems = [
   { to: "/", label: "Home", end: true },
@@ -117,6 +118,7 @@ function CloseIcon() {
 }
 
 export function MainLayout() {
+  useFirebaseMessaging();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
   const { pathname } = useLocation();
   const contactPage = pathname === "/contact";

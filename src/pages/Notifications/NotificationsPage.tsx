@@ -15,7 +15,6 @@ import {
   RefreshCw,
   Search,
   ArrowRight,
-  Filter,
 } from "lucide-react";
 import {
   fetchNotifications,
