@@ -2,10 +2,12 @@ import { Link, Outlet } from "react-router-dom";
 import { images } from "../../assets/images";
 import { HeroBackground } from "../../ui/HeroBackground";
 import { MaseerLogo } from "../../ui/MaseerLogo";
+import { PageMeta } from "../../ui/PageMeta";
 
 export function AuthLayout() {
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-[1.05fr_1fr]">
+      <PageMeta />
       <div className="relative hidden min-h-screen overflow-hidden bg-maseer-green-deep lg:flex">
         <HeroBackground
           image={images.home.hero}

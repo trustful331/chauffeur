@@ -33,6 +33,11 @@ import { AdminPricingPage } from "./pages/Admin/AdminPricingPage";
 import { ProfilePage } from "./pages/Profile/ProfilePage";
 import { ReservationsPage } from "./pages/Reservations/ReservationsPage";
 import { NotificationsPage } from "./pages/Notifications/NotificationsPage";
+import {
+  CookiePolicyPage,
+  PrivacyPolicyPage,
+  TermsPage,
+} from "./pages/Legal/LegalPages";
 
 export const appRouter = createBrowserRouter([
   {
@@ -47,6 +52,9 @@ export const appRouter = createBrowserRouter([
       { path: "corporate", element: <CorporatePage /> },
       { path: "contact", element: <ContactPage /> },
       { path: "about", element: <AboutPage /> },
+      { path: "privacy", element: <PrivacyPolicyPage /> },
+      { path: "terms", element: <TermsPage /> },
+      { path: "cookies", element: <CookiePolicyPage /> },
       { path: "profile", element: <RequireAuth><ProfilePage /></RequireAuth> },
       { path: "reservations", element: <RequireAuth><ReservationsPage /></RequireAuth> },
       { path: "notifications", element: <RequireAuth><NotificationsPage /></RequireAuth> },

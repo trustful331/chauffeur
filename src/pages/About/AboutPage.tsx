@@ -185,6 +185,10 @@ export function AboutPage() {
             offering luxury transportation services with a strong focus on
             comfort, reliability, and professionalism.
           </p>
+          <p className="mt-3 max-w-[520px] font-lato text-[12px] leading-5 text-white/70">
+            Imagery on this page is representative. Ultra-luxury vehicles such as
+            Rolls-Royce are available on demand / subject to availability.
+          </p>
         </div>
       </section>
 

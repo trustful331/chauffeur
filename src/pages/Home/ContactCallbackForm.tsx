@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { LoadingButton } from "../../ui/Spinner";
 import { createGetInTouch } from "src/api/getInTouch";
@@ -175,8 +176,11 @@ export function ContactCallbackForm() {
 
       <p className="mt-4 font-lato text-[12px] leading-5 text-maseer-muted">
         By submitting this form, you agree that Maseer may use your details to
-        respond to this enquiry. We do not share your information for unrelated
-        marketing.
+        respond to this enquiry under our{" "}
+        <Link to="/privacy" className="font-semibold text-maseer-green hover:underline">
+          Privacy Policy
+        </Link>
+        . We do not share your information for unrelated marketing.
       </p>
 
       <LoadingButton

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://maseer.com/sitemap.xml

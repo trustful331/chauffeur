@@ -6,6 +6,8 @@ import { MaseerLogo } from "./MaseerLogo";
 import { UserProfileDropdown } from "./UserProfileDropdown";
 import { NotificationDropdown } from "./NotificationDropdown";
 import { useFirebaseMessaging } from "src/hooks/useFirebaseMessaging";
+import { PageMeta } from "./PageMeta";
+import { SITE, getWhatsAppUrl, hasWhatsApp } from "src/config/site";
 
 const navItems = [
   { to: "/", label: "Home", end: true },
@@ -127,14 +129,28 @@ export function MainLayout() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   const closeMobileNav = () => setMobileNavOpen(false);
+  const whatsappHref = getWhatsAppUrl("Hello Maseer, I would like to enquire about a booking.");
+  const whatsappIsExternal = hasWhatsApp();
+  const socialLinks = [
+    { label: "Facebook", href: SITE.social.facebook, Icon: FacebookIcon },
+    { label: "Twitter", href: SITE.social.twitter, Icon: TwitterIcon },
+    { label: "Instagram", href: SITE.social.instagram, Icon: InstagramIcon },
+  ].filter((item) => Boolean(item.href.trim()));
 
   return (
     <div className={`min-h-screen ${pageBg}`}>
+      <PageMeta />
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-maseer-green focus:px-4 focus:py-2 focus:font-lato focus:text-sm focus:font-semibold focus:text-white"
+      >
+        Skip to main content
+      </a>
       <header className="sticky top-0 z-40 border-b border-maseer-line/60 bg-white">
         <div className="mx-auto flex h-[80px] max-w-7xl items-center justify-between px-4 max-md:h-auto max-md:min-h-[64px] max-md:py-3 md:px-5">
           <MaseerLogo />
 
-          <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 xl:flex">
+          <nav className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 xl:flex" aria-label="Primary">
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
@@ -168,15 +184,25 @@ export function MainLayout() {
                 Login
               </Link>
             )}
-            <a
-              href="https://wa.me/"
-              target="_blank"
-              rel="noreferrer"
-              className="btn-primary !rounded-full !py-2.5 !text-xs max-md:!px-3"
-            >
-              <WhatsAppIcon />
-              <span className="max-md:hidden">Chat on WhatsApp</span>
-            </a>
+            {whatsappIsExternal ? (
+              <a
+                href={whatsappHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-primary !rounded-full !py-2.5 !text-xs max-md:!px-3"
+              >
+                <WhatsAppIcon />
+                <span className="max-md:hidden">Chat on WhatsApp</span>
+              </a>
+            ) : (
+              <Link
+                to="/contact"
+                className="btn-primary !rounded-full !py-2.5 !text-xs max-md:!px-3"
+              >
+                <WhatsAppIcon />
+                <span className="max-md:hidden">Contact Us</span>
+              </Link>
+            )}
             <button
               type="button"
               className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-maseer-green transition hover:bg-maseer-surface md:hidden"
@@ -216,7 +242,7 @@ export function MainLayout() {
         ) : null}
       </header>
 
-      <main className="w-full">
+      <main id="main-content" className="w-full" tabIndex={-1}>
         <Outlet />
       </main>
 
@@ -230,27 +256,24 @@ export function MainLayout() {
                 luggage. Your journey, our priority.
               </p>
               <div className="mt-6 flex items-center gap-4 text-maseer-green-text">
-                <a
-                  href="#"
-                  aria-label="Facebook"
-                  className="transition hover:text-primary"
-                >
-                  <FacebookIcon />
-                </a>
-                <a
-                  href="#"
-                  aria-label="Twitter"
-                  className="transition hover:text-primary"
-                >
-                  <TwitterIcon />
-                </a>
-                <a
-                  href="#"
-                  aria-label="Instagram"
-                  className="transition hover:text-primary"
-                >
-                  <InstagramIcon />
-                </a>
+                {socialLinks.length > 0 ? (
+                  socialLinks.map(({ label, href, Icon }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={label}
+                      className="transition hover:text-primary"
+                    >
+                      <Icon />
+                    </a>
+                  ))
+                ) : (
+                  <p className="font-lato text-[12px] text-maseer-muted">
+                    Official social profiles will appear here once confirmed.
+                  </p>
+                )}
               </div>
             </div>
 
@@ -299,9 +322,28 @@ export function MainLayout() {
                   </NavLink>
                 </li>
                 <li>
-                  <span className="text-maseer-muted">
-                    Privacy Policy &amp; Terms — coming soon
-                  </span>
+                  <NavLink
+                    to="/privacy"
+                    className="transition hover:text-primary"
+                  >
+                    Privacy Policy
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/terms"
+                    className="transition hover:text-primary"
+                  >
+                    Terms &amp; Conditions
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink
+                    to="/cookies"
+                    className="transition hover:text-primary"
+                  >
+                    Cookie Policy
+                  </NavLink>
                 </li>
               </ul>
             </div>

@@ -1,11 +1,19 @@
 import { useState, type ReactNode } from "react";
 import { useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 import { images } from "../../assets/images";
 import { HeroBackground } from "../../ui/HeroBackground";
 import { LoadingButton } from "../../ui/Spinner";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import { createGetInTouch } from "src/api/getInTouch";
 import toast from "react-hot-toast";
+import {
+  SITE,
+  getPhoneHref,
+  getWhatsAppUrl,
+  hasPhone,
+  hasWhatsApp,
+} from "src/config/site";
 
 type ContactForm = {
   name: string;
@@ -15,103 +23,121 @@ type ContactForm = {
   message: string;
 };
 
-const CONTACT_CARDS = [
-  {
-    title: "Phone Support",
-    desc: "Speak directly with our bookings and customer service team",
-    detail: "support@maseer.com",
-    note: "For verified +966 booking numbers, use WhatsApp or the contact form below",
-    detailTone: "dark" as const,
-    icon: (
-      <svg
-        width="25"
-        height="35"
-        viewBox="0 0 35 35"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M32.1916 22.9735C30.0488 22.9735 27.9448 22.6383 25.951 21.9795C24.974 21.6462 23.7729 21.9519 23.1767 22.5643L19.2413 25.5351C14.6773 23.0989 11.866 20.2885 9.46303 15.7588L12.3464 11.926C13.0956 11.1779 13.3643 10.085 13.0423 9.05962C12.3806 7.05533 12.0445 4.95232 12.0445 2.80857C12.0446 1.25991 10.7846 0 9.23608 0H2.80848C1.25991 0 0 1.25991 0 2.80848C0 20.5591 14.441 35 32.1916 35C33.7402 35 35.0001 33.7401 35.0001 32.1915V25.7819C35 24.2334 33.7401 22.9735 32.1916 22.9735Z"
-          fill="white"
-        />
-      </svg>
-    ),
-  },
-  {
-    title: "Email Support",
-    desc: "Send us a message and our team will respond during business hours",
-    detail: "support@maseer.com",
-    note: "For general inquiries and feedback",
-    detailTone: "green" as const,
-    icon: (
-      <svg
-        width="25"
-        height="35"
-        viewBox="0 0 35 35"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <g clip-path="url(#clip0_201_2920)">
+function buildContactCards() {
+  const phoneHref = getPhoneHref();
+  const phoneDetail = hasPhone()
+    ? SITE.phoneDisplay || SITE.phoneTel
+    : SITE.email;
+  const phoneNote = hasPhone()
+    ? SITE.serviceHours
+    : "Add verified +966 numbers in site config, or use the form below";
+
+  return [
+    {
+      title: "Phone Support",
+      desc: "Speak directly with our bookings and customer service team",
+      detail: phoneDetail,
+      detailHref: phoneHref || `mailto:${SITE.email}`,
+      note: phoneNote,
+      detailTone: "dark" as const,
+      icon: (
+        <svg
+          width="25"
+          height="35"
+          viewBox="0 0 35 35"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
-            d="M20.425 20.944C19.5543 21.5245 18.5428 21.8313 17.5 21.8313C16.4572 21.8313 15.4458 21.5245 14.575 20.944L0.233037 11.3823C0.153467 11.3293 0.0759473 11.274 0 11.2171V26.8849C0 28.6812 1.45776 30.1069 3.22198 30.1069H31.7779C33.5743 30.1069 34.9999 28.6491 34.9999 26.8849V11.217C34.9238 11.2741 34.8462 11.3295 34.7664 11.3826L20.425 20.944Z"
+            d="M32.1916 22.9735C30.0488 22.9735 27.9448 22.6383 25.951 21.9795C24.974 21.6462 23.7729 21.9519 23.1767 22.5643L19.2413 25.5351C14.6773 23.0989 11.866 20.2885 9.46303 15.7588L12.3464 11.926C13.0956 11.1779 13.3643 10.085 13.0423 9.05962C12.3806 7.05533 12.0445 4.95232 12.0445 2.80857C12.0446 1.25991 10.7846 0 9.23608 0H2.80848C1.25991 0 0 1.25991 0 2.80848C0 20.5591 14.441 35 32.1916 35C33.7402 35 35.0001 33.7401 35.0001 32.1915V25.7819C35 24.2334 33.7401 22.9735 32.1916 22.9735Z"
             fill="white"
           />
+        </svg>
+      ),
+    },
+    {
+      title: "Email Support",
+      desc: "Send us a message and our team will respond during business hours",
+      detail: SITE.email,
+      detailHref: `mailto:${SITE.email}`,
+      note: "For general inquiries and feedback",
+      detailTone: "green" as const,
+      icon: (
+        <svg
+          width="25"
+          height="35"
+          viewBox="0 0 35 35"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <g clipPath="url(#clip0_201_2920)">
+            <path
+              d="M20.425 20.944C19.5543 21.5245 18.5428 21.8313 17.5 21.8313C16.4572 21.8313 15.4458 21.5245 14.575 20.944L0.233037 11.3823C0.153467 11.3293 0.0759473 11.274 0 11.2171V26.8849C0 28.6812 1.45776 30.1069 3.22198 30.1069H31.7779C33.5743 30.1069 34.9999 28.6491 34.9999 26.8849V11.217C34.9238 11.2741 34.8462 11.3295 34.7664 11.3826L20.425 20.944Z"
+              fill="white"
+            />
+            <path
+              d="M1.37061 9.67585L15.7126 19.2375C16.2555 19.5995 16.8777 19.7805 17.4999 19.7805C18.1222 19.7805 18.7445 19.5994 19.2874 19.2375L33.6294 9.67585C34.4876 9.10402 35 8.14699 35 7.11408C35 5.33803 33.5551 3.89319 31.7791 3.89319H3.22089C1.44491 3.89326 0 5.3381 0 7.11579C0 8.14699 0.512422 9.10402 1.37061 9.67585Z"
+              fill="white"
+            />
+          </g>
+          <defs>
+            <clipPath id="clip0_201_2920">
+              <rect width="35" height="35" fill="white" />
+            </clipPath>
+          </defs>
+        </svg>
+      ),
+    },
+    {
+      title: hasWhatsApp() ? "WhatsApp" : "Contact Form",
+      desc: hasWhatsApp()
+        ? "Message our bookings team on WhatsApp"
+        : "Prefer written support? Send a message through our contact form",
+      detail: hasWhatsApp() ? "Open WhatsApp chat" : "Form below",
+      detailHref: hasWhatsApp()
+        ? getWhatsAppUrl("Hello Maseer, I need help with a booking.")
+        : "#contact-form",
+      note: SITE.serviceHours,
+      detailTone: "dark" as const,
+      icon: (
+        <svg
+          width="25"
+          height="35"
+          viewBox="0 0 35 35"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
           <path
-            d="M1.37061 9.67585L15.7126 19.2375C16.2555 19.5995 16.8777 19.7805 17.4999 19.7805C18.1222 19.7805 18.7445 19.5994 19.2874 19.2375L33.6294 9.67585C34.4876 9.10402 35 8.14699 35 7.11408C35 5.33803 33.5551 3.89319 31.7791 3.89319H3.22089C1.44491 3.89326 0 5.3381 0 7.11579C0 8.14699 0.512422 9.10402 1.37061 9.67585Z"
+            d="M0 31.1111V35H17.5C27.15 35 35 27.15 35 17.5C35 7.84998 27.15 0 17.5 0C7.84998 0 0 7.84998 0 17.5C0 21.4345 1.32157 25.236 3.73696 28.3103C3.26796 29.949 1.77165 31.1111 0 31.1111ZM23.3333 15.5556H27.2222V19.4444H23.3333V15.5556ZM15.5556 15.5556H19.4444V19.4444H15.5556V15.5556ZM7.77778 15.5556H11.6667V19.4444H7.77778V15.5556Z"
             fill="white"
           />
-        </g>
-        <defs>
-          <clipPath id="clip0_201_2920">
-            <rect width="35" height="35" fill="white" />
-          </clipPath>
-        </defs>
-      </svg>
-    ),
-  },
-  {
-    title: "Live Chat",
-    desc: "Prefer written support? Send a message through our contact form",
-    detail: "Contact form below",
-    note: "Our team responds during business hours",
-    detailTone: "dark" as const,
-    icon: (
-      <svg
-        width="25"
-        height="35"
-        viewBox="0 0 35 35"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M0 31.1111V35H17.5C27.15 35 35 27.15 35 17.5C35 7.84998 27.15 0 17.5 0C7.84998 0 0 7.84998 0 17.5C0 21.4345 1.32157 25.236 3.73696 28.3103C3.26796 29.949 1.77165 31.1111 0 31.1111ZM23.3333 15.5556H27.2222V19.4444H23.3333V15.5556ZM15.5556 15.5556H19.4444V19.4444H15.5556V15.5556ZM7.77778 15.5556H11.6667V19.4444H7.77778V15.5556Z"
-          fill="white"
-        />
-      </svg>
-    ),
-  },
-  {
-    title: "Urgent Trip Support",
-    desc: "For time-sensitive trip changes or chauffeur coordination",
-    detail: "support@maseer.com",
-    note: "For medical or public emergencies, call local emergency services",
-    detailTone: "dark" as const,
-    icon: (
-      <svg
-        width="30"
-        height="35"
-        viewBox="0 0 40 35"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M36.4844 9.34015H34.0296C31.9418 4.40615 27.3445 0.820542 22.052 0.135735C16.8071 -0.560191 11.6538 1.44905 8.28242 5.49367C7.29133 6.68281 6.50516 7.97559 5.92953 9.34015H3.51562C1.57703 9.34015 0 10.9098 0 12.8392V17.5047C0 19.4341 1.57703 21.0037 3.51562 21.0037H8.3282L7.82469 19.474C6.35867 15.0181 7.18383 10.4655 10.0872 6.98349C12.9402 3.5607 17.297 1.867 21.7476 2.44792C26.4544 3.05816 30.5399 6.37116 32.1587 10.8903L32.1685 10.9165C32.4295 11.6068 32.6126 12.3164 32.7178 13.0465C33.0691 15.2278 32.8689 17.4386 32.1399 19.4399L32.1348 19.4538C30.3253 24.567 25.4586 28.0019 20.0229 28.0019C18.0716 28.0019 16.4844 29.5715 16.4844 31.5009C16.4844 33.4304 18.0614 35 20 35C21.9386 35 23.5156 33.4304 23.5156 31.5009V29.9279C28.1948 28.821 32.1252 25.5196 34.0143 21.0036H36.4844C38.423 21.0036 40 19.434 40 17.5046V12.8391C40 10.9097 38.423 9.34015 36.4844 9.34015Z"
-          fill="white"
-        />
-      </svg>
-    ),
-  },
-];
+        </svg>
+      ),
+    },
+    {
+      title: "Urgent Trip Support",
+      desc: "For time-sensitive trip changes or chauffeur coordination",
+      detail: hasPhone() ? SITE.phoneDisplay || SITE.phoneTel : SITE.email,
+      detailHref: phoneHref || `mailto:${SITE.email}`,
+      note: "For medical or public emergencies, call local emergency services",
+      detailTone: "dark" as const,
+      icon: (
+        <svg
+          width="30"
+          height="35"
+          viewBox="0 0 40 35"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M36.4844 9.34015H34.0296C31.9418 4.40615 27.3445 0.820542 22.052 0.135735C16.8071 -0.560191 11.6538 1.44905 8.28242 5.49367C7.29133 6.68281 6.50516 7.97559 5.92953 9.34015H3.51562C1.57703 9.34015 0 10.9098 0 12.8392V17.5047C0 19.4341 1.57703 21.0037 3.51562 21.0037H8.3282L7.82469 19.474C6.35867 15.0181 7.18383 10.4655 10.0872 6.98349C12.9402 3.5607 17.297 1.867 21.7476 2.44792C26.4544 3.05816 30.5399 6.37116 32.1587 10.8903L32.1685 10.9165C32.4295 11.6068 32.6126 12.3164 32.7178 13.0465C33.0691 15.2278 32.8689 17.4386 32.1399 19.4399L32.1348 19.4538C30.3253 24.567 25.4586 28.0019 20.0229 28.0019C18.0716 28.0019 16.4844 29.5715 16.4844 31.5009C16.4844 33.4304 18.0614 35 20 35C21.9386 35 23.5156 33.4304 23.5156 31.5009V29.9279C28.1948 28.821 32.1252 25.5196 34.0143 21.0036H36.4844C38.423 21.0036 40 19.434 40 17.5046V12.8391C40 10.9097 38.423 9.34015 36.4844 9.34015Z"
+            fill="white"
+          />
+        </svg>
+      ),
+    },
+  ];
+}
 
 const FAQ_ITEMS = [
   {
@@ -155,6 +181,7 @@ export function ContactPage() {
   const [openFaq, setOpenFaq] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { register, handleSubmit, reset } = useForm<ContactForm>();
+  const contactCards = buildContactCards();
 
   const onContactSubmit = async (data: ContactForm) => {
     setIsSubmitting(true);
@@ -167,7 +194,7 @@ export function ContactPage() {
       };
 
       await createGetInTouch(payload);
-      toast.success("Your message has been sent successfully! 🎉");
+      toast.success("Your message has been sent successfully!");
       reset();
     } catch (error) {
       const errMsg = error instanceof Error ? error.message : "Failed to send message";
@@ -199,7 +226,7 @@ export function ContactPage() {
       <section className="bg-maseer-cream py-[80px] max-md:py-12">
         <div className="page-container">
           <div className="grid grid-cols-4 gap-10 max-md:grid-cols-1">
-            {CONTACT_CARDS.map((card) => (
+            {contactCards.map((card) => (
               <article key={card.title} className="text-center">
                 <div className="mx-auto flex h-[56px] w-[56px] items-center justify-center rounded-full bg-maseer-green text-white">
                   {card.icon}
@@ -210,16 +237,20 @@ export function ContactPage() {
                 <p className="mx-auto mt-2 max-w-[220px] font-lato text-[14px] leading-[18px] text-maseer-muted">
                   {card.desc}
                 </p>
-                <p
+                <a
+                  href={card.detailHref}
+                  {...(card.detailHref.startsWith("http")
+                    ? { target: "_blank", rel: "noopener noreferrer" }
+                    : {})}
                   className={[
-                    "mt-4 font-lato text-[18px] font-bold",
+                    "mt-4 inline-block font-lato text-[18px] font-bold transition hover:underline",
                     card.detailTone === "green"
                       ? "text-maseer-green"
                       : "text-[#1a1a1a]",
                   ].join(" ")}
                 >
                   {card.detail}
-                </p>
+                </a>
                 <p className="mt-2 font-lato text-[14px] leading-[16px] text-black">
                   {card.note}
                 </p>
@@ -246,6 +277,7 @@ export function ContactPage() {
             </div>
 
             <form
+              id="contact-form"
               onSubmit={handleSubmit(onContactSubmit)}
               className="rounded-2xl border border-[#e8e8e8] bg-white p-8 shadow-[0_4px_24px_rgba(0,0,0,0.05)] lg:p-10"
             >
@@ -374,8 +406,11 @@ export function ContactPage() {
               </div>
               <p className="mt-4 font-lato text-[12px] leading-5 text-maseer-muted">
                 By submitting this form, you agree that Maseer may use your details
-                to respond to this enquiry. We do not share your information for
-                unrelated marketing.
+                to respond to this enquiry under our{" "}
+                <Link to="/privacy" className="font-semibold text-maseer-green hover:underline">
+                  Privacy Policy
+                </Link>
+                . We do not share your information for unrelated marketing.
               </p>
               <LoadingButton
                 type="submit"

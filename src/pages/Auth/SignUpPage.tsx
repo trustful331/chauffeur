@@ -186,21 +186,19 @@ export function SignUpPage() {
           />
           <span className="font-lato text-[12px] leading-5 text-maseer-muted">
             I agree to Maseer&apos;s{" "}
-            <button
-              type="button"
+            <Link
+              to="/terms"
               className="font-semibold text-maseer-green underline-offset-2 hover:underline"
-              onClick={() => console.log("[Auth] Terms — static handler")}
             >
               Terms of Service
-            </button>{" "}
+            </Link>{" "}
             and{" "}
-            <button
-              type="button"
+            <Link
+              to="/privacy"
               className="font-semibold text-maseer-green underline-offset-2 hover:underline"
-              onClick={() => console.log("[Auth] Privacy — static handler")}
             >
               Privacy Policy
-            </button>
+            </Link>
           </span>
         </label>
         {errors.acceptTerms && (
