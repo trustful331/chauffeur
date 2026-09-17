@@ -30,7 +30,7 @@ function buildContactCards() {
     : SITE.email;
   const phoneNote = hasPhone()
     ? SITE.serviceHours
-    : "Add verified +966 numbers in site config, or use the form below";
+    : "Email us or use the contact form below";
 
   return [
     {

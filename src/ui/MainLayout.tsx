@@ -255,9 +255,9 @@ export function MainLayout() {
                 Reliable, professional chauffeur services for passengers and
                 luggage. Your journey, our priority.
               </p>
-              <div className="mt-6 flex items-center gap-4 text-maseer-green-text">
-                {socialLinks.length > 0 ? (
-                  socialLinks.map(({ label, href, Icon }) => (
+              {socialLinks.length > 0 ? (
+                <div className="mt-6 flex items-center gap-4 text-maseer-green-text">
+                  {socialLinks.map(({ label, href, Icon }) => (
                     <a
                       key={label}
                       href={href}
@@ -268,13 +268,9 @@ export function MainLayout() {
                     >
                       <Icon />
                     </a>
-                  ))
-                ) : (
-                  <p className="font-lato text-[12px] text-maseer-muted">
-                    Official social profiles will appear here once confirmed.
-                  </p>
-                )}
-              </div>
+                  ))}
+                </div>
+              ) : null}
             </div>
 
             <div>

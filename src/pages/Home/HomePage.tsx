@@ -491,7 +491,7 @@ const bestFeatures = [
     text: "Real-time tracking keeps you informed and supports a safer journey",
   },
   {
-    icon: "pound",
+    icon: "tag",
     title: "Transparent Pricing",
     text: "No hidden fees - see exactly what you'll pay before you book",
   },
@@ -544,15 +544,16 @@ function FeatureCardIcon({
           />
         </svg>
       );
-    case "pound":
+    case "tag":
       return (
         <svg className={className} viewBox="0 0 24 24" fill="none" aria-hidden>
           <path
-            d="M14 6.5C14 4.57 12.43 3 10.5 3S7 4.57 7 6.5 8.57 10 10.5 10H14M10 10v11M6 14h8"
+            d="M20.6 12.4 12.4 20.6a2 2 0 0 1-2.8 0L3.4 14.4a2 2 0 0 1 0-2.8L11.6 3.4A2 2 0 0 1 13 3h5.6A2.4 2.4 0 0 1 21 5.4V11a2 2 0 0 1-.4 1.4z"
             stroke="currentColor"
             strokeWidth="1.8"
-            strokeLinecap="round"
+            strokeLinejoin="round"
           />
+          <circle cx="16" cy="8" r="1.2" fill="currentColor" />
         </svg>
       );
     case "shield":
