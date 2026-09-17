@@ -74,7 +74,7 @@ export function NotificationDropdown({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isOpen]);
+  }, []);
 
   const knownNotificationIdsRef = useRef<Set<string> | null>(null);
 
@@ -137,23 +137,24 @@ export function NotificationDropdown({
     }
   };
 
-  // Initial load + periodic poll every 5 seconds + real-time push event
+  // Initial load + push/event refresh + when tab becomes visible (no polling)
   useEffect(() => {
     if (!isAuthenticated) return;
     loadNotifications(true);
 
-    const interval = setInterval(() => {
-      loadNotifications(true);
-    }, 5_000);
-
     const onPushReceived = () => {
       loadNotifications(true);
     };
+    const onVisible = () => {
+      if (document.visibilityState === "visible") loadNotifications(true);
+    };
+
     window.addEventListener("app:notification_received", onPushReceived);
+    document.addEventListener("visibilitychange", onVisible);
 
     return () => {
-      clearInterval(interval);
       window.removeEventListener("app:notification_received", onPushReceived);
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, [isAuthenticated]);
 

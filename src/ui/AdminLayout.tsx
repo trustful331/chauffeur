@@ -47,24 +47,39 @@ export function AdminLayout() {
 
   const profileRef = useRef<HTMLDivElement>(null);
 
-  // Poll for pending quotes count
+  // Pending quotes badge: load once, then refresh on push/events or tab focus (no polling)
   useEffect(() => {
+    let cancelled = false;
+
     async function checkPendingQuotes() {
       try {
         const res = await fetchPendingQuotes();
-        if (res.success && Array.isArray(res.data)) {
-          const awaitingCount = res.data.filter(
-            (q) => q.status === "awaiting_admin",
-          ).length;
-          setPendingQuoteCount(awaitingCount);
-        }
-      } catch (e) {
+        if (cancelled || !res.success || !Array.isArray(res.data)) return;
+        setPendingQuoteCount(
+          res.data.filter((q) => q.status === "awaiting_admin").length,
+        );
+      } catch {
         // Silently handle
       }
     }
+
     checkPendingQuotes();
-    const timer = setInterval(checkPendingQuotes, 6000);
-    return () => clearInterval(timer);
+
+    const onRefresh = () => checkPendingQuotes();
+    const onVisible = () => {
+      if (document.visibilityState === "visible") checkPendingQuotes();
+    };
+
+    window.addEventListener("app:notification_received", onRefresh);
+    window.addEventListener("app:quotes_updated", onRefresh);
+    document.addEventListener("visibilitychange", onVisible);
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener("app:notification_received", onRefresh);
+      window.removeEventListener("app:quotes_updated", onRefresh);
+      document.removeEventListener("visibilitychange", onVisible);
+    };
   }, []);
 
   // Click outside listener for dropdowns
@@ -113,8 +128,6 @@ export function AdminLayout() {
     const activeItem = menuItems.find((item) => item.to === location.pathname);
     return activeItem ? activeItem.label : "Admin Panel";
   };
-
-
 
   return (
     <div className="min-h-screen bg-[#F4F5F4] lg:flex">

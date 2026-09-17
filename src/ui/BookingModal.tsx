@@ -426,7 +426,7 @@ export function BookingFormBody({
       } catch (e) {
         // Silently ignore transient network polling error
       }
-    }, 3500);
+    }, 8000);
 
     return () => clearInterval(pollInterval);
   }, [quoteData?.quote_id, quoteData?.status]);

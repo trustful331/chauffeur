@@ -32,13 +32,17 @@ import { fetchFleets, type FleetItem } from "src/api/admin/fleet";
 import { LoadingSpinner } from "src/ui/Spinner";
 
 export function AdminPricingPage() {
-  const [activeTab, setActiveTab] = useState<"pending" | "fixed" | "hourly">("pending");
+  const [activeTab, setActiveTab] = useState<"pending" | "fixed" | "hourly">(
+    "pending",
+  );
   const [fleets, setFleets] = useState<FleetItem[]>([]);
 
   // ── Pending Quotes State ──────────────────────────────────────────────────
   const [pendingQuotes, setPendingQuotes] = useState<PendingQuoteItem[]>([]);
   const [isLoadingPending, setIsLoadingPending] = useState(false);
-  const [selectedQuote, setSelectedQuote] = useState<PendingQuoteItem | null>(null);
+  const [selectedQuote, setSelectedQuote] = useState<PendingQuoteItem | null>(
+    null,
+  );
   const [quoteAmount, setQuoteAmount] = useState<string>("");
   const [quoteAdminNote, setQuoteAdminNote] = useState<string>("");
   const [isSubmittingPrice, setIsSubmittingPrice] = useState(false);
@@ -57,7 +61,9 @@ export function AdminPricingPage() {
   const [hourlyPrices, setHourlyPrices] = useState<HourlyPriceItem[]>([]);
   const [isLoadingHourly, setIsLoadingHourly] = useState(false);
   const [isHourlyModalOpen, setIsHourlyModalOpen] = useState(false);
-  const [editingHourly, setEditingHourly] = useState<HourlyPriceItem | null>(null);
+  const [editingHourly, setEditingHourly] = useState<HourlyPriceItem | null>(
+    null,
+  );
   const [hourlyFleetId, setHourlyFleetId] = useState<string>("");
   const [hourlyPrice, setHourlyPrice] = useState<string>("");
   const [hourlyIsActive, setHourlyIsActive] = useState<boolean>(true);
@@ -88,7 +94,9 @@ export function AdminPricingPage() {
         setPendingQuotes(res.data);
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to load pending quotes");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to load pending quotes",
+      );
     } finally {
       setIsLoadingPending(false);
     }
@@ -102,7 +110,9 @@ export function AdminPricingPage() {
         setFixedPrices(res.data);
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to load fixed prices");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to load fixed prices",
+      );
     } finally {
       setIsLoadingFixed(false);
     }
@@ -116,7 +126,9 @@ export function AdminPricingPage() {
         setHourlyPrices(res.data);
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to load hourly prices");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to load hourly prices",
+      );
     } finally {
       setIsLoadingHourly(false);
     }
@@ -125,11 +137,29 @@ export function AdminPricingPage() {
   useEffect(() => {
     if (activeTab === "pending") {
       loadPendingQuotes();
-      const interval = setInterval(loadPendingQuotes, 6000);
-      return () => clearInterval(interval);
-    } else if (activeTab === "fixed") {
+
+      const onRefresh = () => loadPendingQuotes();
+      const onVisible = () => {
+        if (document.visibilityState === "visible") loadPendingQuotes();
+      };
+
+      window.addEventListener("app:notification_received", onRefresh);
+      window.addEventListener("app:quotes_updated", onRefresh);
+      document.addEventListener("visibilitychange", onVisible);
+
+      return () => {
+        window.removeEventListener("app:notification_received", onRefresh);
+        window.removeEventListener("app:quotes_updated", onRefresh);
+        document.removeEventListener("visibilitychange", onVisible);
+      };
+    }
+
+    if (activeTab === "fixed") {
       loadFixedPrices();
-    } else if (activeTab === "hourly") {
+      return;
+    }
+
+    if (activeTab === "hourly") {
       loadHourlyPrices();
     }
   }, [activeTab]);
@@ -159,6 +189,7 @@ export function AdminPricingPage() {
         setQuoteAmount("");
         setQuoteAdminNote("");
         loadPendingQuotes();
+        window.dispatchEvent(new CustomEvent("app:quotes_updated"));
       } else {
         toast.error(res.message || "Failed to set price");
       }
@@ -218,20 +249,25 @@ export function AdminPricingPage() {
       setIsFixedModalOpen(false);
       loadFixedPrices();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to save fixed price");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to save fixed price",
+      );
     } finally {
       setIsSubmittingFixed(false);
     }
   };
 
   const handleDeleteFixedPrice = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this fixed price entry?")) return;
+    if (!confirm("Are you sure you want to delete this fixed price entry?"))
+      return;
     try {
       await deleteFixedPrice(id);
       toast.success("Fixed price deleted.");
       loadFixedPrices();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to delete fixed price");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to delete fixed price",
+      );
     }
   };
 
@@ -284,27 +320,33 @@ export function AdminPricingPage() {
       setIsHourlyModalOpen(false);
       loadHourlyPrices();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to save hourly price");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to save hourly price",
+      );
     } finally {
       setIsSubmittingHourly(false);
     }
   };
 
   const handleDeleteHourlyPrice = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this hourly price entry?")) return;
+    if (!confirm("Are you sure you want to delete this hourly price entry?"))
+      return;
     try {
       await deleteHourlyPrice(id);
       toast.success("Hourly price deleted.");
       loadHourlyPrices();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed to delete hourly price");
+      toast.error(
+        err instanceof Error ? err.message : "Failed to delete hourly price",
+      );
     }
   };
 
   // Utility to match fleet details
   const getFleetLabel = (fleetId: string) => {
     const f = fleets.find((item) => item.id === fleetId);
-    if (f) return `${f.vehicle_name} (${f.category.replace(/_/g, " ").toUpperCase()})`;
+    if (f)
+      return `${f.vehicle_name} (${f.category.replace(/_/g, " ").toUpperCase()})`;
     return fleetId;
   };
 
@@ -317,7 +359,8 @@ export function AdminPricingPage() {
             Pricing &amp; Quote Management
           </h1>
           <p className="mt-1 font-lato text-xs text-[#6b7280]">
-            Manage fixed distance pricing (≤ 45 km), hourly service rates, and long-distance pending quotes (&gt; 45 km).
+            Manage fixed distance pricing (≤ 45 km), hourly service rates, and
+            long-distance pending quotes (&gt; 45 km).
           </p>
         </div>
 
@@ -339,10 +382,11 @@ export function AdminPricingPage() {
       <div className="flex border-b border-[#e5e7eb] bg-white px-6 pt-2 rounded-t-2xl shadow-sm">
         <button
           onClick={() => setActiveTab("pending")}
-          className={`flex items-center gap-2 border-b-2 px-5 py-3 font-lato text-xs font-bold transition-colors ${activeTab === "pending"
+          className={`flex items-center gap-2 border-b-2 px-5 py-3 font-lato text-xs font-bold transition-colors ${
+            activeTab === "pending"
               ? "border-maseer-gold text-maseer-green"
               : "border-transparent text-gray-500 hover:text-maseer-green"
-            }`}
+          }`}
         >
           <Clock className="h-4 w-4 text-maseer-gold" />
           Pending Quotes (&gt; 45 km)
@@ -355,10 +399,11 @@ export function AdminPricingPage() {
 
         <button
           onClick={() => setActiveTab("fixed")}
-          className={`flex items-center gap-2 border-b-2 px-5 py-3 font-lato text-xs font-bold transition-colors ${activeTab === "fixed"
+          className={`flex items-center gap-2 border-b-2 px-5 py-3 font-lato text-xs font-bold transition-colors ${
+            activeTab === "fixed"
               ? "border-maseer-gold text-maseer-green"
               : "border-transparent text-gray-500 hover:text-maseer-green"
-            }`}
+          }`}
         >
           <MapPin className="h-4 w-4 text-maseer-green" />
           Fixed Rates (≤ 45 km)
@@ -366,10 +411,11 @@ export function AdminPricingPage() {
 
         <button
           onClick={() => setActiveTab("hourly")}
-          className={`flex items-center gap-2 border-b-2 px-5 py-3 font-lato text-xs font-bold transition-colors ${activeTab === "hourly"
+          className={`flex items-center gap-2 border-b-2 px-5 py-3 font-lato text-xs font-bold transition-colors ${
+            activeTab === "hourly"
               ? "border-maseer-gold text-maseer-green"
               : "border-transparent text-gray-500 hover:text-maseer-green"
-            }`}
+          }`}
         >
           <DollarSign className="h-4 w-4 text-maseer-green" />
           Hourly Rates
@@ -411,10 +457,11 @@ export function AdminPricingPage() {
                   return (
                     <div
                       key={quote.id}
-                      className={`relative flex flex-col justify-between rounded-2xl border p-5 shadow-sm transition hover:shadow-md ${isExpired
+                      className={`relative flex flex-col justify-between rounded-2xl border p-5 shadow-sm transition hover:shadow-md ${
+                        isExpired
                           ? "border-red-200 bg-red-50/30"
                           : "border-amber-200 bg-amber-50/20"
-                        }`}
+                      }`}
                     >
                       <div className="space-y-3">
                         <div className="flex items-center justify-between">
@@ -422,10 +469,11 @@ export function AdminPricingPage() {
                             Distance: {quote.distance_km} km
                           </span>
                           <span
-                            className={`rounded-full px-2.5 py-0.5 font-lato text-[10px] font-bold uppercase tracking-wider ${isExpired
+                            className={`rounded-full px-2.5 py-0.5 font-lato text-[10px] font-bold uppercase tracking-wider ${
+                              isExpired
                                 ? "bg-red-100 text-red-700"
                                 : "bg-amber-100 text-amber-800"
-                              }`}
+                            }`}
                           >
                             {quote.status}
                           </span>
@@ -438,8 +486,12 @@ export function AdminPricingPage() {
                               <User className="h-5 w-5" />
                             </div>
                             <div className="text-xs font-lato">
-                              <div className="font-bold text-gray-900">{quote.user.full_name}</div>
-                              <div className="text-gray-500">{quote.user.email} • {quote.user.phone_number}</div>
+                              <div className="font-bold text-gray-900">
+                                {quote.user.full_name}
+                              </div>
+                              <div className="text-gray-500">
+                                {quote.user.email} • {quote.user.phone_number}
+                              </div>
                             </div>
                           </div>
                         )}
@@ -448,22 +500,34 @@ export function AdminPricingPage() {
                         <div className="space-y-1.5 font-lato text-xs">
                           <div className="flex items-start gap-2 text-gray-700">
                             <MapPin className="h-4 w-4 shrink-0 text-emerald-600 mt-0.5" />
-                            <span><strong>Pickup:</strong> {quote.pickup_location || "Pickup point"}</span>
+                            <span>
+                              <strong>Pickup:</strong>{" "}
+                              {quote.pickup_location || "Pickup point"}
+                            </span>
                           </div>
                           <div className="flex items-start gap-2 text-gray-700">
                             <MapPin className="h-4 w-4 shrink-0 text-red-500 mt-0.5" />
-                            <span><strong>Dropoff:</strong> {quote.dropoff_location || "Dropoff point"}</span>
+                            <span>
+                              <strong>Dropoff:</strong>{" "}
+                              {quote.dropoff_location || "Dropoff point"}
+                            </span>
                           </div>
                           <div className="flex items-center gap-2 text-gray-500 text-[11px] pl-6">
                             <Car className="h-3.5 w-3.5 text-maseer-gold" />
-                            <span>Vehicle Fleet ID: <strong>{getFleetLabel(quote.fleet_id)}</strong></span>
+                            <span>
+                              Vehicle Fleet ID:{" "}
+                              <strong>{getFleetLabel(quote.fleet_id)}</strong>
+                            </span>
                           </div>
                         </div>
                       </div>
 
                       <div className="mt-5 flex items-center justify-between border-t border-gray-200/60 pt-4">
                         <div className="text-[11px] font-lato text-gray-500">
-                          Expires: {quote.expires_at ? new Date(quote.expires_at).toLocaleTimeString() : "15 mins"}
+                          Expires:{" "}
+                          {quote.expires_at
+                            ? new Date(quote.expires_at).toLocaleTimeString()
+                            : "15 mins"}
                         </div>
 
                         <button
@@ -473,10 +537,11 @@ export function AdminPricingPage() {
                             setQuoteAmount("");
                             setQuoteAdminNote("");
                           }}
-                          className={`rounded-xl px-4 py-2 font-lato text-xs font-bold text-white transition ${isExpired
+                          className={`rounded-xl px-4 py-2 font-lato text-xs font-bold text-white transition ${
+                            isExpired
                               ? "bg-gray-300 cursor-not-allowed"
                               : "bg-maseer-green hover:bg-maseer-green-deep"
-                            }`}
+                          }`}
                         >
                           Set Custom Price
                         </button>
@@ -498,7 +563,8 @@ export function AdminPricingPage() {
                   Fixed Distance Pricing Rules (≤ 45 km)
                 </h2>
                 <p className="font-lato text-xs text-gray-500">
-                  Standard fixed rate applied to trips up to 45 km for each fleet vehicle.
+                  Standard fixed rate applied to trips up to 45 km for each
+                  fleet vehicle.
                 </p>
               </div>
 
@@ -516,7 +582,8 @@ export function AdminPricingPage() {
               </div>
             ) : fixedPrices.length === 0 ? (
               <div className="py-12 text-center font-lato text-xs text-gray-500">
-                No fixed prices configured yet. Click "Add Fixed Rate" to create one.
+                No fixed prices configured yet. Click "Add Fixed Rate" to create
+                one.
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -534,20 +601,24 @@ export function AdminPricingPage() {
                     {fixedPrices.map((item) => (
                       <tr key={item.id} className="hover:bg-gray-50/60">
                         <td className="px-4 py-3.5 font-bold text-gray-800">
-                          {item.fleet?.vehicle_name || getFleetLabel(item.fleet_id)}
+                          {item.fleet?.vehicle_name ||
+                            getFleetLabel(item.fleet_id)}
                         </td>
                         <td className="px-4 py-3.5 text-gray-600 capitalize">
-                          {item.fleet?.category ? item.fleet.category.replace(/_/g, " ") : "—"}
+                          {item.fleet?.category
+                            ? item.fleet.category.replace(/_/g, " ")
+                            : "—"}
                         </td>
                         <td className="px-4 py-3.5 font-serif text-sm font-black text-maseer-green">
                           {item.price} {item.currency || "KWD"}
                         </td>
                         <td className="px-4 py-3.5">
                           <span
-                            className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${item.is_active
+                            className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
+                              item.is_active
                                 ? "bg-emerald-100 text-emerald-800"
                                 : "bg-gray-100 text-gray-600"
-                              }`}
+                            }`}
                           >
                             {item.is_active ? "Active" : "Inactive"}
                           </span>
@@ -588,7 +659,8 @@ export function AdminPricingPage() {
                   Hourly Pricing Rules
                 </h2>
                 <p className="font-lato text-xs text-gray-500">
-                  Price per hour charged for hourly service bookings per vehicle.
+                  Price per hour charged for hourly service bookings per
+                  vehicle.
                 </p>
               </div>
 
@@ -606,7 +678,8 @@ export function AdminPricingPage() {
               </div>
             ) : hourlyPrices.length === 0 ? (
               <div className="py-12 text-center font-lato text-xs text-gray-500">
-                No hourly rates configured yet. Click "Add Hourly Rate" to create one.
+                No hourly rates configured yet. Click "Add Hourly Rate" to
+                create one.
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -624,20 +697,24 @@ export function AdminPricingPage() {
                     {hourlyPrices.map((item) => (
                       <tr key={item.id} className="hover:bg-gray-50/60">
                         <td className="px-4 py-3.5 font-bold text-gray-800">
-                          {item.fleet?.vehicle_name || getFleetLabel(item.fleet_id)}
+                          {item.fleet?.vehicle_name ||
+                            getFleetLabel(item.fleet_id)}
                         </td>
                         <td className="px-4 py-3.5 text-gray-600 capitalize">
-                          {item.fleet?.category ? item.fleet.category.replace(/_/g, " ") : "—"}
+                          {item.fleet?.category
+                            ? item.fleet.category.replace(/_/g, " ")
+                            : "—"}
                         </td>
                         <td className="px-4 py-3.5 font-serif text-sm font-black text-maseer-green">
                           {item.price_per_hour} {item.currency || "KWD"} / hr
                         </td>
                         <td className="px-4 py-3.5">
                           <span
-                            className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${item.is_active
+                            className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
+                              item.is_active
                                 ? "bg-emerald-100 text-emerald-800"
                                 : "bg-gray-100 text-gray-600"
-                              }`}
+                            }`}
                           >
                             {item.is_active ? "Active" : "Inactive"}
                           </span>
@@ -678,16 +755,28 @@ export function AdminPricingPage() {
               <h3 className="font-serif text-base font-bold text-maseer-green">
                 Set Price for Quote #{selectedQuote.id.substring(0, 8)}
               </h3>
-              <button onClick={() => setSelectedQuote(null)} className="text-gray-400 hover:text-gray-600">
+              <button
+                onClick={() => setSelectedQuote(null)}
+                className="text-gray-400 hover:text-gray-600"
+              >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSetPriceSubmit} className="space-y-4 font-lato text-xs">
+            <form
+              onSubmit={handleSetPriceSubmit}
+              className="space-y-4 font-lato text-xs"
+            >
               <div className="rounded-xl bg-gray-50 p-3 space-y-1 text-gray-700">
-                <div><strong>Distance:</strong> {selectedQuote.distance_km} km</div>
-                <div><strong>Pickup:</strong> {selectedQuote.pickup_location}</div>
-                <div><strong>Dropoff:</strong> {selectedQuote.dropoff_location}</div>
+                <div>
+                  <strong>Distance:</strong> {selectedQuote.distance_km} km
+                </div>
+                <div>
+                  <strong>Pickup:</strong> {selectedQuote.pickup_location}
+                </div>
+                <div>
+                  <strong>Dropoff:</strong> {selectedQuote.dropoff_location}
+                </div>
               </div>
 
               <div>
@@ -746,16 +835,26 @@ export function AdminPricingPage() {
           <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl space-y-4">
             <div className="flex items-center justify-between border-b pb-3">
               <h3 className="font-serif text-base font-bold text-maseer-green">
-                {editingFixed ? "Edit Fixed Price" : "Add Fixed Price (≤ 45 km)"}
+                {editingFixed
+                  ? "Edit Fixed Price"
+                  : "Add Fixed Price (≤ 45 km)"}
               </h3>
-              <button onClick={() => setIsFixedModalOpen(false)} className="text-gray-400 hover:text-gray-600">
+              <button
+                onClick={() => setIsFixedModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveFixedPrice} className="space-y-4 font-lato text-xs">
+            <form
+              onSubmit={handleSaveFixedPrice}
+              className="space-y-4 font-lato text-xs"
+            >
               <div>
-                <label className="mb-1 block font-semibold text-gray-700">Fleet Vehicle *</label>
+                <label className="mb-1 block font-semibold text-gray-700">
+                  Fleet Vehicle *
+                </label>
                 <select
                   value={fixedFleetId}
                   onChange={(e) => setFixedFleetId(e.target.value)}
@@ -773,7 +872,9 @@ export function AdminPricingPage() {
               </div>
 
               <div>
-                <label className="mb-1 block font-semibold text-gray-700">Fixed Rate Amount (KWD) *</label>
+                <label className="mb-1 block font-semibold text-gray-700">
+                  Fixed Rate Amount (KWD) *
+                </label>
                 <input
                   type="number"
                   step="0.1"
@@ -794,7 +895,12 @@ export function AdminPricingPage() {
                   onChange={(e) => setFixedIsActive(e.target.checked)}
                   className="h-4 w-4 rounded accent-maseer-green"
                 />
-                <label htmlFor="fixedActive" className="font-semibold text-gray-700">Is Active</label>
+                <label
+                  htmlFor="fixedActive"
+                  className="font-semibold text-gray-700"
+                >
+                  Is Active
+                </label>
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
@@ -826,14 +932,22 @@ export function AdminPricingPage() {
               <h3 className="font-serif text-base font-bold text-maseer-green">
                 {editingHourly ? "Edit Hourly Price" : "Add Hourly Price"}
               </h3>
-              <button onClick={() => setIsHourlyModalOpen(false)} className="text-gray-400 hover:text-gray-600">
+              <button
+                onClick={() => setIsHourlyModalOpen(false)}
+                className="text-gray-400 hover:text-gray-600"
+              >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSaveHourlyPrice} className="space-y-4 font-lato text-xs">
+            <form
+              onSubmit={handleSaveHourlyPrice}
+              className="space-y-4 font-lato text-xs"
+            >
               <div>
-                <label className="mb-1 block font-semibold text-gray-700">Fleet Vehicle *</label>
+                <label className="mb-1 block font-semibold text-gray-700">
+                  Fleet Vehicle *
+                </label>
                 <select
                   value={hourlyFleetId}
                   onChange={(e) => setHourlyFleetId(e.target.value)}
@@ -851,7 +965,9 @@ export function AdminPricingPage() {
               </div>
 
               <div>
-                <label className="mb-1 block font-semibold text-gray-700">Price Per Hour (KWD) *</label>
+                <label className="mb-1 block font-semibold text-gray-700">
+                  Price Per Hour (KWD) *
+                </label>
                 <input
                   type="number"
                   step="0.1"
@@ -872,7 +988,12 @@ export function AdminPricingPage() {
                   onChange={(e) => setHourlyIsActive(e.target.checked)}
                   className="h-4 w-4 rounded accent-maseer-green"
                 />
-                <label htmlFor="hourlyActive" className="font-semibold text-gray-700">Is Active</label>
+                <label
+                  htmlFor="hourlyActive"
+                  className="font-semibold text-gray-700"
+                >
+                  Is Active
+                </label>
               </div>
 
               <div className="flex justify-end gap-3 pt-2">
