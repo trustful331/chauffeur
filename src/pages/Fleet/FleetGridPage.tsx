@@ -185,11 +185,10 @@ function VehicleCard({ vehicle, isAdmin, onEdit }: { vehicle: FleetVehicle; isAd
             <p className="mt-3 font-lato text-[11px] font-semibold uppercase tracking-wide text-maseer-gold">
               {vehicle.availabilityNote}
             </p>
-          ) : (
-            <p className="mt-3 font-lato text-[11px] leading-4 text-maseer-muted">
-              Vehicle shown for illustration; an equivalent model may be supplied.
-            </p>
-          )}
+          ) : null}
+          <p className="mt-2 font-lato text-[11px] leading-4 text-maseer-muted">
+            Vehicle shown for illustration; an equivalent model may be supplied.
+          </p>
 
           <div className="mt-6 flex items-center gap-3 max-md:flex-col max-md:items-stretch">
             <Link

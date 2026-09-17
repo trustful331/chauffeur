@@ -10,7 +10,7 @@ import DatePicker from "react-datepicker";
 import toast from "react-hot-toast";
 import "react-datepicker/dist/react-datepicker.css";
 import { CalendarDays, X, Clock, CreditCard, ChevronLeft, User, Mail, Phone, MessageSquare, Check, Car } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector } from "src/store/hooks";
 import { selectAuthUser, selectIsAuthenticated } from "src/store/slices/auth/selectors";
 import {
@@ -50,6 +50,7 @@ export type BookingForm = {
   phone_number: string;
   specialRequests: string;
   paymentMethod: string;
+  acceptTerms: boolean;
 };
 
 /* ─── constants ─────────────────────────────────────────────────────────────── */
@@ -340,6 +341,7 @@ export function BookingFormBody({
       phone_number: "",
       specialRequests: "",
       paymentMethod: "card",
+      acceptTerms: false,
     },
   });
 
@@ -562,6 +564,13 @@ export function BookingFormBody({
   const onBookingSubmit = async (data: BookingForm) => {
     if (step === 1) {
       await handleNextStep();
+      return;
+    }
+
+    if (!data.acceptTerms) {
+      const msg = "Please accept the Terms & Conditions to continue.";
+      setBookingError(msg);
+      toast.error(msg);
       return;
     }
 
@@ -1275,6 +1284,33 @@ export function BookingFormBody({
                         />
                       </label>
                     </div>
+
+                    <label className="flex cursor-pointer items-start gap-2.5 rounded-xl border border-white/10 bg-white/5 p-3">
+                      <input
+                        type="checkbox"
+                        className="mt-0.5 h-3.5 w-3.5 shrink-0 accent-maseer-gold"
+                        {...register("acceptTerms", {
+                          required: "Please accept the Terms & Conditions",
+                        })}
+                      />
+                      <span className="font-lato text-[11px] leading-4 text-white/80">
+                        I agree to the{" "}
+                        <Link
+                          to="/terms"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="font-semibold text-maseer-gold underline underline-offset-2 hover:text-white"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          Terms &amp; Conditions
+                        </Link>
+                      </span>
+                    </label>
+                    {errors.acceptTerms && (
+                      <p className="font-lato text-[11px] text-red-400" role="alert">
+                        {errors.acceptTerms.message}
+                      </p>
+                    )}
                   </div>
                 </div>
 

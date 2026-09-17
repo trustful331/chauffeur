@@ -95,7 +95,7 @@ export function FleetPage() {
             onClick={() => setBookingModalOpen(true)}
             className="btn-gold !rounded-full !uppercase !tracking-wide"
           >
-            Book This Vehicle 
+            Book a Ride
             <span aria-hidden>→</span>
           </button>
 
@@ -116,7 +116,19 @@ export function FleetPage() {
             ))}
           </div>
 
-          {current && <p className="heading-md mt-4">{current.name}</p>}
+          {current && (
+            <div className="mt-4">
+              <p className="heading-md">{current.name}</p>
+              {current.availabilityNote ? (
+                <p className="mt-2 font-lato text-[11px] font-semibold uppercase tracking-wide text-maseer-gold">
+                  {current.availabilityNote}
+                </p>
+              ) : null}
+              <p className="mt-1 font-lato text-[11px] leading-4 text-maseer-muted">
+                Vehicle shown for illustration; an equivalent model may be supplied.
+              </p>
+            </div>
+          )}
         </div>
       </section>
 

@@ -569,20 +569,30 @@ export function FleetDetailsPage() {
             </div>
 
             {current && (
-              <div className="mt-3 flex items-center justify-center gap-2">
-                <p className="font-serif text-xl font-semibold text-maseer-green-text">
-                  {current.name}
+              <div className="mt-3 text-center">
+                <div className="flex items-center justify-center gap-2">
+                  <p className="font-serif text-xl font-semibold text-maseer-green-text">
+                    {current.name}
+                  </p>
+                  {isAdmin && (
+                    <button
+                      type="button"
+                      title="Edit vehicle in admin panel"
+                      onClick={() => navigate("/admin/fleet")}
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                    >
+                      <Pencil size={13} />
+                    </button>
+                  )}
+                </div>
+                {current.availabilityNote ? (
+                  <p className="mt-2 font-lato text-[11px] font-semibold uppercase tracking-wide text-maseer-gold">
+                    {current.availabilityNote}
+                  </p>
+                ) : null}
+                <p className="mt-1 font-lato text-[11px] leading-4 text-maseer-muted">
+                  Vehicle shown for illustration; an equivalent model may be supplied.
                 </p>
-                {isAdmin && (
-                  <button
-                    type="button"
-                    title="Edit vehicle in admin panel"
-                    onClick={() => navigate("/admin/fleet")}
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
-                  >
-                    <Pencil size={13} />
-                  </button>
-                )}
               </div>
             )}
           </div>
