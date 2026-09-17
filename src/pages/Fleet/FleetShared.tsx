@@ -19,9 +19,9 @@ export function FleetHero({ tagline = "UNMATCHED LUXURY" }: FleetHeroProps) {
           Our Elite Fleet
         </h1>
         <p className="mt-5 max-w-xl text-figma-body text-white/85">
-          Discover a collection of the world&apos;s most prestigious vehicles,
-          maintained to the highest standards of excellence for your journey in
-          the Gulf.
+          Discover our approved chauffeur fleet for journeys across Saudi Arabia —
+          from executive sedans to group transport and electric options where
+          available.
         </p>
       </div>
     </section>
@@ -105,9 +105,9 @@ type FleetStandardsProps = {
 }; 
 
 export function FleetStandards({
-  errorValue = "0.01%",
-  sanitizationTitle = "Hospital-Grade Sanitization",
-  fleetAge = "2Yrs",
+  errorValue = "Strict",
+  sanitizationTitle = "Professional Cabin Care",
+  fleetAge = "Modern",
 }: FleetStandardsProps) {
   return (
     <section className="bg-white py-[88px] max-md:py-12">
@@ -118,13 +118,14 @@ export function FleetStandards({
               Maseer Standards
             </h2>
             <p className="mt-4 font-lato text-[14px] leading-[22px] text-maseer-green-text/80">
-              Beyond the aesthetics, we ensure every vehicle in our fleet
-              operates at the peak of technical and hygienic perfection.
+              Beyond appearance, we maintain vehicles to professional operating
+              standards so every journey is comfortable, reliable, and well
+              presented.
             </p>
           </div>
           <p className="shrink-0 font-serif leading-none text-maseer-gold">
             <span className="text-[42px] font-medium max-md:text-[28px]">{errorValue}</span>
-            <span className="text-[30px] font-medium max-md:text-xl"> Error Tolerance</span>
+            <span className="text-[30px] font-medium max-md:text-xl"> Quality Focus</span>
           </p>
         </div>
 
@@ -136,10 +137,9 @@ export function FleetStandards({
                 Meticulous Maintenance
               </h3>
               <p className="mt-6 font-lato text-[14px] leading-[26px] text-maseer-green-text/75">
-                Our vehicles undergo a 50-point technical inspection every 7 days.
-                We partner directly with authorized manufacturer service centers
-                to guarantee that every mechanical component exceeds factory
-                specifications. Performance is never compromised.
+                Our vehicles follow a scheduled maintenance program with
+                authorized service partners where applicable. We aim for
+                consistent readiness, comfort, and reliability on every booking.
               </p>
             </div>
           </article>
@@ -154,15 +154,15 @@ export function FleetStandards({
                   {sanitizationTitle}
                 </h3>
                 <p className="mt-2.5 font-lato text-[13.5px] leading-[22px] text-maseer-green-text/75">
-                  Daily deep cleaning using ozone treatment and eco-friendly
-                  antimicrobial agents for a pristine cabin environment.
+                  Regular cabin cleaning before guest journeys, with attention to
+                  comfort and presentation standards.
                 </p>
               </div>
             </article>
 
             <div className="grid grid-cols-2 gap-6">
               {[
-                { val: fleetAge, label: "MAX FLEET AGE" },
+                { val: fleetAge, label: "FLEET READINESS" },
                 { val: "24/7", label: "SUPPORT READY" },
               ].map((item) => (
                 <article
@@ -192,7 +192,7 @@ type FleetCtaProps = {
 };
 
 export function FleetCta({
-  buttonLabel = "Book Your Vehicle Now",
+  buttonLabel = "Book a Ride",
 }: FleetCtaProps) {
   return (
     <section className="bg-maseer-cream pb-[100px] max-md:pb-12">

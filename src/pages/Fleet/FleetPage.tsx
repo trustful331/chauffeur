@@ -121,7 +121,7 @@ export function FleetPage() {
       </section>
 
       <FleetStandards />
-      <FleetCta buttonLabel="Book Your Vehicle Now" />
+      <FleetCta buttonLabel="Book a Ride" />
 
       <BookingModal
         isOpen={bookingModalOpen}

@@ -27,18 +27,18 @@ import {
   type FleetItem, 
   type FleetParams 
 } from "src/api/admin/fleet";
-import { FLEET_VEHICLES } from "src/data/fleetData";
+import { FLEET_VEHICLES, FLEET_CATEGORY_BACKEND_MAP } from "src/data/fleetData";
 import { Spinner } from "src/ui/Spinner";
 import { AdminFleetModal } from "./AdminFleetModal";
 import { AdminFleetDetailModal } from "./AdminFleetDetailModal";
 
-// Map backend categories to display names
+// Map backend categories to approved website labels (BE enums still limited to 5 values)
 const CATEGORY_MAP = {
-  green_class: "Green Class",
-  ultra_luxury: "Ultra Luxury",
-  business_van: "Business Van",
-  vip_business_class: "VIP / Business Class",
-  economy_class: "Economy Class",
+  green_class: "Electric Mobility",
+  ultra_luxury: "Luxury & Premium SUVs",
+  business_van: "Vans, Coasters & Buses",
+  vip_business_class: "Business / First-Class Sedans",
+  economy_class: "Economy & Executive Sedans",
 } as const;
 
 const CATEGORIES = Object.entries(CATEGORY_MAP) as [keyof typeof CATEGORY_MAP, string][];
@@ -54,15 +54,12 @@ const TYPES = Object.entries(TYPE_MAP) as [keyof typeof TYPE_MAP, string][];
 
 // Fallback fleet items mapped from local static data
 const FALLBACK_FLEET: FleetItem[] = FLEET_VEHICLES.map((v, index) => {
-  let catKey: FleetItem["category"] = "economy_class";
-  if (v.category === "Green Class") catKey = "green_class";
-  else if (v.category === "Ultra Luxury") catKey = "ultra_luxury";
-  else if (v.category === "Business Van") catKey = "business_van";
-  else if (v.category === "VIP / Business Class") catKey = "vip_business_class";
+  const catKey = (FLEET_CATEGORY_BACKEND_MAP[v.category] ||
+    "economy_class") as FleetItem["category"];
   
   let typeKey: FleetItem["vehicle_type"] = "sedan";
   if (v.bodyType === "SUV") typeKey = "suv";
-  else if (v.bodyType === "VAN") typeKey = "van";
+  else if (v.bodyType === "VAN" || v.bodyType === "BUS") typeKey = "van";
 
   return {
     id: v.id,

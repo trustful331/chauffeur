@@ -4,8 +4,8 @@ import { GoldOffsetImage } from "../../ui/GoldOffsetImage";
 
 const STATS = [
   {
-    value: "50K+",
-    label: "Happy customers",
+    value: "Trusted",
+    label: "by travelers across KSA",
     icon: (
       <svg
         width="30"
@@ -42,8 +42,8 @@ const STATS = [
     ),
   },
   {
-    value: "200+",
-    label: "Professional Drivers",
+    value: "Professional",
+    label: "trained chauffeurs",
     icon: (
       <svg
         width="24"
@@ -86,8 +86,8 @@ const STATS = [
     ),
   },
   {
-    value: "99.8%",
-    label: "Safety Record",
+    value: "Safety",
+    label: "focused operations",
     icon: (
       <svg
         width="25"
@@ -178,7 +178,7 @@ export function AboutPage() {
         <div className="page-container relative flex min-h-[520px] flex-col justify-end pb-16 pt-8 max-md:min-h-[420px] max-md:pb-12">
           <p className="eyebrow">UNMATCHED LUXURY</p>
           <h1 className="mt-3 font-serif text-figma-hero text-white max-md:text-[32px] max-md:leading-[1.15]">
-            About US
+            About Us
           </h1>
           <p className="mt-4 max-w-[580px] text-figma-body text-white/90">
             Maseer is a premium chauffeur and mobility company in Saudi Arabia
@@ -238,10 +238,6 @@ export function AboutPage() {
               tourists, families, and high-profile clients with personalized
               service and premium transportation experiences across Saudi
               Arabia.
-            </p>
-            <p className="mt-4 text-[15.25px] leading-[25px] text-maseer-muted">
-              climate prepared, music to your taste. The car is ready before you
-              ever step out.
             </p>
           </div>
         </div>

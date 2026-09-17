@@ -21,6 +21,14 @@ function FieldError({ message }: { message?: string }) {
   );
 }
 
+function FieldLabel({ children }: { children: string }) {
+  return (
+    <label className="mb-1.5 block font-lato text-[12px] font-semibold text-maseer-green">
+      {children}
+    </label>
+  );
+}
+
 function fieldClass(hasError: boolean) {
   return ["input-field font-lato !py-1.5", hasError ? "!border-red-400" : ""].join(" ");
 }
@@ -56,7 +64,7 @@ export function ContactCallbackForm() {
       };
 
       await createGetInTouch(payload);
-      toast.success("Callback request submitted successfully! 🎉");
+      toast.success("Callback request submitted successfully!");
       reset();
     } catch (error) {
       const errMsg = error instanceof Error ? error.message : "Failed to submit request";
@@ -76,12 +84,13 @@ export function ContactCallbackForm() {
         Request a Callback
       </h3>
       <p className="mt-2 font-lato text-[13px] leading-5 text-maseer-muted">
-        Fill out the form and we&apos;ll get back to you within minutes.
+        Fill out the form and our team will respond during business hours.
       </p>
 
       <div className="mt-6 space-y-4">
         <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
           <div>
+            <FieldLabel>Full name</FieldLabel>
             <input
               {...register("name", {
                 required: "Name is required",
@@ -92,12 +101,13 @@ export function ContactCallbackForm() {
                 validate: (value) =>
                   value.trim().length > 0 || "Name is required",
               })}
-              placeholder="Your Name"
+              placeholder="Your full name"
               className={fieldClass(!!errors.name)}
             />
             <FieldError message={errors.name?.message} />
           </div>
           <div>
+            <FieldLabel>Phone (+966 preferred)</FieldLabel>
             <input
               {...register("phone", {
                 required: "Phone number is required",
@@ -106,7 +116,7 @@ export function ContactCallbackForm() {
                   message: "Enter a valid phone number",
                 },
               })}
-              placeholder="Phone Number"
+              placeholder="+966 5X XXX XXXX"
               className={fieldClass(!!errors.phone)}
             />
             <FieldError message={errors.phone?.message} />
@@ -114,6 +124,7 @@ export function ContactCallbackForm() {
         </div>
 
         <div>
+          <FieldLabel>Email</FieldLabel>
           <input
             {...register("email", {
               required: "Email is required",
@@ -123,13 +134,14 @@ export function ContactCallbackForm() {
               },
             })}
             type="email"
-            placeholder="Email Address"
+            placeholder="Email address"
             className={fieldClass(!!errors.email)}
           />
           <FieldError message={errors.email?.message} />
         </div>
 
         <div>
+          <FieldLabel>Service needed</FieldLabel>
           <input
             {...register("serviceNeeded", {
               required: "Service needed is required",
@@ -138,13 +150,14 @@ export function ContactCallbackForm() {
                 message: "Please describe the service you need",
               },
             })}
-            placeholder="Service Needed"
+            placeholder="Airport transfer, hourly, corporate..."
             className={fieldClass(!!errors.serviceNeeded)}
           />
           <FieldError message={errors.serviceNeeded?.message} />
         </div>
 
         <div>
+          <FieldLabel>Message</FieldLabel>
           <textarea
             {...register("message", {
               minLength: {
@@ -160,11 +173,17 @@ export function ContactCallbackForm() {
         </div>
       </div>
 
+      <p className="mt-4 font-lato text-[12px] leading-5 text-maseer-muted">
+        By submitting this form, you agree that Maseer may use your details to
+        respond to this enquiry. We do not share your information for unrelated
+        marketing.
+      </p>
+
       <LoadingButton
         type="submit"
         loading={isSubmitting}
         loadingText="Sending..."
-        className="mt-6 w-full rounded-xl bg-maseer-green py-2.5 font-lato text-sm font-semibold text-white transition hover:bg-maseer-green-deep disabled:cursor-not-allowed disabled:opacity-70"
+        className="mt-4 w-full rounded-xl bg-maseer-green py-2.5 font-lato text-sm font-semibold text-white transition hover:bg-maseer-green-deep disabled:cursor-not-allowed disabled:opacity-70"
       >
         Request Callback
       </LoadingButton>

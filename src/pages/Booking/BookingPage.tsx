@@ -7,7 +7,7 @@ export function BookingPage() {
         {/* header */}
         <div className="bg-gradient-to-r from-maseer-green-deep to-[#05280b] p-8 text-white max-md:p-5">
           <h2 className="font-serif text-[28px] font-semibold leading-tight text-maseer-gold max-md:text-xl">
-            Book Your Ride
+            Book a Ride
           </h2>
           <p className="mt-2 text-xs font-lato text-white/70 tracking-wide uppercase">
             Airport Transfer · A to B Transfer · Hourly &amp; Daily Chauffeur Services

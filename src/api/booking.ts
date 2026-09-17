@@ -148,11 +148,22 @@ export async function getFleetIdForCategory(categoryName: string): Promise<strin
   try {
     const response = await responseDataToFleets();
     if (response && response.length > 0) {
-      let backendCategory = "economy_class";
-      if (categoryName === "Green Class") backendCategory = "green_class";
-      else if (categoryName === "Ultra Luxury") backendCategory = "ultra_luxury";
-      else if (categoryName === "Business Van") backendCategory = "business_van";
-      else if (categoryName === "VIP / Business Class") backendCategory = "vip_business_class";
+      const categoryCodeMap: Record<string, string> = {
+        "Economy & Executive Sedans": "economy_class",
+        "Business-Class Sedans": "vip_business_class",
+        "First-Class Sedans": "vip_business_class",
+        "Premium SUVs": "ultra_luxury",
+        "Luxury & Ultra-Luxury Vehicles": "ultra_luxury",
+        "Vans & Minivans": "business_van",
+        "Coasters & Buses": "business_van",
+        "Electric Mobility": "green_class",
+        "Green Class": "green_class",
+        "Ultra Luxury": "ultra_luxury",
+        "Business Van": "business_van",
+        "VIP / Business Class": "vip_business_class",
+        "Economy Class": "economy_class",
+      };
+      const backendCategory = categoryCodeMap[categoryName] || "economy_class";
 
       const matched = response.find((item) => item.category === backendCategory);
       if (matched) {
@@ -163,13 +174,20 @@ export async function getFleetIdForCategory(categoryName: string): Promise<strin
     console.error("Failed to map category to dynamic fleet_id, using fallback:", error);
   }
 
-  // Fallbacks: Map static names to standard IDs
   const fallbackMap: Record<string, string> = {
+    "Economy & Executive Sedans": "lexus-es",
+    "Business-Class Sedans": "mercedes-e",
+    "First-Class Sedans": "mercedes-s",
+    "Premium SUVs": "chevrolet-suburban",
+    "Luxury & Ultra-Luxury Vehicles": "rolls-royce-ghost",
+    "Vans & Minivans": "hyundai-staria",
+    "Coasters & Buses": "toyota-hiace",
+    "Electric Mobility": "lucid-air",
     "Economy Class": "lexus-es",
     "VIP / Business Class": "mercedes-s",
-    "Ultra Luxury": "cadillac-escalade",
-    "Green Class": "bmw-7",
-    "Business Van": "mercedes-v",
+    "Ultra Luxury": "chevrolet-suburban",
+    "Green Class": "lucid-air",
+    "Business Van": "hyundai-staria",
   };
   return fallbackMap[categoryName] || "mercedes-s";
 }

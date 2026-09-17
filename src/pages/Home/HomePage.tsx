@@ -64,28 +64,28 @@ const emptyLocation = (): BookingLocation => ({
 
 const CONTACT_INFO_CARDS = [
   {
-    title: "Call us Now",
-    subtitle: "Available 24/7 for bookings",
-    detail: "(555) 123-RIDE",
+    title: "Bookings & Support",
+    subtitle: "Email our team for trip assistance",
+    detail: "support@maseer.com",
   },
   {
     title: "Email Support",
-    subtitle: "Quick Response Guaranteed",
-    detail: "Support@mail.com",
+    subtitle: "We respond during business hours",
+    detail: "support@maseer.com",
   },
   {
-    title: "Live Chat",
-    subtitle: "Instant help when you need it",
-    cta: "Start Chat",
+    title: "Contact Form",
+    subtitle: "Send us your trip details",
+    cta: "Contact Us",
   },
   {
-    title: "Chat on Whatsapp",
-    detail: "(555) 123-RIDE",
+    title: "Chat on WhatsApp",
+    detail: "Use the WhatsApp button in the header",
   },
   {
     title: "Customer Support",
-    subtitle: "24/7 Customer Support",
-    detail: "Rides available 24/7",
+    subtitle: "24/7 Availability",
+    detail: "Chauffeur services around the clock",
   },
 ] as const;
 
@@ -97,11 +97,14 @@ const BOOKING_TABS: BookingTab[] = [
 ];
 
 const FLEET_CLASS_OPTIONS = [
-  "Green Class",
-  "Ultra Luxury",
-  "Business Van",
-  "VIP / Business Class",
-  "Economy Class",
+  "Economy & Executive Sedans",
+  "Business-Class Sedans",
+  "First-Class Sedans",
+  "Premium SUVs",
+  "Luxury & Ultra-Luxury Vehicles",
+  "Vans & Minivans",
+  "Coasters & Buses",
+  "Electric Mobility",
 ];
 
 function GoldHeading({
@@ -333,12 +336,12 @@ function ServiceCardIcon({
 }
 
 const hospitalityFeatures = [
-  "HOSPITALITY-TRAINED CHAUFFEURS",
-  "VEHICLES UNDER 18 MONTHS OLD",
-  "REAL-TIME FLIGHT TRACKING",
-  "BILINGUAL CONCIERGE, 24/7",
-  "DISCREET PRIVACY PARTITIONS",
-  "REFRESHMENTS CURATED DAILY",
+  "PROFESSIONAL TRAINED CHAUFFEURS",
+  "MODERN, WELL-MAINTAINED FLEET",
+  "FLIGHT-AWARE AIRPORT COORDINATION",
+  "MULTILINGUAL SUPPORT WHERE AVAILABLE",
+  "DISCREET, COMFORT-FOCUSED CABINS",
+  "REFRESHMENTS ON SELECT JOURNEYS",
 ];
 
 const fallbackFeatured = [
@@ -359,12 +362,12 @@ const fallbackFeatured = [
   },
   {
     title: "Hire by the Hour",
-    subtitle: "Book the hour for flexible rides.",
+    subtitle: "Book a chauffeur-driven vehicle by the hour.",
     image: images.services.coverage[3],
   },
   {
-    title: "Event transport",
-    subtitle: "Luxury Chauffeur service for any occasion.",
+    title: "Event Transportation",
+    subtitle: "Chauffeur service for occasions and VIP arrivals.",
     image: images.services.coverage[4],
   },
 ];
@@ -372,13 +375,13 @@ const fallbackFeatured = [
 const bestFeatures = [
   {
     icon: "clock",
-    title: "24/7 Availablity",
+    title: "24/7 Availability",
     text: "Round-the-clock service whenever you need a ride, day or night",
   },
   {
     icon: "pin",
-    title: "GPS Tracking for safty",
-    text: "Real-time tracking keeps you informed and ensures your safety",
+    title: "GPS Tracking for Safety",
+    text: "Real-time tracking keeps you informed and supports a safer journey",
   },
   {
     icon: "pound",
@@ -387,8 +390,8 @@ const bestFeatures = [
   },
   {
     icon: "shield",
-    title: "luggage Handling",
-    text: "Specialized service for safe and secure luggage transportation",
+    title: "Luggage Handling",
+    text: "Careful handling for checked and cabin luggage on every trip",
   },
 ] as const;
 
@@ -461,31 +464,31 @@ function FeatureCardIcon({
 
 const fleetCards = [
   {
-    id: "mercedes-s",
-    title: "Mercedes-Benz S-Class",
-    category: "BUSINESS",
-    guests: 3,
+    id: "lexus-es",
+    title: "Lexus ES 350",
+    category: "ECONOMY & EXECUTIVE",
+    guests: 4,
     image: images.home.fleet[0],
   },
   {
-    id: "audi-a8",
+    id: "mercedes-s",
     title: "Mercedes-Benz S-Class",
-    category: "BUSINESS",
+    category: "FIRST-CLASS",
     guests: 3,
     image: images.home.fleet[1],
   },
   {
-    id: "cadillac-escalade",
-    title: "Mercedes-Benz S-Class",
-    category: "BUSINESS",
-    guests: 3,
+    id: "chevrolet-suburban",
+    title: "Chevrolet Suburban",
+    category: "PREMIUM SUV",
+    guests: 6,
     image: images.home.fleet[2],
   },
   {
     id: "mercedes-v",
-    title: "Mercedes-Benz S-Class",
-    category: "BUSINESS",
-    guests: 3,
+    title: "Mercedes-Benz Vito",
+    category: "VANS & MINIVANS",
+    guests: 7,
     image: images.home.fleet[0],
   },
 ];
@@ -632,15 +635,20 @@ export function HomePage() {
     }))
     : fallbackServicesCards;
 
-  const finalReviews = customerReviews.length > 0
-    ? customerReviews.map(item => ({
+  const filteredApiReviews = customerReviews
+    .filter((item) => {
+      const blob = `${item.review_title} ${item.review_content} ${item.customer_name}`.toLowerCase();
+      return !blob.includes("test") && !blob.includes("api test") && item.review_content.trim().length > 8;
+    })
+    .map((item) => ({
       rating: item.star_rating,
       title: item.review_title,
       quote: item.review_content,
       name: item.customer_name,
-      avatar: item.customer_image_url || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80"
-    }))
-    : reviews;
+      avatar: item.customer_image_url || "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80",
+    }));
+
+  const finalReviews = filteredApiReviews.length > 0 ? filteredApiReviews : reviews;
 
   const dynamicHeading = featuredCoverage[0]?.section_heading;
   const dynamicSubtitle = featuredCoverage[0]?.section_subtitle;
@@ -740,9 +748,9 @@ export function HomePage() {
         <div className="page-container relative pb-[200px] pt-16 max-md:pb-8 max-md:pt-10">
           <h1 className="max-w-[650px] font-serif text-[44px] font-semibold leading-[1.5] text-white max-md:text-[28px] max-md:leading-[1.25]">
             <span className="inline-block rounded-2xl bg-primary px-4 py-1 text-center text-white max-md:h-auto">
-              Luxury Chauffeur
+              Luxury chauffeur
             </span>{" "}
-            and Mobility Services without limits Across Saudi Arabia
+            and mobility services across Saudi Arabia.
           </h1>
           <p className="mt-5 max-w-[660px] font-lato text-xl font-medium leading-8 text-white max-md:text-base max-md:leading-7">
             Reliable airport transfers, executive transportation, city-to-city
@@ -973,7 +981,7 @@ export function HomePage() {
                   <FieldError message={errors.dateTime?.message} />
                 </div>
                 <div>
-                  <FieldLabel>Passengers</FieldLabel>
+                  <FieldLabel>Adults</FieldLabel>
                   <BookingInput
                     icon={<PersonIcon />}
                     hasError={!!errors.passengers}
@@ -1058,7 +1066,7 @@ export function HomePage() {
                 loadingText="Booking..."
                 className="mx-auto mt-8 block w-full max-w-[420px] rounded-xl bg-maseer-green py-3.5 font-lato text-[16px] font-semibold text-white transition hover:bg-maseer-green-deep disabled:cursor-not-allowed disabled:opacity-70"
               >
-                Book Your Ride
+                Book a Ride
               </LoadingButton>
             </div>
           </form>
@@ -1109,7 +1117,7 @@ export function HomePage() {
             to="/services"
             className="shrink-0 border-b border-maseer-green-text/30 pb-0.5 font-lato text-sm font-semibold text-maseer-green-text transition hover:border-primary hover:text-primary"
           >
-            All services ↗
+            Explore Services ↗
           </Link>
         </div>
 
@@ -1166,9 +1174,9 @@ export function HomePage() {
               Hospitality on <span className="text-maseer-gold">wheels.</span>
             </h2>
             <p className="mt-4 text-[14px] leading-6 text-maseer-muted">
-              Every Maseer journey is choreographed — chilled water, scented
-              cabin, climate prepared, music to your taste. The car is ready
-              before you ever step out.
+              Every Maseer journey is prepared with care — cabin comfort and
+              presentation set to your preferences where available. Your vehicle
+              is ready before you step out.
             </p>
             <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 max-md:grid-cols-1">
               {hospitalityFeatures.map((f) => (
@@ -1196,7 +1204,7 @@ export function HomePage() {
         </div>
         <div className="flex items-center gap-3">
           <GoldHeading
-            before={dynamicHeading ? dynamicHeading.split(" ").slice(0, -1).join(" ") + ", " : "Our, "}
+            before={dynamicHeading ? dynamicHeading.split(" ").slice(0, -1).join(" ") + " " : "Our "}
             accent={dynamicHeading ? dynamicHeading.split(" ").slice(-1)[0] : "Service Coverage"}
           />
           {isAdmin && (
@@ -1290,7 +1298,7 @@ export function HomePage() {
           </p>
         </div>
         <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
-          Our, <span className="text-primary">Best Feature.</span>
+          Our <span className="text-primary">Best Features</span>
         </h2>
         <p className="mt-4 max-w-[550px] font-lato text-[14px] leading-[22px] text-maseer-green-text/80">
           From the door of your residence to the door of your private jet —
@@ -1327,12 +1335,12 @@ export function HomePage() {
             </p>
           </div>
           <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
-            Explore our,{" "}
+            Explore Our{" "}
             <span className="text-maseer-gold">Exquisite Fleet</span>
           </h2>
           <p className="mt-4 max-w-[580px] font-lato text-[14px] leading-[22px] text-maseer-green">
-            Chauffeur-driven sedans, executive SUVs and electric flagships —
-            pristine, private, immaculate.
+            Approved chauffeur categories from executive sedans to group
+            transport and electric options where available.
           </p>
         </div>
 
@@ -1383,7 +1391,7 @@ export function HomePage() {
           </div>
           <div className="flex items-center gap-3">
             <GoldHeading
-              before={reviewHeading ? reviewHeading.split(" ").slice(0, -1).join(" ") + ", " : "What our, "}
+              before={reviewHeading ? reviewHeading.split(" ").slice(0, -1).join(" ") + " " : "What Our "}
               accent={reviewHeading ? reviewHeading.split(" ").slice(-1)[0] : "Customers Say"}
             />
             {isAdmin && (
@@ -1398,7 +1406,7 @@ export function HomePage() {
             )}
           </div>
           <p className="mt-3 text-[14px] text-maseer-green">
-            {reviewSubtitle || "Trusted by hundreds of happy customers"}
+            {reviewSubtitle || "Guest feedback from recent Maseer journeys"}
           </p>
         </div>
 
@@ -1476,7 +1484,7 @@ export function HomePage() {
               </p>
             </div>
             <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
-              Get in, <span className="text-primary">Touch</span>
+              Get in <span className="text-primary">Touch</span>
             </h2>
             <p className="mt-4 font-lato text-[14px] text-maseer-green">
               Need help or having questions
@@ -1509,12 +1517,12 @@ export function HomePage() {
                       )}
                     </div>
                     {"cta" in card && card.cta && (
-                      <button
-                        type="button"
+                      <Link
+                        to="/contact"
                         className="shrink-0 rounded-lg bg-maseer-green px-4 py-2 font-lato text-xs font-semibold text-white"
                       >
                         {card.cta}
-                      </button>
+                      </Link>
                     )}
                   </div>
                 </div>
@@ -1530,7 +1538,7 @@ export function HomePage() {
           QUESTION ABOUT OUR SERVICE
         </p>
         <h2 className="mt-2 font-serif text-[40px] font-bold leading-[52px] text-maseer-green-text max-md:text-[26px] max-md:leading-[34px]">
-          Frequently asked Questions
+          Maseer FAQs
         </h2>
 
         <div className="mt-8 border-t border-maseer-green/25">

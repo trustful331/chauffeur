@@ -247,7 +247,7 @@ export function ProfilePage() {
                       type="tel"
                       value={phoneNumber}
                       onChange={(e) => setPhoneNumber(e.target.value)}
-                      placeholder="+965 5000 0000"
+                      placeholder="+966 5X XXX XXXX"
                       className="w-full rounded-xl border border-gray-200 bg-white px-4 py-3 pl-11 text-sm text-[#062111] outline-none transition focus:border-maseer-gold focus:ring-2 focus:ring-maseer-gold/20"
                     />
                     <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4.5 w-4.5 text-maseer-muted" />

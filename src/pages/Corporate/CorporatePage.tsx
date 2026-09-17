@@ -100,7 +100,7 @@ export function CorporatePage() {
         <div className="page-container relative flex min-h-[560px] flex-col justify-end pb-16 pt-28 max-md:min-h-[420px] max-md:pb-12 max-md:pt-20">
           <p className="eyebrow">UNMATCHED LUXURY</p>
           <h1 className="mt-3 font-serif text-figma-hero text-white max-md:text-[32px] max-md:leading-[1.15]">
-            Our VISION
+            Our Mission
           </h1>
           <p className="mt-4 max-w-[560px] text-figma-body text-white/90">
             Our goal is to become a trusted long-term mobility partner for
@@ -115,10 +115,10 @@ export function CorporatePage() {
           <div>
             <p className="eyebrow">OUR MISSION</p>
             <h2 className="mt-3 font-serif text-figma-h2 text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
-              Corporate &amp; partners.
+              Corporate and Partner
             </h2>
             <p className="font-serif text-figma-h2 text-maseer-gold max-md:text-[28px] max-md:leading-[1.2]">
-              Solution.
+              Solutions
             </p>
             <p className="mt-6 text-[15.25px] leading-[25px] text-maseer-muted">
               Maseer works closely with corporates, travel management companies,
@@ -172,16 +172,16 @@ export function CorporatePage() {
             offset="left"
           />
           <div>
-            <p className="eyebrow">OUR VISION</p>
+            <p className="eyebrow">VISION 2030</p>
             <h2 className="mt-3 font-serif text-figma-h2 text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
               Sustainability &amp; Vision
             </h2>
             <p className="font-serif text-figma-h2 text-maseer-gold max-md:text-[28px] max-md:leading-[1.2]">2030.</p>
             <p className="mt-6 text-[15.25px] leading-[25px] text-maseer-muted">
-              Maseer supports the vision of a smarter and more sustainable
-              transportation future in Saudi Arabia. Through our Green Class
-              category, we aim to promote environmentally conscious mobility
-              solutions while maintaining luxury and performance standards.
+              Maseer supports a smarter and more sustainable transportation
+              future in Saudi Arabia. Through our Electric Mobility options,
+              where available, we aim to promote environmentally conscious
+              journeys while maintaining comfort and service standards.
             </p>
             <p className="mt-4 text-[15.25px] leading-[25px] text-maseer-muted">
               Our focus aligns with Saudi Vision 2030 by contributing toward

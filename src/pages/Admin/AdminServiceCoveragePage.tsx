@@ -68,7 +68,7 @@ const FALLBACK_COVERAGE: ServiceCoverageItem[] = [
     section_heading: "Our Services",
     section_subtitle: "What we offer",
     title: "Hire by the Hour",
-    description: "Book the hour for flexible rides.",
+    description: "Book a chauffeur-driven vehicle by the hour.",
     image_url: "https://images.unsplash.com/photo-1508962914676-134849a727f0?auto=format&fit=crop&q=80&w=600",
     is_active: true,
     display_order: 4
@@ -97,7 +97,7 @@ const FALLBACK_COVERAGE: ServiceCoverageItem[] = [
     id: "fb-7",
     section_type: "itinerary",
     title: "Hourly Chauffeur",
-    description: "Transportation services connecting major cities across Saudi Arabia including Riyadh, Jeddah, Makkah, Madinah, Dammam, and AlUla.",
+    description: "Book a chauffeur-driven vehicle by the hour for meetings, shopping, or flexible city itineraries.",
     icon_key: "clock",
     is_active: true,
     display_order: 7
@@ -106,7 +106,7 @@ const FALLBACK_COVERAGE: ServiceCoverageItem[] = [
     id: "fb-8",
     section_type: "itinerary",
     title: "Corporate Mobility",
-    description: "Transportation solutions for corporates, government entities, VIP guests, business meetings, conferences.",
+    description: "Transportation solutions for corporates, government entities, VIP guests, business meetings, and conferences.",
     icon_key: "briefcase",
     is_active: true,
     display_order: 8
@@ -115,10 +115,28 @@ const FALLBACK_COVERAGE: ServiceCoverageItem[] = [
     id: "fb-9",
     section_type: "itinerary",
     title: "VIP Tourism",
-    description: "Premium chauffeur services designed for executives, diplomats, celebrities, and high-profile guests requiring privacy, comfort, professionalism, and luxury.",
+    description: "Premium chauffeur services for executives, diplomats, and high-profile guests who require privacy, comfort, and professionalism.",
     icon_key: "crown",
     is_active: true,
     display_order: 9
+  },
+  {
+    id: "fb-10",
+    section_type: "itinerary",
+    title: "Ziyarah Tours",
+    description: "Comfortable and organized Ziyarah transportation in Makkah and Madinah for families, groups, and international visitors.",
+    icon_key: "medal",
+    is_active: true,
+    display_order: 10
+  },
+  {
+    id: "fb-11",
+    section_type: "itinerary",
+    title: "24/7 Support",
+    description: "Round-the-clock booking and trip support so your journey stays coordinated from confirmation to drop-off.",
+    icon_key: "support",
+    is_active: true,
+    display_order: 11
   }
 ];
 

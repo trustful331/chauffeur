@@ -17,10 +17,10 @@ type ContactForm = {
 
 const CONTACT_CARDS = [
   {
-    title: "Safety First",
-    desc: "Speak directly with our customer service team",
-    detail: "(555) 123-RIDE",
-    note: "Available 24/7 for bookings and support",
+    title: "Phone Support",
+    desc: "Speak directly with our bookings and customer service team",
+    detail: "support@maseer.com",
+    note: "For verified +966 booking numbers, use WhatsApp or the contact form below",
     detailTone: "dark" as const,
     icon: (
       <svg
@@ -39,7 +39,7 @@ const CONTACT_CARDS = [
   },
   {
     title: "Email Support",
-    desc: "Send us a message and we'll respond within 2 hour",
+    desc: "Send us a message and our team will respond during business hours",
     detail: "support@maseer.com",
     note: "For general inquiries and feedback",
     detailTone: "green" as const,
@@ -71,9 +71,9 @@ const CONTACT_CARDS = [
   },
   {
     title: "Live Chat",
-    desc: "Get instant help through our website chat",
-    detail: "Available on website",
-    note: "Fastest response time during business hours",
+    desc: "Prefer written support? Send a message through our contact form",
+    detail: "Contact form below",
+    note: "Our team responds during business hours",
     detailTone: "dark" as const,
     icon: (
       <svg
@@ -91,10 +91,10 @@ const CONTACT_CARDS = [
     ),
   },
   {
-    title: "Emergency Line",
-    desc: "For urgent safety or emergency situations",
-    detail: "(555) 123-HELP",
-    note: "24/7 emergency assistance",
+    title: "Urgent Trip Support",
+    desc: "For time-sensitive trip changes or chauffeur coordination",
+    detail: "support@maseer.com",
+    note: "For medical or public emergencies, call local emergency services",
     detailTone: "dark" as const,
     icon: (
       <svg
@@ -115,20 +115,24 @@ const CONTACT_CARDS = [
 
 const FAQ_ITEMS = [
   {
-    q: "How flexible are Maseer booking and cancellation policies?",
-    a: "We offer flexible rescheduling and cancellation options for most bookings. Corporate clients receive tailored terms aligned with their mobility programs and service agreements.",
+    q: "How do I book a Maseer chauffeur?",
+    a: "Choose your service type, pickup and drop-off locations, preferred vehicle class, and date/time on the home page or booking flow. You will receive a booking confirmation after payment or quote approval.",
   },
   {
-    q: "What corporate and event transportation options do you provide?",
-    a: "",
+    q: "What is your cancellation and rescheduling policy?",
+    a: "Most bookings can be rescheduled or cancelled according to the terms shared at confirmation. Corporate accounts may have tailored policies in their service agreement.",
   },
   {
-    q: "Can I schedule a consultation before setting up a corporate account?",
-    a: "",
+    q: "Do you provide airport transfers and meet-and-greet?",
+    a: "Yes. We offer airport transfers with flight monitoring and meet-and-greet support on request for business and leisure travelers across major Saudi airports.",
   },
   {
-    q: "Do you provide transportation for large groups and delegations?",
-    a: "",
+    q: "Can you support groups, events, and corporate accounts?",
+    a: "Yes. We provide vans, buses, and coordinated multi-vehicle deployments for events, staff movements, VIP groups, and ongoing corporate mobility programs.",
+  },
+  {
+    q: "What vehicle classes are available?",
+    a: "Our fleet covers Economy & Executive Sedans, Business-Class and First-Class Sedans, Premium SUVs, Luxury & Ultra-Luxury (on demand), Vans & Minivans, Coasters & Buses, and Electric Mobility where available.",
   },
 ];
 
@@ -247,6 +251,10 @@ export function ContactPage() {
             >
               <div className="space-y-4">
                 <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
+                  <div>
+                    <label className="mb-1.5 block font-lato text-[12px] font-semibold text-maseer-green">
+                      Full name
+                    </label>
                   <FormField
                     icon={
                       <svg
@@ -272,10 +280,15 @@ export function ContactPage() {
                   >
                     <input
                       {...register("name", { required: true })}
-                      placeholder="Your name"
+                      placeholder="Your full name"
                       className="w-full bg-transparent font-lato text-[13px] outline-none placeholder:text-[#aaa]"
                     />
                   </FormField>
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block font-lato text-[12px] font-semibold text-maseer-green">
+                      Phone (+966 preferred)
+                    </label>
                   <FormField
                     icon={
                       <svg
@@ -294,11 +307,16 @@ export function ContactPage() {
                   >
                     <input
                       {...register("phone", { required: true })}
-                      placeholder="Phone"
+                      placeholder="+966 5X XXX XXXX"
                       className="w-full bg-transparent font-lato text-[13px] outline-none placeholder:text-[#aaa]"
                     />
                   </FormField>
+                  </div>
                 </div>
+                <div>
+                  <label className="mb-1.5 block font-lato text-[12px] font-semibold text-maseer-green">
+                    Email
+                  </label>
                 <FormField
                   icon={
                     <svg
@@ -331,23 +349,39 @@ export function ContactPage() {
                     className="w-full bg-transparent font-lato text-[13px] outline-none placeholder:text-[#aaa]"
                   />
                 </FormField>
+                </div>
+                <div>
+                  <label className="mb-1.5 block font-lato text-[12px] font-semibold text-maseer-green">
+                    Subject
+                  </label>
                 <input
                   {...register("subject", { required: true })}
                   placeholder="Subject"
                   className="input-field font-lato text-[13px] placeholder:text-[#aaa]"
                 />
+                </div>
+                <div>
+                  <label className="mb-1.5 block font-lato text-[12px] font-semibold text-maseer-green">
+                    Message
+                  </label>
                 <textarea
                   {...register("message")}
                   rows={5}
                   placeholder="Write something"
                   className="input-field resize-none font-lato text-[13px] placeholder:text-[#aaa]"
                 />
+                </div>
               </div>
+              <p className="mt-4 font-lato text-[12px] leading-5 text-maseer-muted">
+                By submitting this form, you agree that Maseer may use your details
+                to respond to this enquiry. We do not share your information for
+                unrelated marketing.
+              </p>
               <LoadingButton
                 type="submit"
                 loading={isSubmitting}
                 loadingText="Sending..."
-                className="btn-primary mt-6 !rounded-none !px-14 disabled:cursor-not-allowed disabled:opacity-70 max-md:w-full max-md:!px-6"
+                className="btn-primary mt-4 !rounded-none !px-14 disabled:cursor-not-allowed disabled:opacity-70 max-md:w-full max-md:!px-6"
               >
                 <span className="inline-flex items-center gap-2">
                   Send message
@@ -362,7 +396,7 @@ export function ContactPage() {
       <section className="page-container pb-20">
         <p className="eyebrow !text-maseer-green">QUESTION ABOUT OUR SERVICE</p>
         <h2 className="mt-2 font-serif text-[40px] font-bold leading-[52px] text-maseer-green max-md:text-[26px] max-md:leading-[34px]">
-          Frequently asked Questions
+          Maseer FAQs
         </h2>
         <div className="mt-8 divide-y divide-maseer-green/25 border-t border-maseer-green/25">
           {FAQ_ITEMS.map((item, i) => (
@@ -383,7 +417,7 @@ export function ContactPage() {
                   )}
                 </div>
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border-2 border-maseer-green text-maseer-green">
-                  {openFaq === i ? <ChevronDown className="size-5" /> : <ChevronUp className="size-5" />}
+                  {openFaq === i ? <ChevronUp className="size-5" /> : <ChevronDown className="size-5" />}
                 </span>
               </button>
             </div>

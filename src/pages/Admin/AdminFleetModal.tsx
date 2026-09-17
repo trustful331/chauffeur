@@ -17,13 +17,13 @@ import { type FleetItem, type FleetParams, type Amenity } from "src/api/admin/fl
 import { Spinner } from "src/ui/Spinner";
 import { ImageUpload } from "src/ui/ImageUpload";
 
-// Map backend categories to display names
+// Map backend categories to approved website labels (BE enums still limited to 5 values)
 const CATEGORY_MAP = {
-  green_class: "Green Class",
-  ultra_luxury: "Ultra Luxury",
-  business_van: "Business Van",
-  vip_business_class: "VIP / Business Class",
-  economy_class: "Economy Class",
+  green_class: "Electric Mobility",
+  ultra_luxury: "Luxury & Premium SUVs",
+  business_van: "Vans, Coasters & Buses",
+  vip_business_class: "Business / First-Class Sedans",
+  economy_class: "Economy & Executive Sedans",
 } as const;
 
 const CATEGORIES = Object.entries(CATEGORY_MAP) as [keyof typeof CATEGORY_MAP, string][];

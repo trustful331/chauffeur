@@ -1,6 +1,5 @@
-import { useMemo, useState, useEffect } from "react";
+import { useMemo, useState } from "react";
 import { BookingModal } from "../../ui/BookingModal";
-import { fetchFleets, type FleetItem } from "src/api/admin/fleet";
 import {
   Wifi,
   Snowflake,
@@ -22,8 +21,6 @@ import {
   getFleetGridVehicles,
   type FleetGridCategory,
   type FleetVehicle,
-  type FleetCategory,
-  type VehicleBodyType,
 } from "../../data/fleetData";
 import {
   FleetCta,
@@ -184,6 +181,11 @@ function VehicleCard({ vehicle, isAdmin, onEdit }: { vehicle: FleetVehicle; isAd
               </li>
             ))}
           </ul>
+          {vehicle.availabilityNote ? (
+            <p className="mt-3 font-lato text-[11px] font-semibold uppercase tracking-wide text-maseer-gold">
+              {vehicle.availabilityNote}
+            </p>
+          ) : null}
 
           <div className="mt-6 flex items-center gap-3 max-md:flex-col max-md:items-stretch">
             <Link
@@ -197,7 +199,7 @@ function VehicleCard({ vehicle, isAdmin, onEdit }: { vehicle: FleetVehicle; isAd
               onClick={() => setModalOpen(true)}
               className="block flex-1 rounded-lg bg-primary py-3.5 text-center font-lato text-sm font-bold text-white transition hover:brightness-105"
             >
-              Book This Vehicle 
+              Book a Ride
             </button>
           </div>
         </div>
@@ -213,63 +215,16 @@ function VehicleCard({ vehicle, isAdmin, onEdit }: { vehicle: FleetVehicle; isAd
   );
 }
 
-function mapBackendFleetToFleetVehicle(item: FleetItem): FleetVehicle {
-  let catName: Exclude<FleetCategory, "All Vehicles"> = "Economy Class";
-  if (item.category === "green_class") catName = "Green Class";
-  else if (item.category === "ultra_luxury") catName = "Ultra Luxury";
-  else if (item.category === "business_van") catName = "Business Van";
-  else if (item.category === "vip_business_class") catName = "VIP / Business Class";
-
-  const bodyTypeUpper = (item.vehicle_type || "sedan").toUpperCase() as VehicleBodyType;
-
-  return {
-    id: item.id,
-    name: item.vehicle_name,
-    category: catName,
-    bodyType: bodyTypeUpper,
-    seats: item.seat_count,
-    bags: item.luggage_capacity,
-    bagLabel: `${item.luggage_capacity} Large`,
-    transmission: "Automatic",
-    fuel: "Petrol",
-    features: (item.amenities || []).map((a) => a.name),
-    image: item.image_url,
-    gridTags: [catName],
-  };
-}
-
 export function FleetGridPage() {
   const navigate = useNavigate();
   const authUser = useAppSelector(selectAuthUser) as AuthUser | "";
   const isAdmin = authUser && typeof authUser === "object" && authUser.currentRole === "admin";
   const [category, setCategory] = useState<FleetGridCategory>("All Vehicles");
-  const [liveVehicles, setLiveVehicles] = useState<FleetVehicle[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function loadData() {
-      try {
-        const response = await fetchFleets({ is_active: true });
-        if (response && response.success && Array.isArray(response.data) && response.data.length > 0) {
-          const mapped = response.data.map(mapBackendFleetToFleetVehicle);
-          setLiveVehicles(mapped);
-        }
-      } catch (err) {
-        console.error("Failed to load live fleet, using fallback registry:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadData();
-  }, []);
 
   const vehicles = useMemo(() => {
-    const list = liveVehicles.length > 0 ? liveVehicles : getFleetGridVehicles("All Vehicles");
-    if (category === "All Vehicles") {
-      return list;
-    }
-    return list.filter((v) => v.category === category);
-  }, [liveVehicles, category]);
+    // Approved static fleet is the go-live content source of truth until BE categories are rebuilt.
+    return getFleetGridVehicles(category);
+  }, [category]);
 
   return (
     <div className="overflow-hidden bg-maseer-cream">
@@ -283,12 +238,7 @@ export function FleetGridPage() {
       />
 
       <section className="page-container pb-20 pt-4">
-        {loading ? (
-          <div className="flex h-64 w-full flex-col items-center justify-center gap-4">
-            <span className="h-8 w-8 animate-spin rounded-full border-4 border-maseer-gold border-t-transparent" />
-            <p className="font-lato text-sm font-medium text-maseer-muted">Loading fleet inventory...</p>
-          </div>
-        ) : vehicles.length === 0 ? (
+        {vehicles.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-maseer-line bg-white p-16 text-center">
             <h3 className="font-serif text-[18px] font-bold text-[#1a2e1f]">No listings match criteria</h3>
           </div>
@@ -307,7 +257,7 @@ export function FleetGridPage() {
       </section>
 
       <FleetStandards />
-      <FleetCta buttonLabel="Reserve Your Ride" />
+      <FleetCta buttonLabel="Book a Ride" />
     </div>
   );
 }

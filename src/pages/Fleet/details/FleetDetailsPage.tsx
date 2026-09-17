@@ -9,7 +9,7 @@ import {
 } from "../../../data/fleetData";
 import { FleetCta, FleetHero, FleetStandards } from "../FleetShared";
 import { BookingModal } from "../../../ui/BookingModal";
-import { fetchFleetById, fetchFleets, type FleetItem } from "src/api/admin/fleet";
+import { fetchFleetById, type FleetItem } from "src/api/admin/fleet";
 import { fetchFleetDetails, type FleetDetailItem } from "src/api/admin/fleetDetail";
 import { Pencil } from "lucide-react";
 import { useAppSelector } from "src/store/hooks";
@@ -292,22 +292,27 @@ type FleetSlideInteraction = {
 /* ─── page ────────────────────────────────────────────────────────────────── */
 
 function mapBackendFleetToFleetVehicle(item: FleetItem): FleetVehicle {
-  let catName: Exclude<FleetCategory, "All Vehicles"> = "Economy Class";
-  if (item.category === "green_class") catName = "Green Class";
-  else if (item.category === "ultra_luxury") catName = "Ultra Luxury";
-  else if (item.category === "business_van") catName = "Business Van";
-  else if (item.category === "vip_business_class") catName = "VIP / Business Class";
+  let catName: Exclude<FleetCategory, "All Vehicles"> = "Economy & Executive Sedans";
+  if (item.category === "green_class") catName = "Electric Mobility";
+  else if (item.category === "ultra_luxury") catName = "Premium SUVs";
+  else if (item.category === "business_van") catName = "Vans & Minivans";
+  else if (item.category === "vip_business_class") catName = "First-Class Sedans";
+  else if (item.category === "economy_class") catName = "Economy & Executive Sedans";
 
-  const bodyTypeUpper = (item.vehicle_type || "sedan").toUpperCase() as VehicleBodyType;
+  const bodyTypeRaw = (item.vehicle_type || "sedan").toUpperCase();
+  const bodyType: VehicleBodyType =
+    bodyTypeRaw === "SUV" || bodyTypeRaw === "VAN" || bodyTypeRaw === "BUS"
+      ? bodyTypeRaw
+      : "SEDAN";
 
   return {
     id: item.id,
     name: item.vehicle_name,
     category: catName,
-    bodyType: bodyTypeUpper,
+    bodyType,
     seats: item.seat_count,
     bags: item.luggage_capacity,
-    bagLabel: `${item.luggage_capacity} Large`,
+    bagLabel: `${item.luggage_capacity} checked`,
     transmission: "Automatic",
     fuel: "Petrol",
     features: (item.amenities || []).map((a) => a.name),
@@ -374,28 +379,11 @@ export function FleetDetailsPage() {
             setDetail(null);
           }
 
-          // 3. Fetch slider vehicles (other vehicles in same category)
-          if (mock) {
-            // Mock slider
-            const cat = activeVeh.category;
-            const filteredMock = FLEET_VEHICLES.filter((v) => v.category === cat);
-            setSliderVehicles(filteredMock);
-          } else {
-            // Live slider
-            const fleetsRes = await fetchFleets({ is_active: true });
-            if (fleetsRes && fleetsRes.success && Array.isArray(fleetsRes.data)) {
-              // Convert category format to match backend selection
-              let backendCat = "economy_class";
-              if (activeVeh.category === "Green Class") backendCat = "green_class";
-              else if (activeVeh.category === "Ultra Luxury") backendCat = "ultra_luxury";
-              else if (activeVeh.category === "Business Van") backendCat = "business_van";
-              else if (activeVeh.category === "VIP / Business Class") backendCat = "vip_business_class";
-
-              const categoryFleets = fleetsRes.data.filter((f) => f.category === backendCat);
-              const mappedSlider = categoryFleets.map(mapBackendFleetToFleetVehicle);
-              setSliderVehicles(mappedSlider);
-            }
-          }
+          // 3. Slider: approved static fleet in the same category (avoids BE test/demo bleed)
+          const cat = activeVeh.category;
+          setSliderVehicles(
+            FLEET_VEHICLES.filter((v) => v.category === cat)
+          );
         }
       } catch (err) {
         console.error("Error loading vehicle details:", err);
@@ -557,7 +545,7 @@ export function FleetDetailsPage() {
               onClick={() => setBookingModalOpen(true)}
               className="btn-gold font-lato text-white"
             >
-              Book this Vehicle 
+              Book a Ride
               <span aria-hidden>→</span>
             </button>
 
@@ -602,7 +590,7 @@ export function FleetDetailsPage() {
       </section>
 
       <FleetStandards />
-      <FleetCta buttonLabel="Book Your Vehicle Now" />
+      <FleetCta buttonLabel="Book a Ride" />
 
       <BookingModal
         isOpen={bookingModalOpen}

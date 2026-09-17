@@ -114,7 +114,7 @@ export function PaymentSuccessPage() {
             Go to Homepage
           </Link>
           <a
-            href="mailto:support@chauffeur.com"
+            href="mailto:support@maseer.com"
             className="font-lato text-xs font-semibold text-maseer-muted hover:underline"
           >
             Contact Customer Care

@@ -125,12 +125,12 @@ export function PaymentFailurePage() {
 
           <div className="mt-8 flex justify-center gap-2 text-xs font-lato text-maseer-muted">
             <span>Need help?</span>
-            <a
-              href="tel:+96550000000"
+            <Link
+              to="/contact"
               className="flex items-center gap-1 font-semibold text-maseer-green hover:underline"
             >
-              <PhoneCall className="h-3 w-3" /> Call Helpline
-            </a>
+              <PhoneCall className="h-3 w-3" /> Contact Support
+            </Link>
           </div>
 
         </div>

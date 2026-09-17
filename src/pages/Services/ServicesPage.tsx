@@ -11,14 +11,14 @@ import type { AuthUser } from "src/store/slices/auth/types";
 
 const fallbackCoverageLarge = [
   {
-    title: "Airport Transfers Service",
-    text: "Enjoy professional and seamless airport transfers.",
+    title: "Airport Transfers",
+    text: "Professional airport pickup and drop-off with meet-and-greet support.",
     span: "col-span-7",
     image: images.services.coverage[0],
   },
   {
     title: "Limousine Service",
-    text: "Travel in luxury with our VIP limousine service.",
+    text: "Travel in comfort with our VIP limousine and chauffeur service.",
     span: "col-span-5",
     image: images.services.coverage[1],
   },
@@ -26,18 +26,18 @@ const fallbackCoverageLarge = [
 
 const fallbackCoverageSmall = [
   {
-    title: "Intercity Travel service",
-    text: "Travel between cities with comfort.",
+    title: "Intercity Travel",
+    text: "Comfortable transportation between major Saudi cities.",
     image: images.services.coverage[2],
   },
   {
     title: "Hire by the Hour",
-    text: "Book the hour for flexible rides.",
+    text: "Book a chauffeur-driven vehicle by the hour.",
     image: images.services.coverage[3],
   },
   {
-    title: "Event transport",
-    text: "Luxury Chauffeur service for any occasion.",
+    title: "Event Transportation",
+    text: "Coordinated chauffeur service for occasions and VIP arrivals.",
     image: images.services.coverage[4],
   },
 ];
@@ -45,42 +45,42 @@ const fallbackCoverageSmall = [
 const fallbackItineraryCards = [
   {
     title: "Airport Transfers",
-    text: "Professional airport pickup and drop-off services with real-time coordination, meet and greet support, and premium chauffeur experience for business and leisure travelers.",
+    text: "Professional airport pickup and drop-off with real-time coordination, meet-and-greet support, and a premium chauffeur experience for business and leisure travelers.",
     icon: "airplane",
   },
   {
     title: "Hourly Chauffeur",
-    text: "transportation services connecting major cities across Saudi Arabia including Riyadh, Jeddah, Makkah, Madinah, Dammam, and AlUla",
+    text: "Book a chauffeur-driven vehicle by the hour for meetings, shopping, or flexible city itineraries.",
     icon: "clock",
   },
   {
     title: "Corporate Mobility",
-    text: "transportation solutions for corporates, government entities, VIP guests, business meetings, conferences",
+    text: "Transportation solutions for corporates, government entities, VIP guests, business meetings, and conferences.",
     icon: "briefcase",
   },
   {
     title: "VIP Tourism",
-    text: "Premium chauffeur services designed for executives, diplomats, celebrities, and high-profile guests requiring privacy, comfort, professionalism, and luxury.",
+    text: "Premium chauffeur services for executives, diplomats, and high-profile guests who require privacy, comfort, and professionalism.",
     icon: "crown",
   },
   {
     title: "Professional Chauffeurs",
-    text: "Comfortable and organized Ziyarah transportation services in Makkah and Madinah designed for families, groups, and international visitors",
+    text: "Trained chauffeurs focused on punctuality, discretion, and a consistent guest experience across every journey.",
     icon: "chauffeur",
   },
   {
     title: "Luxury Fleet",
-    text: "Luxury transportation management for conferences, corporate events, exhibitions, weddings, entertainment events, and VIP delegations.",
+    text: "A curated range of sedans, SUVs, vans, and on-demand ultra-luxury vehicles matched to your journey requirements.",
     icon: "diamond",
   },
   {
-    title: "Zuarah tours",
-    text: "Comfortable and organized Ziyarah transportation services in Makkah and Madinah designed for families, groups, and international visitors",
+    title: "Ziyarah Tours",
+    text: "Comfortable and organized Ziyarah transportation in Makkah and Madinah for families, groups, and international visitors.",
     icon: "medal",
   },
   {
     title: "24/7 Support",
-    text: "From AlUla to NEOM — bespoke journeys curated.",
+    text: "Round-the-clock booking and trip support so your journey stays coordinated from confirmation to drop-off.",
     icon: "support",
   },
 ] as const;
@@ -302,7 +302,7 @@ const JOURNEY_STEPS = [
   {
     n: "3",
     title: "Confirm & Relax",
-    text: "Receive instant confirmation and your chauffeur's details before departure.",
+    text: "Receive booking confirmation; chauffeur details will be shared before pickup.",
   },
 ] as const;
 
@@ -433,7 +433,7 @@ export function ServicesPage() {
           </p>
           <div className="mt-9 flex flex-wrap items-center gap-4">
             <Link to="/booking" className="btn-gold min-w-[180px]">
-              Make a Booking
+              Book a Ride
             </Link>
             <Link to="/fleet" className="btn-outline min-w-[160px]">
               Explore Fleet
@@ -452,7 +452,7 @@ export function ServicesPage() {
           </div>
           <div className="flex items-center gap-3">
             <SplitHeading
-              before={dynamicHeading ? dynamicHeading.split(" ").slice(0, -1).join(" ") + ", " : "Our, "}
+              before={dynamicHeading ? dynamicHeading.split(" ").slice(0, -1).join(" ") + " " : "Our "}
               accent={dynamicHeading ? dynamicHeading.split(" ").slice(-1)[0] : "Service Coverage"}
               align="left"
             />
@@ -632,7 +632,7 @@ export function ServicesPage() {
             unique travel requirements.
           </p>
           <Link to="/contact" className="btn-gold mt-8">
-            Contact for a Request
+            Request a Custom Solution
             <span aria-hidden>→</span>
           </Link>
         </div>

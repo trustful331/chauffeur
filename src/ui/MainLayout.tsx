@@ -12,16 +12,17 @@ const navItems = [
   { to: "/services", label: "Services", end: true },
   { to: "/fleet", label: "Our Fleet", end: true },
   { to: "/corporate", label: "Corporate", end: true },
+  { to: "/about", label: "About Us", end: true },
   { to: "/contact", label: "Contact Us", end: true },
 ];
 
 const footerServices = [
-  "Economy Rides",
-  "Minivan Service",
-  "Cargo Transport",
-  "Premium Vehicles",
-  "Airport Transfers",
-  "Corporate Bookings",
+  { label: "Airport Transfers", to: "/services" },
+  { label: "Corporate Bookings", to: "/corporate" },
+  { label: "Economy & Executive Sedans", to: "/fleet" },
+  { label: "Premium SUVs", to: "/fleet" },
+  { label: "Vans & Minivans", to: "/fleet" },
+  { label: "Electric Mobility", to: "/fleet" },
 ];
 
 const regionCities = [
@@ -29,7 +30,7 @@ const regionCities = [
   "Jeddah",
   "Madinah",
   "AlUla",
-  "Damam",
+  "Dammam",
   "Khobar",
   "Abha",
 ];
@@ -225,8 +226,8 @@ export function MainLayout() {
             <div className="sm:col-span-2 lg:col-span-1">
               <MaseerLogo />
               <p className="mt-6 max-w-[280px] font-lato text-[13px] leading-[22px] text-maseer-green-text">
-                Reliable, professional Chauffour Booking Service for passengers
-                and luggage. Your Journey, Our priority.
+                Reliable, professional chauffeur services for passengers and
+                luggage. Your journey, our priority.
               </p>
               <div className="mt-6 flex items-center gap-4 text-maseer-green-text">
                 <a
@@ -259,7 +260,11 @@ export function MainLayout() {
               </p>
               <ul className="mt-5 space-y-3 font-lato text-[13px] leading-5 text-maseer-green-text">
                 {footerServices.map((s) => (
-                  <li key={s}>{s}</li>
+                  <li key={s.label}>
+                    <NavLink to={s.to} className="transition hover:text-primary">
+                      {s.label}
+                    </NavLink>
+                  </li>
                 ))}
               </ul>
             </div>
@@ -292,6 +297,11 @@ export function MainLayout() {
                   >
                     Contact Us
                   </NavLink>
+                </li>
+                <li>
+                  <span className="text-maseer-muted">
+                    Privacy Policy &amp; Terms — coming soon
+                  </span>
                 </li>
               </ul>
             </div>

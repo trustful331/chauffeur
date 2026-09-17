@@ -264,12 +264,12 @@ export function AdminBookingPage() {
             className="w-full rounded-xl border border-[#E5E7EB] px-3.5 py-2.5 font-lato text-xs font-semibold text-[#062111] focus:outline-none focus:ring-1 focus:ring-[#F9BB00] bg-gray-50/50 cursor-pointer"
           >
             <option value="all">All Classes</option>
-            <option value="business class">Business Class</option>
-            <option value="vip / business class">VIP / Business Class</option>
-            <option value="ultra luxury">Ultra Luxury</option>
-            <option value="business van">Business Van</option>
-            <option value="economy class">Economy Class</option>
-            <option value="green class">Green Class</option>
+            <option value="business class">Business-Class Sedans</option>
+            <option value="vip / business class">Business / First-Class Sedans</option>
+            <option value="ultra luxury">Luxury & Premium SUVs</option>
+            <option value="business van">Vans, Coasters & Buses</option>
+            <option value="economy class">Economy & Executive Sedans</option>
+            <option value="green class">Electric Mobility</option>
           </select>
         </div>
       </div>

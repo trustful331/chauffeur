@@ -62,19 +62,25 @@ const BOOKING_TABS: BookingTab[] = [
 ];
 
 const FLEET_CLASS_OPTIONS = [
-  "Green Class",
-  "Ultra Luxury",
-  "Business Van",
-  "VIP / Business Class",
-  "Economy Class",
+  "Economy & Executive Sedans",
+  "Business-Class Sedans",
+  "First-Class Sedans",
+  "Premium SUVs",
+  "Luxury & Ultra-Luxury Vehicles",
+  "Vans & Minivans",
+  "Coasters & Buses",
+  "Electric Mobility",
 ];
 
 const CATEGORY_PRICE_MAP: Record<string, number> = {
-  "Economy Class": 15,
-  "Green Class": 25,
-  "VIP / Business Class": 40,
-  "Business Van": 50,
-  "Ultra Luxury": 75,
+  "Economy & Executive Sedans": 15,
+  "Business-Class Sedans": 25,
+  "First-Class Sedans": 40,
+  "Premium SUVs": 50,
+  "Luxury & Ultra-Luxury Vehicles": 75,
+  "Vans & Minivans": 45,
+  "Coasters & Buses": 60,
+  "Electric Mobility": 35,
 };
 
 const emptyLocation = (): BookingLocation => ({
@@ -100,6 +106,15 @@ export function getVehiclesForCategory(
   if (!categoryName) return [];
 
   const categoryCodeMap: Record<string, string> = {
+    "Economy & Executive Sedans": "economy_class",
+    "Business-Class Sedans": "vip_business_class",
+    "First-Class Sedans": "vip_business_class",
+    "Premium SUVs": "ultra_luxury",
+    "Luxury & Ultra-Luxury Vehicles": "ultra_luxury",
+    "Vans & Minivans": "business_van",
+    "Coasters & Buses": "business_van",
+    "Electric Mobility": "green_class",
+    // legacy labels (API / older UI)
     "Green Class": "green_class",
     "Ultra Luxury": "ultra_luxury",
     "Business Van": "business_van",
@@ -108,45 +123,63 @@ export function getVehiclesForCategory(
   };
   const backendCategory = categoryCodeMap[categoryName];
 
-  const list: UnifiedVehicleOption[] = [];
+  const deniedName = (name: string) => {
+    const n = name.toLowerCase();
+    return [
+      "test",
+      "pricing test",
+      "sonata",
+      "kia k5",
+      "tesla",
+      "330e",
+      "audi a8",
+      "bentley",
+      "flying spur",
+      "prius",
+      "cadillac",
+    ].some((token) => n.includes(token));
+  };
 
-  // 1. Backend active vehicles matching category
+  const matchesApproved = (name: string, approvedName: string) => {
+    const n = name.toLowerCase().trim();
+    const a = approvedName.toLowerCase().trim();
+    return n === a || n.includes(a) || a.includes(n);
+  };
+
+  // Approved static vehicles are the source of truth for public booking options.
+  const list: UnifiedVehicleOption[] = FLEET_VEHICLES.filter(
+    (s) => s.category === categoryName
+  ).map((s) => ({
+    id: s.id,
+    name: s.name,
+    category: s.category,
+    seats: s.seats,
+    bags: s.bags,
+    image: s.image,
+    bodyType: s.bodyType,
+  }));
+
   const backendMatched = backendFleets.filter(
-    (item) => item.is_active && (!backendCategory || item.category === backendCategory)
+    (item) =>
+      item.is_active && (!backendCategory || item.category === backendCategory)
   );
 
   for (const b of backendMatched) {
-    const fallbackStatic = FLEET_VEHICLES.find(
-      (s) => s.id === b.id || s.name.toLowerCase() === b.vehicle_name.toLowerCase()
+    if (deniedName(b.vehicle_name)) continue;
+    const matchIdx = list.findIndex((item) =>
+      matchesApproved(b.vehicle_name, item.name)
     );
-    list.push({
+    if (matchIdx < 0) continue;
+    list[matchIdx] = {
+      ...list[matchIdx],
       id: b.id,
-      name: b.vehicle_name,
-      category: categoryName,
-      seats: b.seat_count || fallbackStatic?.seats || 4,
-      bags: b.luggage_capacity || fallbackStatic?.bags || 2,
-      image: b.image_url || fallbackStatic?.image || "",
-      bodyType: b.vehicle_type ? b.vehicle_type.toUpperCase() : fallbackStatic?.bodyType,
-    });
-  }
-
-  // 2. Static FLEET_VEHICLES matching category
-  const staticMatched = FLEET_VEHICLES.filter((s) => s.category === categoryName);
-  for (const s of staticMatched) {
-    const exists = list.some(
-      (item) => item.id === s.id || item.name.toLowerCase() === s.name.toLowerCase()
-    );
-    if (!exists) {
-      list.push({
-        id: s.id,
-        name: s.name,
-        category: s.category,
-        seats: s.seats,
-        bags: s.bags,
-        image: s.image,
-        bodyType: s.bodyType,
-      });
-    }
+      image: b.image_url || list[matchIdx].image,
+      seats: b.seat_count || list[matchIdx].seats,
+      bags: b.luggage_capacity || list[matchIdx].bags,
+      bodyType: b.vehicle_type
+        ? b.vehicle_type.toUpperCase()
+        : list[matchIdx].bodyType,
+    };
   }
 
   return list;
@@ -853,19 +886,19 @@ export function BookingFormBody({
 
               {/* passengers */}
               <div>
-                <FieldLabel>Passengers</FieldLabel>
+                <FieldLabel>Adults</FieldLabel>
                 <BookingInput icon={<PersonIcon />} hasError={!!errors.passengers}>
                   <input
                     {...register("passengers", {
-                      required: "Passengers is required",
+                      required: "Adults is required",
                       validate: (value) => {
                         const count = Number(value);
                         if (!value || Number.isNaN(count))
-                          return "Enter number of passengers";
+                          return "Enter number of adults";
                         if (!Number.isInteger(count))
                           return "Must be a whole number";
-                        if (count < 1) return "At least 1 passenger required";
-                        if (count > 99) return "Maximum 99 passengers";
+                        if (count < 1) return "At least 1 adult required";
+                        if (count > 99) return "Maximum 99 adults";
                         return true;
                       },
                     })}
@@ -1115,7 +1148,7 @@ export function BookingFormBody({
                         minLength: { value: 8, message: "Invalid phone number" },
                       })}
                       type="tel"
-                      placeholder="+96550000000"
+                      placeholder="+966 5X XXX XXXX"
                       className="w-full bg-transparent font-lato text-[12px] text-[#333] outline-none"
                     />
                   </BookingInput>
@@ -1186,7 +1219,7 @@ export function BookingFormBody({
                       </div>
                     )}
                     <div className="flex justify-between">
-                      <span>Passengers:</span>
+                      <span>Adults:</span>
                       <strong className="text-white">
                         {getValues("passengers")} adults, {getValues("childs") || "0"} children
                       </strong>
@@ -1305,7 +1338,7 @@ export function BookingModal({
         <div className="flex shrink-0 items-center justify-between px-8 pb-4 pt-6 max-md:px-4 bg-white z-10">
           <div>
             <h2 className="font-serif text-[22px] font-semibold text-maseer-green-text">
-              Book Your Ride
+              Book a Ride
             </h2>
             {vehicleName && (
               <p className="mt-0.5 font-lato text-[13px] text-maseer-muted">
