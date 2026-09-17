@@ -86,7 +86,7 @@ export function PaymentFailurePage() {
               )}
               <div className="flex justify-between">
                 <span className="text-maseer-muted">Currency Code:</span>
-                <strong className="text-maseer-green-text">KWD (Kuwaiti Dinar)</strong>
+                <strong className="text-maseer-green-text">SAR</strong>
               </div>
             </div>
           </div>

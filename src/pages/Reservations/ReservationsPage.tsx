@@ -314,7 +314,7 @@ export function ReservationsPage() {
                         Total Amount
                       </p>
                       <p className="text-sm font-bold text-[#062111]">
-                        {Number(booking.amount || 0)} {String(booking.currency || "KWD")}
+                        {Number(booking.amount || 0)} {String(booking.currency || "SAR")}
                       </p>
                     </div>
 

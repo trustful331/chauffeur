@@ -3,6 +3,7 @@ import { useSearchParams, Link } from "react-router-dom";
 import { CheckCircle2, AlertTriangle, ArrowRight, Calendar, MapPin, User, ShieldCheck } from "lucide-react";
 import toast from "react-hot-toast";
 import { verifyPayment, type VerifyPaymentResponse } from "../../api/payment";
+import { SITE } from "src/config/site";
 
 export function PaymentSuccessPage() {
   const [searchParams] = useSearchParams();
@@ -114,7 +115,7 @@ export function PaymentSuccessPage() {
             Go to Homepage
           </Link>
           <a
-            href="mailto:support@maseer.com"
+            href={`mailto:${SITE.email}`}
             className="font-lato text-xs font-semibold text-maseer-muted hover:underline"
           >
             Contact Customer Care

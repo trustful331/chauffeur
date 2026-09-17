@@ -11,7 +11,7 @@ import type { AuthUser } from "src/store/slices/auth/types";
 
 const fallbackCoverageLarge = [
   {
-    title: "Airport Transfers",
+    title: "Airport Transfer Service",
     text: "Professional airport pickup and drop-off with meet-and-greet support.",
     span: "col-span-7",
     image: images.services.coverage[0],

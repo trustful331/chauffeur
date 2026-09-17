@@ -146,13 +146,14 @@ export function getVehiclesForCategory(
     return n === a || n.includes(a) || a.includes(n);
   };
 
-  // Approved static vehicles are the source of truth for public booking options.
   const list: UnifiedVehicleOption[] = FLEET_VEHICLES.filter(
-    (s) => s.category === categoryName
+    (s) =>
+      s.category === categoryName ||
+      (s.gridTags && s.gridTags.includes(categoryName as (typeof s.gridTags)[number]))
   ).map((s) => ({
     id: s.id,
     name: s.name,
-    category: s.category,
+    category: categoryName,
     seats: s.seats,
     bags: s.bags,
     image: s.image,
@@ -423,7 +424,9 @@ export function BookingFormBody({
                 }
                 : null
             );
-            toast.success(`Admin has approved your custom rate: ${res.data.amount} KWD!`);
+            toast.success(
+              `Admin has approved your custom rate: ${res.data.amount} ${res.data.currency || "SAR"}!`
+            );
           } else if (res.data.status === "expired") {
             setQuoteData((prev) => (prev ? { ...prev, status: "expired" } : null));
             toast.error("Quote request expired. Please request a new quote.");
@@ -1248,7 +1251,8 @@ export function BookingFormBody({
                         )}
                       </div>
                       <span className="font-serif text-2xl font-black text-maseer-gold">
-                        {quoteData?.amount ?? selectedCategoryPrice} KWD
+                        {quoteData?.amount ?? selectedCategoryPrice}{" "}
+                        {quoteData?.currency || "SAR"}
                       </span>
                     </div>
 
@@ -1287,7 +1291,8 @@ export function BookingFormBody({
                   loadingText="Securing payment..."
                   className="block w-full rounded-xl bg-maseer-gold py-4 text-center font-lato text-sm font-bold text-[#101828] hover:bg-[#d8a400] transition active:scale-[0.99] disabled:opacity-50"
                 >
-                  Proceed to Payment ({quoteData?.amount ?? selectedCategoryPrice} KWD)
+                  Proceed to Payment ({quoteData?.amount ?? selectedCategoryPrice}{" "}
+                  {quoteData?.currency || "SAR"})
                 </LoadingButton>
               </div>
             </div>

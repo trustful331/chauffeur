@@ -493,9 +493,9 @@ const fleetCards = [
     image: images.home.fleet[2],
   },
   {
-    id: "mercedes-v",
+    id: "mercedes-vito",
     title: "Mercedes-Benz Vito",
-    category: "VANS & MINIVANS",
+    category: "PREMIUM SUV",
     guests: 7,
     image: images.home.fleet[0],
   },
@@ -531,12 +531,12 @@ const reviews = [
   },
   {
     rating: 5,
-    title: "Flawless coordination",
+    title: "Smooth airport transfer",
     quote:
-      '"Used Maseer for corporate events multiple times. Flawless coordination and VIP treatment every single trip. Will definitely use again for airport transfers."',
-    name: "Sarah Mitchell",
+      '"Flight landed late and the chauffeur was still waiting with a clear sign. Clean cabin, careful luggage handling, and a calm ride into the city."',
+    name: "Omar Hassan",
     avatar:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&h=150&q=80",
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&h=150&q=80",
   },
 ];
 

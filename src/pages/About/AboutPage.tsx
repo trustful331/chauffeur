@@ -144,7 +144,7 @@ const VALUES = [
   },
   {
     title: "Reliability",
-    text: "Dependable service you can count on, whether it is day or night, rain or shine.",
+    text: "Dependable service you can count on, day or night.",
     icon: (
       <svg width="21" height="42" viewBox="0 0 21 42" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M20.8 17.3337H13.8668V0L0 24.2674H6.93316V41.6L20.8 17.3337Z" fill="#002703" />

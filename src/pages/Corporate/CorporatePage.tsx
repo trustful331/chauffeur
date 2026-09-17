@@ -41,7 +41,7 @@ const VALUES = [
   },
   {
     title: "Reliability",
-    text: "Dependable service you can count on, whether it's day or night, rain or shine.",
+    text: "Dependable service you can count on, day or night.",
     icon: (
       <svg
         width="21"

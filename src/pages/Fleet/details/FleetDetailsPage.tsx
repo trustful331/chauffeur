@@ -148,26 +148,26 @@ function IconSafety() {
         <path
           d="M22.0516 0.861202L39.9717 6.4755V21.5538C39.9717 32.1458 32.4537 41.2473 22.0522 43.2476C11.6508 41.2473 4.13281 32.1458 4.13281 21.5538V6.4755L22.0529 0.861202"
           stroke="white"
-          stroke-width="1.88919"
-          stroke-miterlimit="10"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="1.88919"
+          strokeMiterlimit="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="M33.1417 29.6274C34.4287 27.202 35.1509 24.4473 35.1509 21.5536V10.0196L22.0559 5.91704L8.96094 10.0196V21.5536C8.96094 29.5053 14.4145 36.4079 22.0559 38.3091C24.2854 37.7544 26.3287 36.774 28.1046 35.4658"
           stroke="white"
-          stroke-width="1.88919"
-          stroke-miterlimit="10"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="1.88919"
+          strokeMiterlimit="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
         <path
           d="M20.4878 27.676L14.7188 21.907L17.6428 18.9829L20.4878 21.8279L26.4624 15.8532L29.3865 18.7773L20.4878 27.676Z"
           stroke="white"
-          stroke-width="1.88919"
-          stroke-miterlimit="10"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+          strokeWidth="1.88919"
+          strokeMiterlimit="10"
+          strokeLinecap="round"
+          strokeLinejoin="round"
         />
       </g>
     </svg>
