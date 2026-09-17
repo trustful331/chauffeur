@@ -206,6 +206,14 @@ function formatOtpError(error: unknown, fallback = "Your OTP code is incorrect. 
   const lower = msg.toLowerCase();
 
   if (
+    lower.includes("too many") ||
+    lower.includes("try again in") ||
+    (error as { response?: { status?: number } })?.response?.status === 429
+  ) {
+    return msg;
+  }
+
+  if (
     lower.includes("no otp found") ||
     lower.includes("invalid otp") ||
     lower.includes("incorrect otp") ||

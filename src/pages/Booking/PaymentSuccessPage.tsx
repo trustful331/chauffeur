@@ -9,6 +9,14 @@ export function PaymentSuccessPage() {
   const [searchParams] = useSearchParams();
   const paymentId = searchParams.get("paymentId") || searchParams.get("payment_id");
   const [bookingId, setBookingId] = useState<string | null>(null);
+  const [bookingReference, setBookingReference] = useState<string | null>(null);
+  const [priceBreakdown, setPriceBreakdown] = useState<{
+    base_amount?: number;
+    tax_amount?: number;
+    tolls_amount?: number;
+    waiting_amount?: number;
+    total_amount?: number;
+  } | null>(null);
   
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -17,7 +25,17 @@ export function PaymentSuccessPage() {
   useEffect(() => {
     // 1. Get the pending booking ID from localStorage
     const savedBookingId = localStorage.getItem("pending_booking_id");
+    const savedReference = localStorage.getItem("pending_booking_reference");
+    const savedBreakdown = localStorage.getItem("pending_price_breakdown");
     setBookingId(savedBookingId);
+    setBookingReference(savedReference);
+    if (savedBreakdown) {
+      try {
+        setPriceBreakdown(JSON.parse(savedBreakdown));
+      } catch {
+        setPriceBreakdown(null);
+      }
+    }
 
     if (!paymentId) {
       setError("No payment transaction identifier was found in the URL.");
@@ -46,6 +64,8 @@ export function PaymentSuccessPage() {
           } else {
             // Success! Clear the pending booking ID
             localStorage.removeItem("pending_booking_id");
+            localStorage.removeItem("pending_booking_reference");
+            localStorage.removeItem("pending_price_breakdown");
             toast.success("Payment verified successfully!");
           }
         } else {
@@ -96,7 +116,7 @@ export function PaymentSuccessPage() {
           {bookingId && (
             <div className="flex justify-between">
               <span>Booking Reference:</span>
-              <strong className="text-slate-700">{bookingId}</strong>
+              <strong className="text-slate-700">{bookingReference || bookingId}</strong>
             </div>
           )}
           {paymentId && (
@@ -126,6 +146,12 @@ export function PaymentSuccessPage() {
   }
 
   const { booking, payment } = verifyData;
+  const reference =
+    (booking.booking_reference as string | undefined) ||
+    bookingReference ||
+    booking.id;
+  const breakdown =
+    (booking.price_breakdown as typeof priceBreakdown) || priceBreakdown;
 
   return (
     <div className="min-h-[85vh] bg-[#fcfbfa] py-16 px-4">
@@ -155,7 +181,7 @@ export function PaymentSuccessPage() {
             <div className="grid grid-cols-2 gap-y-4 rounded-2xl bg-[#FFFBF0]/60 p-6 text-xs font-lato max-md:grid-cols-1 max-md:gap-y-3">
               <div>
                 <span className="block text-maseer-muted uppercase tracking-wider text-[10px]">Booking Reference</span>
-                <strong className="mt-1 block text-sm text-maseer-green-text">{booking.id}</strong>
+                <strong className="mt-1 block text-sm text-maseer-green-text">{reference}</strong>
               </div>
               <div>
                 <span className="block text-maseer-muted uppercase tracking-wider text-[10px]">Payment ID</span>
@@ -172,6 +198,46 @@ export function PaymentSuccessPage() {
                 </span>
               </div>
             </div>
+
+            {breakdown && (
+              <div className="mt-4 rounded-2xl border border-[#eaecf0] bg-white p-5 text-xs font-lato">
+                <p className="mb-3 font-bold uppercase tracking-wider text-[10px] text-maseer-muted">
+                  Price Breakdown
+                </p>
+                <div className="space-y-2 text-maseer-green-text">
+                  {breakdown.base_amount != null && (
+                    <div className="flex justify-between">
+                      <span>Base</span>
+                      <strong>{breakdown.base_amount} {payment.currency}</strong>
+                    </div>
+                  )}
+                  {breakdown.tax_amount != null && (
+                    <div className="flex justify-between">
+                      <span>Tax</span>
+                      <strong>{breakdown.tax_amount} {payment.currency}</strong>
+                    </div>
+                  )}
+                  {breakdown.tolls_amount != null && (
+                    <div className="flex justify-between">
+                      <span>Tolls</span>
+                      <strong>{breakdown.tolls_amount} {payment.currency}</strong>
+                    </div>
+                  )}
+                  {breakdown.waiting_amount != null && (
+                    <div className="flex justify-between">
+                      <span>Waiting</span>
+                      <strong>{breakdown.waiting_amount} {payment.currency}</strong>
+                    </div>
+                  )}
+                  {breakdown.total_amount != null && (
+                    <div className="flex justify-between border-t border-[#f0f2f5] pt-2 font-bold">
+                      <span>Total</span>
+                      <strong className="text-maseer-green">{breakdown.total_amount} {payment.currency}</strong>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Trip Overview */}

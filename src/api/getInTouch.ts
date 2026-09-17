@@ -5,6 +5,8 @@ export type CreateGetInTouchParams = {
   phone_number: string;
   email_address: string;
   note: string;
+  /** Honeypot — must stay empty for real users */
+  website?: string;
 };
 
 type GetInTouchApiResponse = {

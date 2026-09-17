@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import {
   FLEET_VEHICLES,
+  FLEET_CATEGORY_LABEL_BY_API,
   getFleetVehicleById,
   type FleetCategory,
   type VehicleBodyType,
@@ -292,12 +293,9 @@ type FleetSlideInteraction = {
 /* ─── page ────────────────────────────────────────────────────────────────── */
 
 function mapBackendFleetToFleetVehicle(item: FleetItem): FleetVehicle {
-  let catName: Exclude<FleetCategory, "All Vehicles"> = "Economy & Executive Sedans";
-  if (item.category === "green_class") catName = "Electric Mobility";
-  else if (item.category === "ultra_luxury") catName = "Premium SUVs";
-  else if (item.category === "business_van") catName = "Vans & Minivans";
-  else if (item.category === "vip_business_class") catName = "First-Class Sedans";
-  else if (item.category === "economy_class") catName = "Economy & Executive Sedans";
+  const catName =
+    FLEET_CATEGORY_LABEL_BY_API[item.category] ||
+    ("Economy & Executive Sedans" as Exclude<FleetCategory, "All Vehicles">);
 
   const bodyTypeRaw = (item.vehicle_type || "sedan").toUpperCase();
   const bodyType: VehicleBodyType =

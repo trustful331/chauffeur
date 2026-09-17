@@ -29,7 +29,7 @@ import {
   calculateHaversineDistance,
   type QuoteData,
 } from "../api/pricing";
-import { FLEET_VEHICLES } from "../data/fleetData";
+import { FLEET_CATEGORY_BACKEND_MAP, FLEET_VEHICLES } from "../data/fleetData";
 import { LocationMapField } from "./LocationMapField";
 import { LoadingButton, LoadingSpinner } from "./Spinner";
 
@@ -107,20 +107,9 @@ export function getVehiclesForCategory(
   if (!categoryName) return [];
 
   const categoryCodeMap: Record<string, string> = {
-    "Economy & Executive Sedans": "economy_class",
-    "Business-Class Sedans": "vip_business_class",
-    "First-Class Sedans": "vip_business_class",
-    "Premium SUVs": "ultra_luxury",
-    "Luxury & Ultra-Luxury Vehicles": "ultra_luxury",
-    "Vans & Minivans": "business_van",
-    "Coasters & Buses": "business_van",
-    "Electric Mobility": "green_class",
-    // legacy labels (API / older UI)
-    "Green Class": "green_class",
-    "Ultra Luxury": "ultra_luxury",
-    "Business Van": "business_van",
-    "VIP / Business Class": "vip_business_class",
-    "Economy Class": "economy_class",
+    ...Object.fromEntries(
+      Object.entries(FLEET_CATEGORY_BACKEND_MAP).map(([label, api]) => [label, api])
+    ),
   };
   const backendCategory = categoryCodeMap[categoryName];
 
@@ -427,7 +416,7 @@ export function BookingFormBody({
                 : null
             );
             toast.success(
-              `Admin has approved your custom rate: ${res.data.amount} ${res.data.currency || "SAR"}!`
+              `Admin has approved your custom rate: ${res.data.amount} ${res.data.currency || "KWD"}!`
             );
           } else if (res.data.status === "expired") {
             setQuoteData((prev) => (prev ? { ...prev, status: "expired" } : null));
@@ -588,8 +577,12 @@ export function BookingFormBody({
     setIsBookingSubmitting(true);
 
     try {
-      // 1. Resolve fleet_id
-      const fleet_id = selectedVehicleId || vehicleId || (await getFleetIdForCategory(data.fleetClass));
+      // 1. Resolve fleet_id (must be real active fleet from GET /api/fleet/get)
+      let fleet_id = selectedVehicleId || vehicleId || "";
+      const isMongoId = /^[a-f\d]{24}$/i.test(fleet_id);
+      if (!fleet_id || !isMongoId) {
+        fleet_id = await getFleetIdForCategory(data.fleetClass);
+      }
 
       // 2. Format date and time
       const d = new Date(data.dateTime);
@@ -622,6 +615,8 @@ export function BookingFormBody({
         addons: [],
         amount,
         currency: "KWD",
+        terms_accepted: true as const,
+        terms_version: "v1",
       };
 
       // 4. Create booking
@@ -632,16 +627,30 @@ export function BookingFormBody({
       }
 
       const bookingId = result.data.id;
+      const bookingReference =
+        (result.data.booking_reference as string | undefined) || bookingId;
 
       // 5. Save booking in local store so admin panel immediately displays it
       saveLocalBooking({
         id: bookingId,
+        booking_reference: bookingReference,
         ...payload,
         fleet_name: displayVehicleName || data.fleetClass,
+        booking_status: result.data.booking_status || "upcoming",
+        price_breakdown: result.data.price_breakdown,
       });
 
       // 6. Store booking ID in localStorage for redirect page retrieval
       localStorage.setItem("pending_booking_id", bookingId);
+      localStorage.setItem("pending_booking_reference", bookingReference);
+      if (result.data.price_breakdown) {
+        localStorage.setItem(
+          "pending_price_breakdown",
+          JSON.stringify(result.data.price_breakdown)
+        );
+      } else {
+        localStorage.removeItem("pending_price_breakdown");
+      }
 
       // Trigger instant notifications refresh
       window.dispatchEvent(new CustomEvent("app:notification_received"));
@@ -1261,7 +1270,7 @@ export function BookingFormBody({
                       </div>
                       <span className="font-serif text-2xl font-black text-maseer-gold">
                         {quoteData?.amount ?? selectedCategoryPrice}{" "}
-                        {quoteData?.currency || "SAR"}
+                        {quoteData?.currency || "KWD"}
                       </span>
                     </div>
 
@@ -1328,7 +1337,7 @@ export function BookingFormBody({
                   className="block w-full rounded-xl bg-maseer-gold py-4 text-center font-lato text-sm font-bold text-[#101828] hover:bg-[#d8a400] transition active:scale-[0.99] disabled:opacity-50"
                 >
                   Proceed to Payment ({quoteData?.amount ?? selectedCategoryPrice}{" "}
-                  {quoteData?.currency || "SAR"})
+                  {quoteData?.currency || "KWD"})
                 </LoadingButton>
               </div>
             </div>

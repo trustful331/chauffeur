@@ -46,19 +46,48 @@ export type FleetVehicle = {
 
 export const FLEET_CATEGORIES: FleetCategory[] = [...FLEET_GRID_CATEGORIES];
 
-/** Maps approved website categories → existing backend enum values. */
+/** Approved API category values (exact BE enum). */
+export type FleetCategoryApiValue =
+  | "economy_executive_sedans"
+  | "business_class_sedans"
+  | "first_class_sedans"
+  | "premium_suvs"
+  | "luxury_ultra_luxury"
+  | "vans_minivans"
+  | "coasters_buses"
+  | "electric_mobility";
+
+/** Maps approved website labels → BE API category values. */
 export const FLEET_CATEGORY_BACKEND_MAP: Record<
   Exclude<FleetCategory, "All Vehicles">,
-  string
+  FleetCategoryApiValue
 > = {
-  "Economy & Executive Sedans": "economy_class",
-  "Business-Class Sedans": "vip_business_class",
-  "First-Class Sedans": "vip_business_class",
-  "Premium SUVs": "ultra_luxury",
-  "Luxury & Ultra-Luxury Vehicles": "ultra_luxury",
-  "Vans & Minivans": "business_van",
-  "Coasters & Buses": "business_van",
-  "Electric Mobility": "green_class",
+  "Economy & Executive Sedans": "economy_executive_sedans",
+  "Business-Class Sedans": "business_class_sedans",
+  "First-Class Sedans": "first_class_sedans",
+  "Premium SUVs": "premium_suvs",
+  "Luxury & Ultra-Luxury Vehicles": "luxury_ultra_luxury",
+  "Vans & Minivans": "vans_minivans",
+  "Coasters & Buses": "coasters_buses",
+  "Electric Mobility": "electric_mobility",
+};
+
+/** Maps BE API category values → website labels (includes legacy keys for safety). */
+export const FLEET_CATEGORY_LABEL_BY_API: Record<string, Exclude<FleetCategory, "All Vehicles">> = {
+  economy_executive_sedans: "Economy & Executive Sedans",
+  business_class_sedans: "Business-Class Sedans",
+  first_class_sedans: "First-Class Sedans",
+  premium_suvs: "Premium SUVs",
+  luxury_ultra_luxury: "Luxury & Ultra-Luxury Vehicles",
+  vans_minivans: "Vans & Minivans",
+  coasters_buses: "Coasters & Buses",
+  electric_mobility: "Electric Mobility",
+  // legacy (pre-migration)
+  economy_class: "Economy & Executive Sedans",
+  vip_business_class: "First-Class Sedans",
+  ultra_luxury: "Premium SUVs",
+  business_van: "Vans & Minivans",
+  green_class: "Electric Mobility",
 };
 
 export const FLEET_CATEGORY_DESCRIPTIONS: Record<

@@ -92,6 +92,22 @@ export function ReservationsPage() {
   function getStatusBadge(status?: string) {
     const s = (status || "upcoming").toLowerCase();
 
+    if (s === "assigned") {
+      return (
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-xs font-bold text-indigo-700 border border-indigo-200">
+          <Clock className="h-3.5 w-3.5" /> Assigned
+        </span>
+      );
+    }
+
+    if (s === "en_route") {
+      return (
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-cyan-50 px-3 py-1 text-xs font-bold text-cyan-700 border border-cyan-200 animate-pulse">
+          <Clock className="h-3.5 w-3.5" /> En Route
+        </span>
+      );
+    }
+
     if (s === "inprogress") {
       return (
         <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-50 px-3 py-1 text-xs font-bold text-blue-700 border border-blue-200 animate-pulse">
@@ -263,7 +279,10 @@ export function ReservationsPage() {
                           {(booking.service_type || "Chauffeur Service").replace(/_/g, " ")}
                         </h4>
                         <p className="text-xs text-maseer-muted">
-                          Ref ID: <span className="font-mono font-semibold">{booking.id}</span>
+                          Ref:{" "}
+                          <span className="font-mono font-semibold">
+                            {(booking.booking_reference as string | undefined) || booking.id}
+                          </span>
                         </p>
                       </div>
                     </div>
@@ -314,7 +333,7 @@ export function ReservationsPage() {
                         Total Amount
                       </p>
                       <p className="text-sm font-bold text-[#062111]">
-                        {Number(booking.amount || 0)} {String(booking.currency || "SAR")}
+                        {Number(booking.amount || 0)} {String(booking.currency || "KWD")}
                       </p>
                     </div>
 

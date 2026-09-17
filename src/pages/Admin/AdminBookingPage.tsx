@@ -248,6 +248,8 @@ export function AdminBookingPage() {
           >
             <option value="all">All Statuses</option>
             <option value="upcoming">Upcoming</option>
+            <option value="assigned">Assigned</option>
+            <option value="en_route">En Route</option>
             <option value="inprogress">In Progress</option>
             <option value="completed">Completed</option>
             <option value="cancelled">Cancelled</option>
@@ -264,12 +266,14 @@ export function AdminBookingPage() {
             className="w-full rounded-xl border border-[#E5E7EB] px-3.5 py-2.5 font-lato text-xs font-semibold text-[#062111] focus:outline-none focus:ring-1 focus:ring-[#F9BB00] bg-gray-50/50 cursor-pointer"
           >
             <option value="all">All Classes</option>
-            <option value="business class">Business-Class Sedans</option>
-            <option value="vip / business class">Business / First-Class Sedans</option>
-            <option value="ultra luxury">Luxury & Premium SUVs</option>
-            <option value="business van">Vans, Coasters & Buses</option>
-            <option value="economy class">Economy & Executive Sedans</option>
-            <option value="green class">Electric Mobility</option>
+            <option value="economy_executive_sedans">Economy & Executive Sedans</option>
+            <option value="business_class_sedans">Business-Class Sedans</option>
+            <option value="first_class_sedans">First-Class Sedans</option>
+            <option value="premium_suvs">Premium SUVs</option>
+            <option value="luxury_ultra_luxury">Luxury & Ultra-Luxury Vehicles</option>
+            <option value="vans_minivans">Vans & Minivans</option>
+            <option value="coasters_buses">Coasters & Buses</option>
+            <option value="electric_mobility">Electric Mobility</option>
           </select>
         </div>
       </div>
@@ -362,12 +366,18 @@ export function AdminBookingPage() {
                           ? "bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100"
                           : status === "inprogress"
                             ? "bg-blue-50 text-blue-800 border-blue-300 hover:bg-blue-100"
+                            : status === "assigned"
+                              ? "bg-indigo-50 text-indigo-800 border-indigo-300 hover:bg-indigo-100"
+                              : status === "en_route"
+                                ? "bg-cyan-50 text-cyan-800 border-cyan-300 hover:bg-cyan-100"
                             : status === "cancelled" || status === "canceled"
                               ? "bg-red-50 text-red-800 border-red-300 hover:bg-red-100"
                               : "bg-amber-50 text-amber-800 border-amber-300 hover:bg-amber-100"
                           }`}
                       >
                         <option value="upcoming">Upcoming</option>
+                        <option value="assigned">Assigned</option>
+                        <option value="en_route">En Route</option>
                         <option value="inprogress">In Progress</option>
                         <option value="completed">Completed</option>
                         <option value="cancelled">Cancelled</option>

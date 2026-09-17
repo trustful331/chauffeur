@@ -5,11 +5,21 @@ export type Amenity = {
   icon_key: string;
 };
 
+export type FleetCategory =
+  | "economy_executive_sedans"
+  | "business_class_sedans"
+  | "first_class_sedans"
+  | "premium_suvs"
+  | "luxury_ultra_luxury"
+  | "vans_minivans"
+  | "coasters_buses"
+  | "electric_mobility";
+
 export type FleetItem = {
   id: string;
   vehicle_name: string;
   vehicle_type: "sedan" | "suv" | "van";
-  category: "green_class" | "ultra_luxury" | "business_van" | "vip_business_class" | "economy_class";
+  category: FleetCategory | string;
   image_url: string;
   seat_count: number;
   luggage_capacity: number;

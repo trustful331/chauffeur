@@ -41,16 +41,25 @@ client.interceptors.response.use(
 
 export function getErrorMessage(error: unknown, fallback: string) {
   const err = error as {
-    response?: { data?: { message?: string; error?: string } };
+    response?: {
+      status?: number;
+      data?: { message?: string; error?: string; success?: boolean };
+    };
     message?: string;
   };
 
-  return (
-    err.response?.data?.message ||
-    err.response?.data?.error ||
-    err.message ||
-    fallback
-  );
+  const status = err.response?.status;
+  const apiMessage =
+    err.response?.data?.message || err.response?.data?.error || "";
+
+  if (status === 429) {
+    return (
+      apiMessage ||
+      "Too many auth attempts. Please try again in 15 minutes."
+    );
+  }
+
+  return apiMessage || err.message || fallback;
 }
 
 export async function apiGet<T>(url: string) {

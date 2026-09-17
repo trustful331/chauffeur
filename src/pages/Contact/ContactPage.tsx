@@ -21,6 +21,7 @@ type ContactForm = {
   email: string;
   subject: string;
   message: string;
+  website?: string;
 };
 
 function buildContactCards() {
@@ -191,6 +192,7 @@ export function ContactPage() {
         phone_number: data.phone.trim(),
         email_address: data.email.trim(),
         note: `Subject: ${data.subject.trim()}\nMessage: ${(data.message || "").trim()}`.trim(),
+        website: data.website || "",
       };
 
       await createGetInTouch(payload);
@@ -282,6 +284,15 @@ export function ContactPage() {
               className="rounded-2xl border border-[#e8e8e8] bg-white p-8 shadow-[0_4px_24px_rgba(0,0,0,0.05)] lg:p-10"
             >
               <div className="space-y-4">
+                {/* Honeypot — leave empty; hidden from users */}
+                <input
+                  type="text"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  aria-hidden="true"
+                  className="absolute -left-[9999px] h-0 w-0 opacity-0"
+                  {...register("website")}
+                />
                 <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
                   <div>
                     <label className="mb-1.5 block font-lato text-[12px] font-semibold text-maseer-green">

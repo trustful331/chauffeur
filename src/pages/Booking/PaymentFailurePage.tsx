@@ -86,7 +86,7 @@ export function PaymentFailurePage() {
               )}
               <div className="flex justify-between">
                 <span className="text-maseer-muted">Currency Code:</span>
-                <strong className="text-maseer-green-text">SAR</strong>
+                <strong className="text-maseer-green-text">KWD</strong>
               </div>
             </div>
           </div>

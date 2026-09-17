@@ -32,13 +32,16 @@ import { Spinner } from "src/ui/Spinner";
 import { AdminFleetModal } from "./AdminFleetModal";
 import { AdminFleetDetailModal } from "./AdminFleetDetailModal";
 
-// Map backend categories to approved website labels (BE enums still limited to 5 values)
+// Map backend categories to approved website labels
 const CATEGORY_MAP = {
-  green_class: "Electric Mobility",
-  ultra_luxury: "Luxury & Premium SUVs",
-  business_van: "Vans, Coasters & Buses",
-  vip_business_class: "Business / First-Class Sedans",
-  economy_class: "Economy & Executive Sedans",
+  economy_executive_sedans: "Economy & Executive Sedans",
+  business_class_sedans: "Business-Class Sedans",
+  first_class_sedans: "First-Class Sedans",
+  premium_suvs: "Premium SUVs",
+  luxury_ultra_luxury: "Luxury & Ultra-Luxury Vehicles",
+  vans_minivans: "Vans & Minivans",
+  coasters_buses: "Coasters & Buses",
+  electric_mobility: "Electric Mobility",
 } as const;
 
 const CATEGORIES = Object.entries(CATEGORY_MAP) as [keyof typeof CATEGORY_MAP, string][];
@@ -55,7 +58,7 @@ const TYPES = Object.entries(TYPE_MAP) as [keyof typeof TYPE_MAP, string][];
 // Fallback fleet items mapped from local static data
 const FALLBACK_FLEET: FleetItem[] = FLEET_VEHICLES.map((v, index) => {
   const catKey = (FLEET_CATEGORY_BACKEND_MAP[v.category] ||
-    "economy_class") as FleetItem["category"];
+    "economy_executive_sedans") as FleetItem["category"];
   
   let typeKey: FleetItem["vehicle_type"] = "sedan";
   if (v.bodyType === "SUV") typeKey = "suv";
@@ -281,7 +284,12 @@ export function AdminFleetPage() {
   const totalCount = fleets.length;
   const activeCount = fleets.filter(c => c.is_active).length;
   const inactiveCount = totalCount - activeCount;
-  const luxuryCount = fleets.filter(c => c.category === "ultra_luxury" || c.category === "vip_business_class").length;
+  const luxuryCount = fleets.filter(
+    (c) =>
+      c.category === "luxury_ultra_luxury" ||
+      c.category === "first_class_sedans" ||
+      c.category === "premium_suvs"
+  ).length;
 
   return (
     <div className="space-y-8 font-sans">
@@ -460,7 +468,9 @@ export function AdminFleetPage() {
                 {/* Category & Display Order */}
                 <div className="flex items-center justify-between gap-2">
                   <span className="rounded-full bg-maseer-surface border border-maseer-line px-2.5 py-0.5 font-lato text-[9px] font-bold uppercase tracking-wider text-maseer-gold">
-                    {CATEGORY_MAP[car.category] || car.category}
+                    {car.category in CATEGORY_MAP
+                      ? CATEGORY_MAP[car.category as keyof typeof CATEGORY_MAP]
+                      : car.category}
                   </span>
                   <span className="font-lato text-[10px] font-bold text-maseer-muted">
                     Order: <span className="text-[#1a2e1f] font-extrabold">#{car.display_order}</span>

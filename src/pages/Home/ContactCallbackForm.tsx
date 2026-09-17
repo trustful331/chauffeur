@@ -11,6 +11,7 @@ type ContactCallbackFormValues = {
   email: string;
   serviceNeeded: string;
   message: string;
+  website?: string;
 };
 
 function FieldError({ message }: { message?: string }) {
@@ -51,6 +52,7 @@ export function ContactCallbackForm() {
       email: "",
       serviceNeeded: "",
       message: "",
+      website: "",
     },
   });
 
@@ -62,6 +64,7 @@ export function ContactCallbackForm() {
         phone_number: data.phone.trim(),
         email_address: data.email.trim(),
         note: `Service Needed: ${data.serviceNeeded.trim()}\nMessage: ${data.message.trim()}`.trim(),
+        website: data.website || "",
       };
 
       await createGetInTouch(payload);
@@ -89,6 +92,15 @@ export function ContactCallbackForm() {
       </p>
 
       <div className="mt-6 space-y-4">
+        {/* Honeypot — leave empty; hidden from users */}
+        <input
+          type="text"
+          tabIndex={-1}
+          autoComplete="off"
+          aria-hidden="true"
+          className="absolute -left-[9999px] h-0 w-0 opacity-0"
+          {...register("website")}
+        />
         <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
           <div>
             <FieldLabel>Full name</FieldLabel>

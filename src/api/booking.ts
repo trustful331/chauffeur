@@ -1,6 +1,15 @@
 import { apiGet, apiPost, apiPut, getErrorMessage } from "src/config/axios";
 import { fetchFleets } from "./admin/fleet";
 import { type BookingItem, type BookingResponse } from "./admin/booking";
+import { FLEET_CATEGORY_BACKEND_MAP } from "src/data/fleetData";
+
+export type PriceBreakdown = {
+  base_amount?: number;
+  tax_amount?: number;
+  tolls_amount?: number;
+  waiting_amount?: number;
+  total_amount?: number;
+};
 
 export type CreateBookingParams = {
   service_type: string;
@@ -26,6 +35,12 @@ export type CreateBookingParams = {
   addons?: string[];
   amount: number;
   currency: string; // "KWD"
+  terms_accepted: boolean;
+  terms_version?: string;
+  base_amount?: number;
+  tax_amount?: number;
+  tolls_amount?: number;
+  waiting_amount?: number;
 };
 
 export type BookingLocation = {
@@ -43,6 +58,14 @@ export const BOOKING_SERVICE_TYPE_MAP = {
 
 export type BookingServiceTab = keyof typeof BOOKING_SERVICE_TYPE_MAP;
 
+export type BookingStatusValue =
+  | "upcoming"
+  | "assigned"
+  | "en_route"
+  | "inprogress"
+  | "cancelled"
+  | "completed";
+
 type BookingApiResponse = {
   success?: boolean;
   message?: string;
@@ -52,6 +75,11 @@ type BookingApiResponse = {
     currency: string;
     payment_status: string;
     booking_status: string;
+    booking_reference?: string;
+    price_breakdown?: PriceBreakdown;
+    terms_accepted?: boolean;
+    terms_accepted_at?: string;
+    terms_version?: string;
     [key: string]: unknown;
   };
 };
@@ -71,10 +99,10 @@ export async function createBooking(params: CreateBookingParams) {
 }
 
 /**
- * Fetch bookings for user with status tab (upcoming | history | inprogress | cancelled | completed | all) and date filters (from, to).
+ * Fetch bookings for user with status tab and date filters (from, to).
  */
 export async function fetchUserBookings(query?: {
-  status?: "upcoming" | "history" | "inprogress" | "cancelled" | "completed" | "all" | string;
+  status?: BookingStatusValue | "history" | "all" | string;
   from?: string;
   to?: string;
 }): Promise<BookingItem[]> {
@@ -100,11 +128,12 @@ export async function fetchUserBookings(query?: {
 }
 
 /**
- * Update status of a booking (allowed: upcoming, inprogress, cancelled, completed)
+ * Update status of a booking
+ * Allowed: upcoming | assigned | en_route | inprogress | cancelled | completed
  */
 export async function updateBookingStatus(
   bookingId: string,
-  status: "upcoming" | "inprogress" | "cancelled" | "completed" | string
+  status: BookingStatusValue | string
 ) {
   try {
     const result = await apiPut<{ success: boolean; message?: string; data?: BookingItem }>(
@@ -141,29 +170,25 @@ export async function cancelBooking(bookingId: string) {
   }
 }
 
+function labelToApiCategory(categoryName: string): string {
+  if (categoryName in FLEET_CATEGORY_BACKEND_MAP) {
+    return FLEET_CATEGORY_BACKEND_MAP[
+      categoryName as keyof typeof FLEET_CATEGORY_BACKEND_MAP
+    ];
+  }
+  // Already an API value or legacy value
+  return categoryName;
+}
+
 /**
  * Resolves the database ID of an active fleet vehicle matching the given category name.
+ * Must return a real fleet_id from GET /api/fleet/get (Mongo id).
  */
 export async function getFleetIdForCategory(categoryName: string): Promise<string> {
   try {
     const response = await responseDataToFleets();
     if (response && response.length > 0) {
-      const categoryCodeMap: Record<string, string> = {
-        "Economy & Executive Sedans": "economy_class",
-        "Business-Class Sedans": "vip_business_class",
-        "First-Class Sedans": "vip_business_class",
-        "Premium SUVs": "ultra_luxury",
-        "Luxury & Ultra-Luxury Vehicles": "ultra_luxury",
-        "Vans & Minivans": "business_van",
-        "Coasters & Buses": "business_van",
-        "Electric Mobility": "green_class",
-        "Green Class": "green_class",
-        "Ultra Luxury": "ultra_luxury",
-        "Business Van": "business_van",
-        "VIP / Business Class": "vip_business_class",
-        "Economy Class": "economy_class",
-      };
-      const backendCategory = categoryCodeMap[categoryName] || "economy_class";
+      const backendCategory = labelToApiCategory(categoryName);
 
       const matched = response.find((item) => item.category === backendCategory);
       if (matched) {
@@ -171,25 +196,12 @@ export async function getFleetIdForCategory(categoryName: string): Promise<strin
       }
     }
   } catch (error) {
-    console.error("Failed to map category to dynamic fleet_id, using fallback:", error);
+    console.error("Failed to map category to dynamic fleet_id:", error);
   }
 
-  const fallbackMap: Record<string, string> = {
-    "Economy & Executive Sedans": "lexus-es",
-    "Business-Class Sedans": "mercedes-e",
-    "First-Class Sedans": "mercedes-s",
-    "Premium SUVs": "chevrolet-suburban",
-    "Luxury & Ultra-Luxury Vehicles": "rolls-royce-ghost",
-    "Vans & Minivans": "hyundai-staria",
-    "Coasters & Buses": "toyota-hiace",
-    "Electric Mobility": "lucid-air",
-    "Economy Class": "lexus-es",
-    "VIP / Business Class": "mercedes-s",
-    "Ultra Luxury": "chevrolet-suburban",
-    "Green Class": "lucid-air",
-    "Business Van": "hyundai-staria",
-  };
-  return fallbackMap[categoryName] || "mercedes-s";
+  throw new Error(
+    "No active fleet vehicle found for the selected category. Please choose another vehicle."
+  );
 }
 
 async function responseDataToFleets() {
@@ -203,4 +215,3 @@ async function responseDataToFleets() {
   }
   return [];
 }
-
