@@ -6,6 +6,7 @@ import {
   deleteToken,
   isSupported,
   type Messaging,
+  type MessagePayload,
 } from "firebase/messaging";
 
 export const firebaseConfig = {
@@ -104,12 +105,12 @@ export async function requestFCMToken(): Promise<string | null> {
  * Listen for messages received while the app is in the foreground
  */
 export async function setupForegroundMessageListener(
-  onMessageReceived: (payload: any) => void
+  onMessageReceived: (payload: MessagePayload) => void
 ): Promise<(() => void) | null> {
   const messaging = await getFirebaseMessaging();
   if (!messaging) return null;
 
-  return onMessage(messaging, (payload) => {
+  return onMessage(messaging, (payload: MessagePayload) => {
     console.log("[FCM Foreground Message]:", payload);
     onMessageReceived(payload);
   });
