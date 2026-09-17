@@ -29,6 +29,7 @@ import {
 } from "src/api/admin/fleet";
 import { FLEET_VEHICLES, FLEET_CATEGORY_BACKEND_MAP } from "src/data/fleetData";
 import { Spinner } from "src/ui/Spinner";
+import { ConfirmModal } from "src/ui/ConfirmModal";
 import { AdminFleetModal } from "./AdminFleetModal";
 import { AdminFleetDetailModal } from "./AdminFleetDetailModal";
 
@@ -133,6 +134,11 @@ export function AdminFleetPage() {
   // Details Modal states
   const [detailModalOpen, setDetailModalOpen] = useState(false);
   const [selectedDetailItem, setSelectedDetailItem] = useState<FleetItem | null>(null);
+
+  // Delete Confirmation Modal states
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<{ id: string; name: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleOpenDetails = (item: FleetItem) => {
     setSelectedDetailItem(item);
@@ -243,20 +249,28 @@ export function AdminFleetPage() {
     }
   };
 
-  const handleDelete = async (id: string, name: string) => {
-    if (!window.confirm(`Are you sure you want to delete ${name}?`)) {
-      return;
-    }
+  const handleOpenDelete = (item: FleetItem) => {
+    setItemToDelete({ id: item.id, name: item.vehicle_name });
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!itemToDelete) return;
+    setIsDeleting(true);
 
     try {
       if (isUsingFallback) {
-        setFleets(prev => prev.filter(item => item.id !== id));
+        setFleets(prev => prev.filter(item => item.id !== itemToDelete.id));
         notifySuccess("Vehicle removed locally (Offline Mode)");
+        setDeleteModalOpen(false);
+        setItemToDelete(null);
       } else {
-        const response = await deleteFleet(id);
+        const response = await deleteFleet(itemToDelete.id);
         if (response && response.success) {
           notifySuccess(response.message || "Vehicle deleted successfully");
           loadFleetData();
+          setDeleteModalOpen(false);
+          setItemToDelete(null);
         } else {
           throw new Error(response.message || "Delete request rejected by server");
         }
@@ -264,7 +278,9 @@ export function AdminFleetPage() {
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : "Failed to delete vehicle";
       console.error("Error deleting vehicle:", err);
-      alert(errorMsg);
+      setError(errorMsg);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -527,7 +543,7 @@ export function AdminFleetPage() {
                       <span>Edit</span>
                     </button>
                     <button
-                      onClick={() => handleDelete(car.id, car.vehicle_name)}
+                      onClick={() => handleOpenDelete(car)}
                       className="flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-red-200 hover:bg-red-50 px-3 py-2 font-lato text-xs font-bold text-red-600 transition"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -563,6 +579,27 @@ export function AdminFleetPage() {
         isOpen={detailModalOpen}
         onClose={() => setDetailModalOpen(false)}
         fleetItem={selectedDetailItem}
+      />
+
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          if (!isDeleting) {
+            setDeleteModalOpen(false);
+            setItemToDelete(null);
+          }
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Delete Vehicle Listing"
+        description={
+          <>
+            Are you sure you want to delete <strong className="font-bold text-maseer-green-text">{itemToDelete?.name}</strong>? This action cannot be undone and will remove the vehicle from your directory.
+          </>
+        }
+        confirmText="Delete Vehicle"
+        cancelText="Cancel"
+        variant="danger"
+        isLoading={isDeleting}
       />
     </div>
   );

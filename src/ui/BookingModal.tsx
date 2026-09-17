@@ -196,10 +196,26 @@ function filterFutureTime(time: Date) {
 
 /* ─── small UI pieces ────────────────────────────────────────────────────────── */
 
-function FieldLabel({ children }: { children: ReactNode }) {
+function FieldLabel({
+  children,
+  htmlFor,
+  required = false,
+}: {
+  children: ReactNode;
+  htmlFor?: string;
+  required?: boolean;
+}) {
   return (
-    <label className="mb-2 block font-lato text-[13px] font-semibold text-maseer-green">
+    <label
+      htmlFor={htmlFor}
+      className="mb-2 block font-lato text-[13px] font-semibold text-maseer-green"
+    >
       {children}
+      {required ? (
+        <span className="ml-1 text-red-500" title="Required field">
+          *
+        </span>
+      ) : null}
     </label>
   );
 }
@@ -812,7 +828,9 @@ export function BookingFormBody({
             <div className="mt-5 grid grid-cols-2 gap-4 max-md:grid-cols-1 lg:grid-cols-4">
               {/* fleet class */}
               <div>
-                <FieldLabel>Class</FieldLabel>
+                <FieldLabel htmlFor="modal-fleet-class" required>
+                  Class
+                </FieldLabel>
                 <Controller
                   name="fleetClass"
                   control={control}
@@ -829,7 +847,11 @@ export function BookingFormBody({
                           hasError={!!errors.fleetClass}
                         >
                           <ListboxButton
+                            id="modal-fleet-class"
                             onBlur={field.onBlur}
+                            aria-label="Select Fleet Category Class"
+                            aria-required="true"
+                            aria-invalid={!!errors.fleetClass}
                             className="w-full cursor-pointer bg-transparent text-left font-lato text-[12px] outline-none"
                           >
                             <span
@@ -864,7 +886,9 @@ export function BookingFormBody({
 
               {/* date & time */}
               <div>
-                <FieldLabel>Date &amp; Time</FieldLabel>
+                <FieldLabel htmlFor="modal-datetime" required>
+                  Date &amp; Time
+                </FieldLabel>
                 <Controller
                   name="dateTime"
                   control={control}
@@ -878,6 +902,7 @@ export function BookingFormBody({
                       hasError={!!errors.dateTime}
                     >
                       <DatePicker
+                        id="modal-datetime"
                         selected={field.value ? new Date(field.value) : null}
                         onChange={(date: Date | null) => {
                           field.onChange(date ? date.toISOString() : "");
@@ -897,6 +922,9 @@ export function BookingFormBody({
                         calendarClassName="maseer-datepicker"
                         popperClassName="maseer-datepicker-popper"
                         popperPlacement="bottom-start"
+                        aria-label="Pick up date and time"
+                        aria-required="true"
+                        aria-invalid={errors.dateTime ? "true" : "false"}
                         className="w-full cursor-pointer bg-transparent font-lato text-[12px] text-[#333] outline-none placeholder:text-[#b0b0b0]"
                       />
                     </BookingInput>
@@ -907,26 +935,32 @@ export function BookingFormBody({
 
               {/* passengers */}
               <div>
-                <FieldLabel>Adults</FieldLabel>
+                <FieldLabel htmlFor="modal-adults" required>
+                  Adults (12+ yrs)
+                </FieldLabel>
                 <BookingInput icon={<PersonIcon />} hasError={!!errors.passengers}>
                   <input
+                    id="modal-adults"
                     {...register("passengers", {
-                      required: "Adults is required",
+                      required: "At least 1 adult passenger required",
                       validate: (value) => {
                         const count = Number(value);
                         if (!value || Number.isNaN(count))
-                          return "Enter number of adults";
+                          return "Enter number of adult passengers";
                         if (!Number.isInteger(count))
-                          return "Must be a whole number";
+                          return "Adults count must be a whole number";
                         if (count < 1) return "At least 1 adult required";
-                        if (count > 99) return "Maximum 99 adults";
+                        if (count > 99) return "Maximum 99 adult passengers allowed";
                         return true;
                       },
                     })}
                     type="number"
                     min={1}
                     max={99}
-                    placeholder="00"
+                    placeholder="01"
+                    aria-label="Number of adult passengers (12+ yrs)"
+                    aria-required="true"
+                    aria-invalid={!!errors.passengers}
                     className="w-full bg-transparent font-lato text-[12px] text-[#333] outline-none placeholder:text-[#b0b0b0]"
                   />
                 </BookingInput>
@@ -935,16 +969,19 @@ export function BookingFormBody({
 
               {/* children */}
               <div>
-                <FieldLabel>Children</FieldLabel>
+                <FieldLabel htmlFor="modal-children">
+                  Children (Under 12 yrs)
+                </FieldLabel>
                 <BookingInput icon={<PersonIcon />} hasError={!!errors.childs}>
                   <input
+                    id="modal-children"
                     {...register("childs", {
                       validate: (value) => {
                         const count = Number(value || 0);
-                        if (Number.isNaN(count)) return "Enter a valid number";
-                        if (!Number.isInteger(count)) return "Must be a whole number";
-                        if (count < 0) return "Cannot be negative";
-                        if (count > 99) return "Maximum 99 children";
+                        if (Number.isNaN(count)) return "Enter a valid number of children";
+                        if (!Number.isInteger(count)) return "Children count must be a whole number";
+                        if (count < 0) return "Children count cannot be negative";
+                        if (count > 99) return "Maximum 99 children allowed";
                         return true;
                       },
                     })}
@@ -952,6 +989,8 @@ export function BookingFormBody({
                     min={0}
                     max={99}
                     placeholder="0"
+                    aria-label="Number of child passengers (Under 12 yrs, optional)"
+                    aria-invalid={!!errors.childs}
                     className="w-full bg-transparent font-lato text-[12px] text-[#333] outline-none placeholder:text-[#b0b0b0]"
                   />
                 </BookingInput>

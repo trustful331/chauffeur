@@ -30,6 +30,7 @@ import {
 } from "src/api/pricing";
 import { fetchFleets, type FleetItem } from "src/api/admin/fleet";
 import { LoadingSpinner } from "src/ui/Spinner";
+import { ConfirmModal } from "src/ui/ConfirmModal";
 
 export function AdminPricingPage() {
   const [activeTab, setActiveTab] = useState<"pending" | "fixed" | "hourly">(
@@ -68,6 +69,11 @@ export function AdminPricingPage() {
   const [hourlyPrice, setHourlyPrice] = useState<string>("");
   const [hourlyIsActive, setHourlyIsActive] = useState<boolean>(true);
   const [isSubmittingHourly, setIsSubmittingHourly] = useState(false);
+
+  // Delete Modal state
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<{ id: string; type: "fixed" | "hourly"; label: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Load Fleets for dropdown options
   useEffect(() => {
@@ -257,20 +263,6 @@ export function AdminPricingPage() {
     }
   };
 
-  const handleDeleteFixedPrice = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this fixed price entry?"))
-      return;
-    try {
-      await deleteFixedPrice(id);
-      toast.success("Fixed price deleted.");
-      loadFixedPrices();
-    } catch (err) {
-      toast.error(
-        err instanceof Error ? err.message : "Failed to delete fixed price",
-      );
-    }
-  };
-
   // ── Hourly Price Handlers ─────────────────────────────────────────────────
 
   const handleOpenHourlyModal = (item?: HourlyPriceItem) => {
@@ -328,17 +320,39 @@ export function AdminPricingPage() {
     }
   };
 
-  const handleDeleteHourlyPrice = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this hourly price entry?"))
-      return;
+  const handleOpenDeleteFixed = (item: FixedPriceItem) => {
+    const label = item.fleet?.vehicle_name || getFleetLabel(item.fleet_id);
+    setItemToDelete({ id: item.id, type: "fixed", label: `Fixed Rate for ${label}` });
+    setDeleteModalOpen(true);
+  };
+
+  const handleOpenDeleteHourly = (item: HourlyPriceItem) => {
+    const label = item.fleet?.vehicle_name || getFleetLabel(item.fleet_id);
+    setItemToDelete({ id: item.id, type: "hourly", label: `Hourly Rate for ${label}` });
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!itemToDelete) return;
+    setIsDeleting(true);
     try {
-      await deleteHourlyPrice(id);
-      toast.success("Hourly price deleted.");
-      loadHourlyPrices();
+      if (itemToDelete.type === "fixed") {
+        await deleteFixedPrice(itemToDelete.id);
+        toast.success("Fixed price deleted.");
+        loadFixedPrices();
+      } else {
+        await deleteHourlyPrice(itemToDelete.id);
+        toast.success("Hourly price deleted.");
+        loadHourlyPrices();
+      }
+      setDeleteModalOpen(false);
+      setItemToDelete(null);
     } catch (err) {
       toast.error(
-        err instanceof Error ? err.message : "Failed to delete hourly price",
+        err instanceof Error ? err.message : `Failed to delete ${itemToDelete.type} price`,
       );
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -633,7 +647,7 @@ export function AdminPricingPage() {
                               <Edit2 className="h-4 w-4" />
                             </button>
                             <button
-                              onClick={() => handleDeleteFixedPrice(item.id)}
+                              onClick={() => handleOpenDeleteFixed(item)}
                               className="rounded-lg p-1.5 text-red-500 hover:bg-red-50"
                               title="Delete"
                             >
@@ -729,7 +743,7 @@ export function AdminPricingPage() {
                               <Edit2 className="h-4 w-4" />
                             </button>
                             <button
-                              onClick={() => handleDeleteHourlyPrice(item.id)}
+                              onClick={() => handleOpenDeleteHourly(item)}
                               className="rounded-lg p-1.5 text-red-500 hover:bg-red-50"
                               title="Delete"
                             >
@@ -1016,6 +1030,27 @@ export function AdminPricingPage() {
           </div>
         </div>
       )}
+      {/* ── Modal 4: Delete Confirmation Modal ─────────────────────── */}
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          if (!isDeleting) {
+            setDeleteModalOpen(false);
+            setItemToDelete(null);
+          }
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Delete Pricing Rule"
+        description={
+          <>
+            Are you sure you want to delete <strong className="font-bold text-maseer-green-text">{itemToDelete?.label}</strong>? This action cannot be undone.
+          </>
+        }
+        confirmText="Delete Pricing"
+        cancelText="Cancel"
+        variant="danger"
+        isLoading={isDeleting}
+      />
     </div>
   );
 }

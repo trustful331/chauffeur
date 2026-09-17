@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BookingModal } from "../../ui/BookingModal";
 import {
   Wifi,
@@ -19,6 +19,7 @@ import {
 import {
   FLEET_GRID_CATEGORIES,
   getFleetGridVehicles,
+  mapFleetItemToVehicle,
   type FleetGridCategory,
   type FleetVehicle,
 } from "../../data/fleetData";
@@ -33,6 +34,8 @@ import { Pencil } from "lucide-react";
 import { useAppSelector } from "src/store/hooks";
 import { selectAuthUser } from "src/store/slices/auth/selectors";
 import type { AuthUser } from "src/store/slices/auth/types";
+import { fetchFleets } from "src/api/admin/fleet";
+import { Spinner } from "src/ui/Spinner";
 
 function PersonIcon() {
   return <User className="h-3.5 w-3.5 text-maseer-gold" />;
@@ -133,12 +136,15 @@ function VehicleCard({ vehicle, isAdmin, onEdit }: { vehicle: FleetVehicle; isAd
 
   return (
     <>
-      <article className="overflow-hidden rounded-xl bg-white shadow-[0_4px_24px_rgba(0,0,0,0.08)]">
+      <article className="overflow-hidden rounded-xl bg-white shadow-[0_4px_24px_rgba(0,0,0,0.08)] transition duration-300 hover:shadow-card">
         <div className="relative h-[210px] bg-[#f3f4f2]">
           <img
             src={vehicle.image}
             alt={vehicle.name}
             className="h-full w-full object-cover"
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=800";
+            }}
           />
           <span className="absolute right-3 top-3 rounded-md bg-maseer-gold px-2.5 py-1 font-lato text-[10px] font-bold uppercase tracking-wide text-white">
             {vehicle.bodyType}
@@ -223,11 +229,51 @@ export function FleetGridPage() {
   const authUser = useAppSelector(selectAuthUser) as AuthUser | "";
   const isAdmin = authUser && typeof authUser === "object" && authUser.currentRole === "admin";
   const [category, setCategory] = useState<FleetGridCategory>("All Vehicles");
+  const [liveVehicles, setLiveVehicles] = useState<FleetVehicle[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  const vehicles = useMemo(() => {
-    // Approved static fleet is the go-live content source of truth until BE categories are rebuilt.
-    return getFleetGridVehicles(category);
-  }, [category]);
+  useEffect(() => {
+    let isMounted = true;
+    async function loadLiveFleet() {
+      setIsLoading(true);
+      try {
+        console.log("[FleetGridPage] Fetching live fleets from API...");
+        const response = await fetchFleets({ is_active: true });
+        console.log("[FleetGridPage] API response:", response);
+
+        if (response && response.success && Array.isArray(response.data) && response.data.length > 0) {
+          const mapped = response.data.map(mapFleetItemToVehicle);
+          console.log("[FleetGridPage] Successfully mapped live fleets:", mapped);
+          if (isMounted) setLiveVehicles(mapped);
+        } else {
+          console.warn("[FleetGridPage] API returned no active items. Loading mock fallback.");
+          const fallback = getFleetGridVehicles("All Vehicles");
+          if (isMounted) setLiveVehicles(fallback);
+        }
+      } catch (err) {
+        console.error("[FleetGridPage] Error fetching live fleets from API:", err);
+        const fallback = getFleetGridVehicles("All Vehicles");
+        if (isMounted) setLiveVehicles(fallback);
+      } finally {
+        if (isMounted) setIsLoading(false);
+      }
+    }
+
+    loadLiveFleet();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const filteredVehicles = useMemo(() => {
+    if (category === "All Vehicles") {
+      return liveVehicles;
+    }
+    return liveVehicles.filter((v) => 
+      v.category === category || 
+      (v.gridTags && v.gridTags.includes(category as FleetGridCategory))
+    );
+  }, [category, liveVehicles]);
 
   return (
     <div className="overflow-hidden bg-maseer-cream">
@@ -241,13 +287,18 @@ export function FleetGridPage() {
       />
 
       <section className="page-container pb-20 pt-4">
-        {vehicles.length === 0 ? (
+        {isLoading ? (
+          <div className="flex h-64 w-full flex-col items-center justify-center gap-4">
+            <Spinner size="lg" className="text-maseer-gold" />
+            <p className="font-lato text-sm font-semibold text-maseer-muted">Loading fleet inventory...</p>
+          </div>
+        ) : filteredVehicles.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-maseer-line bg-white p-16 text-center">
             <h3 className="font-serif text-[18px] font-bold text-[#1a2e1f]">No listings match criteria</h3>
           </div>
         ) : (
           <div className="grid grid-cols-3 gap-8 max-md:grid-cols-1">
-            {vehicles.map((vehicle, index) => (
+            {filteredVehicles.map((vehicle, index) => (
               <VehicleCard
                 key={`${vehicle.id}-${index}`}
                 vehicle={vehicle}

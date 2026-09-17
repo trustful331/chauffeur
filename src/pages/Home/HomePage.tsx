@@ -1,6 +1,8 @@
 import { useState, useEffect, type ReactNode } from "react";
 import { fetchServiceCoverages } from "src/api/admin/serviceCoverage";
 import { fetchCustomerReviews } from "src/api/admin/customerReview";
+import { fetchFleets } from "src/api/admin/fleet";
+import { mapFleetItemToVehicle, type FleetVehicle } from "src/data/fleetData";
 import {
   Listbox,
   ListboxButton,
@@ -138,10 +140,26 @@ function GoldHeading({
   );
 }
 
-function FieldLabel({ children }: { children: ReactNode }) {
+function FieldLabel({
+  children,
+  htmlFor,
+  required = false,
+}: {
+  children: ReactNode;
+  htmlFor?: string;
+  required?: boolean;
+}) {
   return (
-    <label className="mb-2 block font-lato text-[13px] font-semibold text-maseer-green">
+    <label
+      htmlFor={htmlFor}
+      className="mb-2 block font-lato text-[13px] font-semibold text-maseer-green"
+    >
       {children}
+      {required ? (
+        <span className="ml-1 text-red-500" title="Required field">
+          *
+        </span>
+      ) : null}
     </label>
   );
 }
@@ -570,75 +588,9 @@ function FeatureCardIcon({
   }
 }
 
-const fleetCards = [
-  {
-    id: "lexus-es",
-    title: "Lexus ES 350",
-    category: "ECONOMY & EXECUTIVE",
-    guests: 4,
-    image: images.home.fleet[0],
-  },
-  {
-    id: "mercedes-s",
-    title: "Mercedes-Benz S-Class",
-    category: "FIRST-CLASS",
-    guests: 3,
-    image: images.home.fleet[1],
-  },
-  {
-    id: "chevrolet-suburban",
-    title: "Chevrolet Suburban",
-    category: "PREMIUM SUV",
-    guests: 6,
-    image: images.home.fleet[2],
-  },
-  {
-    id: "mercedes-vito",
-    title: "Mercedes-Benz Vito",
-    category: "PREMIUM SUV",
-    guests: 7,
-    image: images.home.fleet[0],
-  },
-];
 
-const reviews = [
-  {
-    rating: 5,
-    title: "It is always a pleasure",
-    quote:
-      '"Absolutely fantastic service! The driver was professional, the car was spotless, and they handled my luggage with care. Will definitely use again for airport transfers."',
-    name: "Emily Rodriguez",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=150&h=150&q=80",
-  },
-  {
-    rating: 5,
-    title: "Highly recommended",
-    quote:
-      '"Best chauffeur experience in Riyadh. On time, courteous, and the S-Class was immaculate. Will definitely use again for airport transfers and corporate travel."',
-    name: "James Al-Farsi",
-    avatar:
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=150&h=150&q=80",
-  },
-  {
-    rating: 5,
-    title: "Flawless coordination",
-    quote:
-      '"Used Maseer for corporate events multiple times. Flawless coordination and VIP treatment every single trip. Will definitely use again for airport transfers."',
-    name: "Sarah Mitchell",
-    avatar:
-      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=150&h=150&q=80",
-  },
-  {
-    rating: 5,
-    title: "Smooth airport transfer",
-    quote:
-      '"Flight landed late and the chauffeur was still waiting with a clear sign. Clean cabin, careful luggage handling, and a calm ride into the city."',
-    name: "Omar Hassan",
-    avatar:
-      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=150&h=150&q=80",
-  },
-];
+
+
 
 const faqItems = [
   {
@@ -695,10 +647,32 @@ export function HomePage() {
   const [featuredCoverage, setFeaturedCoverage] = useState<any[]>([]);
   const [itineraryCoverage, setItineraryCoverage] = useState<any[]>([]);
   const [customerReviews, setCustomerReviews] = useState<any[]>([]);
+  const [isReviewsLoading, setIsReviewsLoading] = useState<boolean>(true);
+  const [liveFleets, setLiveFleets] = useState<FleetVehicle[]>([]);
+  const [isFleetLoading, setIsFleetLoading] = useState<boolean>(true);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [modalInitialData, setModalInitialData] = useState<any>(null);
 
   useEffect(() => {
+    async function getFleets() {
+      setIsFleetLoading(true);
+      try {
+        console.log("[HomePage] Fetching active fleets from API...");
+        const response = await fetchFleets({ is_active: true });
+        if (response && response.success && Array.isArray(response.data)) {
+          const mapped = response.data.map(mapFleetItemToVehicle);
+          console.log("[HomePage] Mapped live fleets:", mapped);
+          setLiveFleets(mapped);
+        } else {
+          setLiveFleets([]);
+        }
+      } catch (err) {
+        console.error("[HomePage] Error fetching live fleets:", err);
+        setLiveFleets([]);
+      } finally {
+        setIsFleetLoading(false);
+      }
+    }
     async function getCoverage() {
       try {
         const response = await fetchServiceCoverages({ is_active: true });
@@ -717,15 +691,22 @@ export function HomePage() {
       }
     }
     async function getReviews() {
+      setIsReviewsLoading(true);
       try {
         const response = await fetchCustomerReviews({ is_active: true });
         if (response && response.success && Array.isArray(response.data)) {
           setCustomerReviews(response.data);
+        } else {
+          setCustomerReviews([]);
         }
       } catch (err) {
         console.error("Error fetching customer reviews on homepage:", err);
+        setCustomerReviews([]);
+      } finally {
+        setIsReviewsLoading(false);
       }
     }
+    getFleets();
     getCoverage();
     getReviews();
   }, []);
@@ -773,8 +754,7 @@ export function HomePage() {
         "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80",
     }));
 
-  const finalReviews =
-    filteredApiReviews.length > 0 ? filteredApiReviews : reviews;
+  const finalReviews = filteredApiReviews;
 
   const dynamicHeading = featuredCoverage[0]?.section_heading;
   const dynamicSubtitle = featuredCoverage[0]?.section_subtitle;
@@ -785,7 +765,7 @@ export function HomePage() {
   const reviewHeading = customerReviews[0]?.section_title;
   const reviewSubtitle = customerReviews[0]?.section_subtitle;
 
-  const [slidesToShow, setSlidesToShow] = useState(() => {
+  const [_slidesToShow, setSlidesToShow] = useState(() => {
     if (typeof window !== "undefined") {
       if (window.innerWidth < 768) return 1;
       if (window.innerWidth < 1280) return 2.15;
@@ -982,7 +962,9 @@ export function HomePage() {
 
               <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-[1.35fr_1fr_0.7fr_0.7fr]">
                 <div>
-                  <FieldLabel>Class</FieldLabel>
+                  <FieldLabel htmlFor="home-fleet-class" required>
+                    Class
+                  </FieldLabel>
                   <Controller
                     name="fleetClass"
                     control={control}
@@ -999,7 +981,11 @@ export function HomePage() {
                             hasError={!!errors.fleetClass}
                           >
                             <ListboxButton
+                              id="home-fleet-class"
                               onBlur={field.onBlur}
+                              aria-label="Select Fleet Category Class"
+                              aria-required="true"
+                              aria-invalid={!!errors.fleetClass}
                               className="w-full cursor-pointer bg-transparent text-left font-lato text-[13px] outline-none"
                             >
                               <span
@@ -1032,7 +1018,9 @@ export function HomePage() {
                   <FieldError message={errors.fleetClass?.message} />
                 </div>
                 <div>
-                  <FieldLabel>Date &amp; Time</FieldLabel>
+                  <FieldLabel htmlFor="home-datetime" required>
+                    Date &amp; Time
+                  </FieldLabel>
                   <Controller
                     name="dateTime"
                     control={control}
@@ -1046,6 +1034,7 @@ export function HomePage() {
                         hasError={!!errors.dateTime}
                       >
                         <DatePicker
+                          id="home-datetime"
                           selected={field.value ? new Date(field.value) : null}
                           onChange={(date: Date | null) => {
                             field.onChange(date ? date.toISOString() : "");
@@ -1065,6 +1054,9 @@ export function HomePage() {
                           calendarClassName="maseer-datepicker"
                           popperClassName="maseer-datepicker-popper"
                           popperPlacement="bottom-start"
+                          aria-label="Pick up date and time"
+                          aria-required="true"
+                          aria-invalid={errors.dateTime ? "true" : "false"}
                           className="w-full cursor-pointer bg-transparent font-lato text-[13px] text-[#333] outline-none placeholder:text-[#b0b0b0]"
                           renderCustomHeader={({
                             date,
@@ -1101,59 +1093,68 @@ export function HomePage() {
                             </div>
                           )}
                         />
-                      </BookingInput>
+                      </BookingInput> 
                     )}
                   />
                   <FieldError message={errors.dateTime?.message} />
                 </div>
                 <div>
-                  <FieldLabel>Adults</FieldLabel>
+                  <FieldLabel htmlFor="home-adults" required>
+                    Adults (12+ yrs)
+                  </FieldLabel>
                   <BookingInput
                     icon={<PersonIcon />}
                     hasError={!!errors.passengers}
                   >
                     <input
+                      id="home-adults"
                       {...register("passengers", {
-                        required: "Number of passengers is required",
+                        required: "At least 1 adult passenger required",
                         validate: (value) => {
                           const count = Number(value);
                           if (!value || Number.isNaN(count)) {
-                            return "Enter number of passengers";
+                            return "Enter number of adult passengers";
                           }
                           if (!Number.isInteger(count)) {
-                            return "Passengers must be a whole number";
+                            return "Adults count must be a whole number";
                           }
-                          if (count < 1) return "At least 1 passenger required";
+                          if (count < 1) return "At least 1 adult required";
                           if (count > 99)
-                            return "Maximum 99 passengers allowed";
+                            return "Maximum 99 adult passengers allowed";
                           return true;
                         },
                       })}
                       type="number"
                       min={1}
                       max={99}
-                      placeholder="00"
+                      placeholder="01"
+                      aria-label="Number of adult passengers (12+ yrs)"
+                      aria-required="true"
+                      aria-invalid={!!errors.passengers}
                       className="w-full bg-transparent font-lato text-[13px] text-[#333] outline-none placeholder:text-[#b0b0b0]"
                     />
                   </BookingInput>
                   <FieldError message={errors.passengers?.message} />
                 </div>
                 <div>
-                  <FieldLabel>Children</FieldLabel>
+                  <FieldLabel htmlFor="home-children">
+                    Children (Under 12 yrs)
+                  </FieldLabel>
                   <BookingInput
                     icon={<PersonIcon />}
                     hasError={!!errors.childs}
                   >
                     <input
+                      id="home-children"
                       {...register("childs", {
                         validate: (value) => {
                           const count = Number(value || 0);
                           if (Number.isNaN(count))
-                            return "Enter a valid number";
+                            return "Enter a valid number of children";
                           if (!Number.isInteger(count)) {
-                            return "Children must be a whole number";
+                            return "Children count must be a whole number";
                           }
-                          if (count < 0) return "Children cannot be negative";
+                          if (count < 0) return "Children count cannot be negative";
                           if (count > 99) return "Maximum 99 children allowed";
                           return true;
                         },
@@ -1162,6 +1163,8 @@ export function HomePage() {
                       min={0}
                       max={99}
                       placeholder="0"
+                      aria-label="Number of child passengers (Under 12 yrs, optional)"
+                      aria-invalid={!!errors.childs}
                       className="w-full bg-transparent font-lato text-[13px] text-[#333] outline-none placeholder:text-[#b0b0b0]"
                     />
                   </BookingInput>
@@ -1473,55 +1476,83 @@ export function HomePage() {
               OUR FLEET
             </p>
           </div>
-          <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
-            Explore Our{" "}
-            <span className="text-maseer-gold">Exquisite Fleet</span>
-          </h2>
+          <div className="flex items-center gap-3">
+            <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
+              Explore Our{" "}
+              <span className="text-maseer-gold">Exquisite Fleet</span>
+            </h2>
+            {isAdmin && (
+              <button
+                type="button"
+                title="Edit fleet in admin panel"
+                onClick={() => navigate("/admin/fleet")}
+                className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+              >
+                <Pencil size={13} />
+              </button>
+            )}
+          </div>
           <p className="mt-4 max-w-[580px] font-lato text-[14px] leading-[22px] text-maseer-green">
             Approved chauffeur categories from executive sedans to group
             transport and electric options where available.
           </p>
         </div>
 
-        <div className="fleet-carousel mt-12 w-full overflow-hidden pl-6 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] pr-0">
-          <SlickSlider
-            {...carouselSliderSettings}
-            responsive={undefined}
-            slidesToShow={slidesToShow}
-          >
-            {fleetCards.map((car, index) => (
-              <div key={`${car.id}-${index}`}>
-                <article
-                  className={[
-                    "h-full px-6 lg:px-8",
-                    index > 0 ? "border-l border-maseer-gold/55" : "",
-                  ].join(" ")}
-                >
-                  <img
-                    src={car.image}
-                    alt={car.title}
-                    className="mx-auto h-[200px] w-full max-w-[340px] object-contain"
-                  />
-                  <p className="mt-8 font-lato text-[10px] font-bold uppercase tracking-[0.14em] text-maseer-muted">
-                    {car.category} • {car.guests} GUESTS
-                  </p>
-                  <div className="mt-3 flex items-end justify-between gap-4">
-                    <h3 className="font-serif text-[16px] font-medium leading-tight text-maseer-green-text">
-                      {car.title}
-                    </h3>
-                    <Link
-                      to={`/fleet/${car.id}`}
-                      className="link-arrow shrink-0 whitespace-nowrap pb-1"
-                    >
-                      View Details <span aria-hidden>↗</span>
-                    </Link>
-                  </div>
-                </article>
-              </div>
-            ))}
-          </SlickSlider>
-        </div>
-      </section>
+        {isFleetLoading ? (
+          <div className="py-12 text-center font-lato text-sm text-maseer-muted">
+            Loading fleet...
+          </div>
+        ) : liveFleets.length > 0 ? (
+          <div className="fleet-carousel mt-12 w-full overflow-hidden pl-6 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] pr-0">
+            <SlickSlider
+              {...carouselSliderSettings}
+              responsive={undefined}
+              slidesToShow={Math.min(liveFleets.length, 3.15)}
+            >
+              {liveFleets.map((car, index) => (
+                <div key={`${car.id}-${index}`}>
+                  <article
+                    className={[
+                      "h-full px-6 lg:px-8",
+                      index > 0 ? "border-l border-maseer-gold/55" : "",
+                    ].join(" ")}
+                  >
+                    <img
+                      src={car.image}
+                      alt={car.name}
+                      className="mx-auto h-[200px] w-full max-w-[340px] object-contain"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src =
+                          "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=800";
+                      }}
+                    />
+                    <p className="mt-8 font-lato text-[10px] font-bold uppercase tracking-[0.14em] text-maseer-muted">
+                      {car.category} • {car.seats} GUESTS
+                    </p>
+                    <div className="mt-3 flex items-end justify-between gap-4">
+                      <h3 className="font-serif text-[16px] font-medium leading-tight text-maseer-green-text">
+                        {car.name}
+                      </h3>
+                      <Link
+                        to={`/fleet/${car.id}`}
+                        className="link-arrow shrink-0 whitespace-nowrap pb-1"
+                      >
+                        View Details <span aria-hidden>↗</span>
+                      </Link>
+                    </div>
+                  </article>
+                </div>
+              ))}
+            </SlickSlider>
+          </div>
+        ) : (
+          <div className="page-container mt-8 rounded-xl border border-dashed border-maseer-line p-8 text-center">
+            <p className="font-lato text-sm text-maseer-muted">
+              No vehicles available at the moment.
+            </p>
+          </div>
+        )}
+      </section>     
 
       {/* Reviews */}
       <section className="bg-maseer-surface py-16">
@@ -1561,71 +1592,87 @@ export function HomePage() {
           </p>
         </div>
 
-        <div className="fleet-carousel mt-10 w-full overflow-hidden pl-6 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] pr-0">
-          <SlickSlider
-            {...carouselSliderSettings}
-            responsive={undefined}
-            slidesToShow={slidesToShow}
-          >
-            {finalReviews.map((r) => (
-              <div key={r.name} className="pr-6 pb-6">
-                <article className="relative rounded-2xl border border-maseer-line/80 bg-white p-8 shadow-soft">
-                  {/* Admin edit button */}
-                  {isAdmin && (
-                    <button
-                      type="button"
-                      aria-label={`Edit ${r.name} review`}
-                      title="Edit in admin panel"
-                      onClick={() => navigate("/admin/reviews")}
-                      className="absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
-                    >
-                      <Pencil size={13} />
-                    </button>
-                  )}
-                  <div className="flex items-center justify-between">
-                    <div className="flex gap-1 text-primary text-[14px]">
-                      {"★".repeat(r.rating || 5)}
+        {isReviewsLoading ? (
+          <div className="py-12 text-center font-lato text-sm text-maseer-muted">
+            Loading reviews...
+          </div>
+        ) : finalReviews.length > 0 ? (
+          <div className="fleet-carousel mt-10 w-full overflow-hidden pl-6 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] pr-0">
+            <SlickSlider
+              {...carouselSliderSettings}
+              responsive={undefined}
+              slidesToShow={Math.min(finalReviews.length, 3.15)}
+            >
+              {finalReviews.map((r, index) => (
+                <div key={`${r.name}-${index}`} className="pr-6 pb-6">
+                  <article className="relative rounded-2xl border border-maseer-line/80 bg-white p-8 shadow-soft">
+                    {/* Admin edit button */}
+                    {isAdmin && (
+                      <button
+                        type="button"
+                        aria-label={`Edit ${r.name} review`}
+                        title="Edit in admin panel"
+                        onClick={() => navigate("/admin/reviews")}
+                        className="absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                      >
+                        <Pencil size={13} />
+                      </button>
+                    )}
+                    <div className="flex items-center justify-between">
+                      <div className="flex gap-1 text-primary text-[14px]">
+                        {"★".repeat(r.rating || 5)}
+                      </div>
+                      <svg
+                        width="48"
+                        height="31"
+                        viewBox="0 0 48 31"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M20.6738 0.916992V20.0439C20.6738 25.0396 15.4753 29.4403 8.62695 29.4404H4.79199V23.9336H8.62695C10.9869 23.9335 13.2803 22.3737 13.2803 20.0439V16.2588H0.916992V0.916992H20.6738Z"
+                          stroke="#002703"
+                          strokeWidth="1.83317"
+                        />
+                        <path
+                          d="M46.3223 0.916992V20.0439C46.3223 25.0396 41.1237 29.4403 34.2754 29.4404H30.4404V23.9336H34.2754C36.6353 23.9335 38.9287 22.3737 38.9287 20.0439V16.2588H26.5654V0.916992H46.3223Z"
+                          stroke="#002703"
+                          strokeWidth="1.83317"
+                        />
+                      </svg>
                     </div>
-                    <svg
-                      width="48"
-                      height="31"
-                      viewBox="0 0 48 31"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M20.6738 0.916992V20.0439C20.6738 25.0396 15.4753 29.4403 8.62695 29.4404H4.79199V23.9336H8.62695C10.9869 23.9335 13.2803 22.3737 13.2803 20.0439V16.2588H0.916992V0.916992H20.6738Z"
-                        stroke="#002703"
-                        strokeWidth="1.83317"
+                    <h3 className="mt-4 font-serif text-[20px] font-semibold leading-tight text-maseer-green-text">
+                      {r.title}
+                    </h3>
+                    <p className="mt-4 font-lato text-[13px] leading-[22px] text-maseer-muted">
+                      {r.quote}
+                    </p>
+                    <div className="mt-6 flex items-center gap-3 border-t-2 border-maseer-line/80 pt-6">
+                      <img
+                        src={r.avatar}
+                        alt={r.name}
+                        className="h-10 w-10 rounded-full object-cover"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80";
+                        }}
                       />
-                      <path
-                        d="M46.3223 0.916992V20.0439C46.3223 25.0396 41.1237 29.4403 34.2754 29.4404H30.4404V23.9336H34.2754C36.6353 23.9335 38.9287 22.3737 38.9287 20.0439V16.2588H26.5654V0.916992H46.3223Z"
-                        stroke="#002703"
-                        strokeWidth="1.83317"
-                      />
-                    </svg>
-                  </div>
-                  <h3 className="mt-4 font-serif text-[20px] font-semibold leading-tight text-maseer-green-text">
-                    {r.title}
-                  </h3>
-                  <p className="mt-4 font-lato text-[13px] leading-[22px] text-maseer-muted">
-                    {r.quote}
-                  </p>
-                  <div className="mt-6 flex items-center gap-3 border-t-2 border-maseer-line/80 pt-6">
-                    <img
-                      src={r.avatar}
-                      alt={r.name}
-                      className="h-10 w-10 rounded-full object-cover"
-                    />
-                    <span className="font-lato text-[14px] font-semibold text-maseer-green-text">
-                      {r.name}
-                    </span>
-                  </div>
-                </article>
-              </div>
-            ))}
-          </SlickSlider>
-        </div>
+                      <span className="font-lato text-[14px] font-semibold text-maseer-green-text">
+                        {r.name}
+                      </span>
+                    </div>
+                  </article>
+                </div>
+              ))}
+            </SlickSlider>
+          </div>
+        ) : (
+          <div className="page-container mt-8 rounded-xl border border-dashed border-maseer-line p-8 text-center bg-white">
+            <p className="font-lato text-sm text-maseer-muted">
+              No customer reviews available at the moment.
+            </p>
+          </div>
+        )}
       </section>
 
       {/* Get in Touch */}

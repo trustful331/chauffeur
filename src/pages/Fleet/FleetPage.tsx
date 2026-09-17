@@ -1,10 +1,12 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { BookingModal } from "../../ui/BookingModal";
 import {
   FLEET_CATEGORIES,
   FLEET_VEHICLES,
+  mapFleetItemToVehicle,
   SHOWCASE_FEATURES,
   type FleetCategory,
+  type FleetVehicle,
 } from "../../data/fleetData";
 import {
   FleetCta,
@@ -12,6 +14,7 @@ import {
   FleetHero,
   FleetStandards,
 } from "./FleetShared";
+import { fetchFleets } from "src/api/admin/fleet";
 
 function FeatureIcon() {
   return (
@@ -32,13 +35,38 @@ export function FleetPage() {
   const [category, setCategory] = useState<FleetCategory>("All Vehicles");
   const [slide, setSlide] = useState(0);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
+  const [liveFleets, setLiveFleets] = useState<FleetVehicle[]>(FLEET_VEHICLES);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadLiveFleet() {
+      try {
+        console.log("[FleetPage] Fetching live fleets from API...");
+        const response = await fetchFleets({ is_active: true });
+        console.log("[FleetPage] API response:", response);
+
+        if (response && response.success && Array.isArray(response.data) && response.data.length > 0) {
+          const mapped = response.data.map(mapFleetItemToVehicle);
+          console.log("[FleetPage] Mapped live fleets for showcase:", mapped);
+          if (isMounted) setLiveFleets(mapped);
+        }
+      } catch (err) {
+        console.warn("[FleetPage] Live API fetch failed, keeping fallback:", err);
+      }
+    }
+
+    loadLiveFleet();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const filtered = useMemo(
     () =>
       category === "All Vehicles"
-        ? FLEET_VEHICLES
-        : FLEET_VEHICLES.filter((v) => v.category === category),
-    [category],
+        ? liveFleets
+        : liveFleets.filter((v) => v.category === category),
+    [category, liveFleets],
   );
 
   const current = filtered[slide] ?? filtered[0];
@@ -84,6 +112,9 @@ export function FleetPage() {
                 src={current.image}
                 alt={current.name}
                 className="relative -mt-[100px] mx-auto h-[220px] w-[480px] object-contain drop-shadow-float max-md:-mt-[60px] max-md:h-[160px] max-md:w-full max-md:max-w-[340px]"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=800";
+                }}
               />
             )}
           </div>

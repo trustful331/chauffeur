@@ -10,7 +10,7 @@ import {
 } from "../../../data/fleetData";
 import { FleetCta, FleetHero, FleetStandards } from "../FleetShared";
 import { BookingModal } from "../../../ui/BookingModal";
-import { fetchFleetById, type FleetItem } from "src/api/admin/fleet";
+import { fetchFleetById, fetchFleets, type FleetItem } from "src/api/admin/fleet";
 import { fetchFleetDetails, type FleetDetailItem } from "src/api/admin/fleetDetail";
 import { Pencil } from "lucide-react";
 import { useAppSelector } from "src/store/hooks";
@@ -18,6 +18,7 @@ import { selectAuthUser } from "src/store/slices/auth/selectors";
 import type { AuthUser } from "src/store/slices/auth/types";
 
 /* ─── per-feature SVG icons ───────────────────────────────────────────────── */
+
 
 function IconBooking() {
   return (
@@ -241,7 +242,7 @@ function IconClock24() {
 
 /* ─── feature config ──────────────────────────────────────────────────────── */
 
-const FEATURES = [
+export const FEATURES = [
   /* left column – label RIGHT of icon, so label comes first visually */
   {
     label: "Secure booking\nin minutes",
@@ -351,40 +352,64 @@ export function FleetDetailsPage() {
     async function loadVehicleAndDetails(activeId: string) {
       setLoading(true);
       try {
-        // 1. Check if mock vehicle exists
-        const mock = getFleetVehicleById(activeId);
+        console.log(`[FleetDetailsPage] Fetching live vehicle listing from API for ID: "${activeId}"`);
         let activeVeh: FleetVehicle | null = null;
 
-        if (mock) {
-          activeVeh = mock;
-          setLiveVehicle(mock);
-        } else {
-          // Fetch live vehicle listing
+        try {
           const response = await fetchFleetById(activeId);
+          console.log("[FleetDetailsPage] API response for fetchFleetById:", response);
           if (response && response.success && response.data) {
             const mapped = mapBackendFleetToFleetVehicle(response.data);
+            console.log("[FleetDetailsPage] Successfully loaded and mapped live vehicle:", mapped);
             activeVeh = mapped;
             setLiveVehicle(mapped);
+          }
+        } catch (apiErr) {
+          console.warn("[FleetDetailsPage] fetchFleetById returned error/failed, checking local fallback:", apiErr);
+        }
+
+        // Fallback to local mock registry if API vehicle not found
+        if (!activeVeh) {
+          const mock = getFleetVehicleById(activeId);
+          if (mock) {
+            console.log("[FleetDetailsPage] Loaded mock vehicle fallback:", mock);
+            activeVeh = mock;
+            setLiveVehicle(mock);
           }
         }
 
         if (activeVeh) {
           // 2. Fetch page details for this fleet vehicle
+          console.log(`[FleetDetailsPage] Fetching detail highlights for vehicle ID: "${activeId}"`);
           const detailRes = await fetchFleetDetails({ fleet: activeId });
+          console.log("[FleetDetailsPage] API response for fetchFleetDetails:", detailRes);
           if (detailRes && detailRes.success && detailRes.data && detailRes.data.length > 0) {
             setDetail(detailRes.data[0]);
           } else {
             setDetail(null);
           }
 
-          // 3. Slider: approved static fleet in the same category (avoids BE test/demo bleed)
-          const cat = activeVeh.category;
-          setSliderVehicles(
-            FLEET_VEHICLES.filter((v) => v.category === cat)
-          );
+          // 3. Slider: Fetch live fleet items in the same category from API
+          try {
+            console.log("[FleetDetailsPage] Fetching live category slider vehicles from API...");
+            const allFleetsRes = await fetchFleets({ is_active: true });
+            if (allFleetsRes && allFleetsRes.success && Array.isArray(allFleetsRes.data) && allFleetsRes.data.length > 0) {
+              const mappedAll = allFleetsRes.data.map(mapBackendFleetToFleetVehicle);
+              const cat = activeVeh.category;
+              const sameCat = mappedAll.filter((v) => v.category === cat);
+              console.log("[FleetDetailsPage] Loaded live category slider vehicles:", sameCat.length > 0 ? sameCat : mappedAll);
+              setSliderVehicles(sameCat.length > 0 ? sameCat : mappedAll);
+            } else {
+              const cat = activeVeh.category;
+              setSliderVehicles(FLEET_VEHICLES.filter((v) => v.category === cat));
+            }
+          } catch (sliderErr) {
+            console.warn("[FleetDetailsPage] Error fetching slider fleets from API:", sliderErr);
+            setSliderVehicles(liveVehicle ? [liveVehicle] : []);
+          }
         }
       } catch (err) {
-        console.error("Error loading vehicle details:", err);
+        console.error("[FleetDetailsPage] Error loading vehicle details:", err);
       } finally {
         setLoading(false);
       }
@@ -408,15 +433,16 @@ export function FleetDetailsPage() {
   const current = sliderVehicles[slide] ?? liveVehicle;
 
   const currentHighlights = useMemo(() => {
+    const positions = [
+      { pos: "top-[7%] left-[20%]", side: "left" as const },
+      { pos: "top-[26%] left-[1%]", side: "left" as const },
+      { pos: "top-[55%] left-[-4%]", side: "left" as const },
+      { pos: "top-[5%] right-[20%]", side: "right" as const },
+      { pos: "top-[26%] right-[4%]", side: "right" as const },
+      { pos: "top-[55%] right-[-3%]", side: "right" as const },
+    ];
+
     if (detail && detail.highlights && detail.highlights.length > 0) {
-      const positions = [
-        { pos: "top-[7%] left-[20%]", side: "left" as const },
-        { pos: "top-[26%] left-[1%]", side: "left" as const },
-        { pos: "top-[55%] left-[-4%]", side: "left" as const },
-        { pos: "top-[5%] right-[20%]", side: "right" as const },
-        { pos: "top-[26%] right-[4%]", side: "right" as const },
-        { pos: "top-[55%] right-[-3%]", side: "right" as const },
-      ];
       return detail.highlights.slice(0, 6).map((h, i) => ({
         label: h.title + (h.description ? `\n${h.description}` : ""),
         icon: getHighlightIcon(h.icon_key),
@@ -424,8 +450,29 @@ export function FleetDetailsPage() {
         side: positions[i].side,
       }));
     }
-    return FEATURES;
-  }, [detail]);
+
+    if (liveVehicle) {
+      const items: { label: string; icon_key: string }[] = [];
+      if (liveVehicle.seats) {
+        items.push({ label: `${liveVehicle.seats} Seats Capacity`, icon_key: "chauffeur" });
+      }
+      if (liveVehicle.bags) {
+        items.push({ label: `${liveVehicle.bags} Checked Luggage`, icon_key: "booking" });
+      }
+      (liveVehicle.features || []).forEach((feat) => {
+        items.push({ label: feat, icon_key: feat });
+      });
+
+      return items.slice(0, 6).map((h, i) => ({
+        label: h.label,
+        icon: getHighlightIcon(h.icon_key),
+        pos: positions[i].pos,
+        side: positions[i].side,
+      }));
+    }
+
+    return [];
+  }, [detail, liveVehicle]);
 
   if (loading) {
     return (
@@ -448,28 +495,26 @@ export function FleetDetailsPage() {
 
       {/* ── showcase section ── */}
       <section className="bg-white pt-16 lg:pt-44 max-md:pt-10">
-        {detail && (
-          <div className="mx-auto max-w-2xl px-4 text-center mb-12">
-            <div className="flex items-center justify-center gap-3">
-              <h2 className="font-serif text-3xl font-bold text-maseer-green-text sm:text-4xl">
-                {detail.title}
-              </h2>
-              {isAdmin && (
-                <button
-                  type="button"
-                  title="Edit vehicle in admin panel"
-                  onClick={() => navigate("/admin/fleet")}
-                  className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
-                >
-                  <Pencil size={13} />
-                </button>
-              )}
-            </div>
-            <p className="mt-4 font-lato text-sm text-maseer-muted whitespace-pre-line">
-              {detail.description}
-            </p>
+        <div className="mx-auto max-w-2xl px-4 text-center mb-12">
+          <div className="flex items-center justify-center gap-3">
+            <h2 className="font-serif text-3xl font-bold text-maseer-green-text sm:text-4xl">
+              {detail ? detail.title : liveVehicle.name}
+            </h2>
+            {isAdmin && (
+              <button
+                type="button"
+                title="Edit vehicle in admin panel"
+                onClick={() => navigate("/admin/fleet")}
+                className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+              >
+                <Pencil size={13} />
+              </button>
+            )}
           </div>
-        )}
+          <p className="mt-4 font-lato text-sm text-maseer-muted whitespace-pre-line">
+            {detail ? detail.description : `${liveVehicle.category} — Executive Chauffeur Driven Vehicle.`}
+          </p>
+        </div>
 
         <div className="relative mx-auto h-[680px] max-w-[1200px] px-4 max-md:h-auto max-md:min-h-0 max-md:pb-24">
           {/* sage-green semicircle arch background */}

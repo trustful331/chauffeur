@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { 
-  Car, 
-  X, 
-  AlertCircle, 
-  Wifi, 
-  Droplets, 
-  Snowflake, 
-  Music, 
-  UserCheck, 
-  Zap, 
-  Camera, 
-  Tv, 
-  Info 
+import {
+  Car,
+  X,
+  AlertCircle,
+  Wifi,
+  Droplets,
+  Snowflake,
+  Music,
+  UserCheck,
+  Zap,
+  Camera,
+  Tv,
+  Info
 } from "lucide-react";
 import { type FleetItem, type FleetParams, type Amenity } from "src/api/admin/fleet";
 import { Spinner } from "src/ui/Spinner";
@@ -192,14 +192,14 @@ export function AdminFleetModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
       {/* Backdrop Overlay */}
-      <div 
+      <div
         className="fixed inset-0 bg-maseer-green-deep/70 backdrop-blur-[4px] transition-opacity"
         onClick={() => !isSaving && onClose()}
       />
 
       {/* Modal Content */}
       <div className="relative w-full max-w-3xl transform overflow-hidden rounded-2xl bg-white border border-maseer-line p-6 shadow-float transition-all duration-300 max-h-[90vh] flex flex-col">
-        
+
         {/* Modal Header */}
         <div className="flex items-center justify-between pb-4 border-b border-maseer-line">
           <div className="flex items-center gap-2.5">
@@ -282,10 +282,10 @@ export function AdminFleetModal({
           </div>
 
           {/* Row 3: Drag & Drop Image Upload */}
-          <ImageUpload 
-            value={imageUrl} 
-            onChange={setImageUrl} 
-            label="Vehicle Image *" 
+          <ImageUpload
+            value={imageUrl}
+            onChange={setImageUrl}
+            label="Vehicle Image *"
           />
 
           {/* Row 4: Seats, Luggage, Display Order */}
@@ -354,15 +354,13 @@ export function AdminFleetModal({
                     type="button"
                     key={amenity.name}
                     onClick={() => handleToggleAmenity(amenity)}
-                    className={`flex items-center gap-3 rounded-xl border p-3.5 text-left transition select-none ${
-                      isSelected
+                    className={`flex items-center gap-3 rounded-xl border p-3.5 text-left transition select-none ${isSelected
                         ? "border-maseer-gold bg-maseer-surface shadow-glow text-[#1a2e1f]"
                         : "border-maseer-line bg-white hover:bg-maseer-surface/50 text-maseer-muted"
-                    }`}
+                      }`}
                   >
-                    <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md ${
-                      isSelected ? "bg-maseer-gold/15" : "bg-maseer-surface"
-                    }`}>
+                    <div className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md ${isSelected ? "bg-maseer-gold/15" : "bg-maseer-surface"
+                      }`}>
                       {getAmenityIcon(amenity.icon_key)}
                     </div>
                     <span className="text-xs font-bold leading-none">{amenity.name}</span>
@@ -382,7 +380,7 @@ export function AdminFleetModal({
             >
               Cancel
             </button>
-            
+
             <button
               type="submit"
               disabled={isSaving}

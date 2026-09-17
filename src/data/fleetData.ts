@@ -9,7 +9,7 @@ export type FleetCategory =
   | "Coasters & Buses"
   | "Electric Mobility";
 
-import { images } from "../assets/images";
+import type { FleetItem } from "../api/admin/fleet";
 
 export type VehicleBodyType = "SEDAN" | "SUV" | "VAN" | "BUS";
 
@@ -112,264 +112,38 @@ export const FLEET_CATEGORY_DESCRIPTIONS: Record<
     "Selected electric vehicle solutions where available and suitable for the journey.",
 };
 
-export const FLEET_VEHICLES: FleetVehicle[] = [
-  {
-    id: "ford-taurus",
-    name: "Ford Taurus",
-    category: "Economy & Executive Sedans",
-    bodyType: "SEDAN",
-    seats: 4,
-    bags: 2,
-    bagLabel: "2 checked",
-    transmission: "Automatic",
-    fuel: "Petrol",
-    features: ["Climate control", "Professional chauffeur", "On-board charging"],
-    image: images.fleet.slide,
-    gridTags: ["Economy & Executive Sedans"],
-  },
-  {
-    id: "lexus-es",
-    name: "Lexus ES 350",
-    category: "Economy & Executive Sedans",
-    bodyType: "SEDAN",
-    seats: 4,
-    bags: 2,
-    bagLabel: "2 checked",
-    transmission: "Automatic",
-    fuel: "Petrol",
-    features: ["Heated & ventilated seats", "Premium sound", "Mood lighting"],
-    image: images.fleet.slide,
-    gridTags: ["Economy & Executive Sedans"],
-    isNew: true,
-  },
-  {
-    id: "toyota-camry",
-    name: "Toyota Camry",
-    category: "Economy & Executive Sedans",
-    bodyType: "SEDAN",
-    seats: 4,
-    bags: 2,
-    bagLabel: "2 checked",
-    transmission: "Automatic",
-    fuel: "Petrol",
-    features: ["Smooth ride", "Climate control", "Professional chauffeur"],
-    image: images.home.fleet[0],
-    gridTags: ["Economy & Executive Sedans"],
-  },
-  {
-    id: "mercedes-e",
-    name: "Mercedes-Benz E-Class",
-    category: "Business-Class Sedans",
-    bodyType: "SEDAN",
-    seats: 3,
-    bags: 2,
-    bagLabel: "2 checked",
-    transmission: "Automatic",
-    fuel: "Petrol",
-    features: ["Executive seating", "Quiet cabin", "Wi-Fi hotspot"],
-    image: images.fleet.grid[0],
-    gridTags: ["Business-Class Sedans"],
-  },
-  {
-    id: "bmw-5",
-    name: "BMW 5 Series",
-    category: "Business-Class Sedans",
-    bodyType: "SEDAN",
-    seats: 3,
-    bags: 2,
-    bagLabel: "2 checked",
-    transmission: "Automatic",
-    fuel: "Petrol",
-    features: ["Business comfort", "Ambient lighting", "On-board charging"],
-    image: images.home.fleet[1],
-    gridTags: ["Business-Class Sedans"],
-  },
-  {
-    id: "mercedes-s",
-    name: "Mercedes-Benz S-Class",
-    category: "First-Class Sedans",
-    bodyType: "SEDAN",
-    seats: 3,
-    bags: 2,
-    bagLabel: "2 checked",
-    transmission: "Automatic",
-    fuel: "Petrol",
-    features: ["High-speed Wi-Fi", "Chilled mineral water", "Professional chauffeur"],
-    image: images.fleet.grid[0],
-    gridTags: ["First-Class Sedans"],
-    isNew: true,
-  },
-  {
-    id: "bmw-7",
-    name: "BMW 7 Series",
-    category: "First-Class Sedans",
-    bodyType: "SEDAN",
-    seats: 3,
-    bags: 3,
-    bagLabel: "3 checked",
-    transmission: "Automatic",
-    fuel: "Hybrid",
-    features: ["Executive lounge seating", "Ambient lighting", "Wi-Fi hotspot"],
-    image: images.home.fleet[1],
-    gridTags: ["First-Class Sedans"],
-  },
-  {
-    id: "chevrolet-tahoe",
-    name: "Chevrolet Tahoe",
-    category: "Premium SUVs",
-    bodyType: "SUV",
-    seats: 6,
-    bags: 4,
-    bagLabel: "4 checked",
-    transmission: "Automatic",
-    fuel: "Petrol",
-    features: ["Spacious cabin", "Captain chairs", "Climate zones"],
-    image: images.fleet.grid[1],
-    gridTags: ["Premium SUVs"],
-  },
-  {
-    id: "chevrolet-suburban",
-    name: "Chevrolet Suburban",
-    category: "Premium SUVs",
-    bodyType: "SUV",
-    seats: 7,
-    bags: 6,
-    bagLabel: "6 checked",
-    transmission: "Automatic",
-    fuel: "Petrol",
-    features: ["Third-row comfort", "Captain chairs", "360° camera"],
-    image: images.home.fleet[0],
-    gridTags: ["Premium SUVs"],
-  },
-  {
-    id: "gmc-yukon-xl",
-    name: "GMC Yukon XL",
-    category: "Premium SUVs",
-    bodyType: "SUV",
-    seats: 7,
-    bags: 5,
-    bagLabel: "5 checked",
-    transmission: "Automatic",
-    fuel: "Petrol",
-    features: ["Extended cabin", "Premium sound", "Privacy glass"],
-    image: images.fleet.grid[1],
-    gridTags: ["Premium SUVs"],
-  },
-  {
-    id: "mercedes-vito",
-    name: "Mercedes-Benz Vito",
-    category: "Premium SUVs",
-    bodyType: "VAN",
-    seats: 7,
-    bags: 6,
-    bagLabel: "6 checked",
-    transmission: "Automatic",
-    fuel: "Diesel",
-    features: ["Flexible seating", "Luggage space", "Professional chauffeur"],
-    image: images.fleet.grid[2],
-    gridTags: ["Premium SUVs", "Vans & Minivans"],
-  },
-  {
-    id: "maybach-s",
-    name: "Mercedes-Maybach S-Class",
-    category: "Luxury & Ultra-Luxury Vehicles",
-    bodyType: "SEDAN",
-    seats: 3,
-    bags: 2,
-    bagLabel: "2 checked",
-    transmission: "Automatic",
-    fuel: "Petrol",
-    features: ["Ultra-luxury cabin", "Executive rear lounge", "Concierge coordination"],
-    image: images.home.fleet[2],
-    gridTags: ["Luxury & Ultra-Luxury Vehicles"],
-    availabilityNote: "On demand / subject to availability",
-  },
-  {
-    id: "rolls-royce-ghost",
-    name: "Rolls-Royce Ghost",
-    category: "Luxury & Ultra-Luxury Vehicles",
-    bodyType: "SEDAN",
-    seats: 3,
-    bags: 2,
-    bagLabel: "2 checked",
-    transmission: "Automatic",
-    fuel: "Petrol",
-    features: ["Ultra-luxury cabin", "Privacy focus", "Concierge coordination"],
-    image: images.home.fleet[2],
-    gridTags: ["Luxury & Ultra-Luxury Vehicles"],
-    availabilityNote: "On demand / subject to availability",
-  },
-  {
-    id: "hyundai-staria",
-    name: "Hyundai Staria",
-    category: "Vans & Minivans",
-    bodyType: "VAN",
-    seats: 7,
-    bags: 5,
-    bagLabel: "5 checked",
-    transmission: "Automatic",
-    fuel: "Diesel",
-    features: ["Group seating", "Airport-ready luggage space", "USB charging"],
-    image: images.fleet.grid[2],
-    gridTags: ["Vans & Minivans"],
-    availabilityNote: "Or similar",
-  },
-  {
-    id: "toyota-hiace",
-    name: "Toyota HiAce",
-    category: "Coasters & Buses",
-    bodyType: "BUS",
-    seats: 12,
-    bags: 8,
-    bagLabel: "8 checked",
-    transmission: "Automatic",
-    fuel: "Diesel",
-    features: ["Group transport", "Event support", "Professional chauffeur"],
-    image: images.fleet.grid[2],
-    gridTags: ["Coasters & Buses"],
-  },
-  {
-    id: "king-long-bus",
-    name: "King Long Bus",
-    category: "Coasters & Buses",
-    bodyType: "BUS",
-    seats: 30,
-    bags: 20,
-    bagLabel: "Group luggage",
-    transmission: "Automatic",
-    fuel: "Diesel",
-    features: ["Delegation capacity", "Tour support", "Staff movements"],
-    image: images.fleet.grid[2],
-    gridTags: ["Coasters & Buses"],
-  },
-  {
-    id: "lucid-air",
-    name: "Lucid Air",
-    category: "Electric Mobility",
-    bodyType: "SEDAN",
-    seats: 4,
-    bags: 2,
-    bagLabel: "2 checked",
-    transmission: "Automatic",
-    fuel: "Electric",
-    features: ["Electric drivetrain", "Quiet cabin", "Premium interior"],
-    image: images.home.fleet[1],
-    gridTags: ["Electric Mobility"],
-    availabilityNote: "Where available",
-  },
-];
+export const FLEET_VEHICLES: FleetVehicle[] = [];
 
 /** Default grid order when "All Vehicles" is selected. */
-export const FLEET_GRID_DISPLAY_IDS = [
-  "lexus-es",
-  "mercedes-e",
-  "mercedes-s",
-  "chevrolet-suburban",
-  "rolls-royce-ghost",
-  "hyundai-staria",
-  "toyota-hiace",
-  "lucid-air",
-] as const;
+export const FLEET_GRID_DISPLAY_IDS: string[] = [];
+
+export function mapFleetItemToVehicle(item: FleetItem): FleetVehicle {
+  const catName =
+    FLEET_CATEGORY_LABEL_BY_API[item.category] ||
+    (item.category as Exclude<FleetCategory, "All Vehicles">) ||
+    "Economy & Executive Sedans";
+
+  const bodyTypeRaw = (item.vehicle_type || "sedan").toUpperCase();
+  const bodyType: VehicleBodyType =
+    bodyTypeRaw === "SUV" || bodyTypeRaw === "VAN" || bodyTypeRaw === "BUS"
+      ? bodyTypeRaw
+      : "SEDAN";
+
+  return {
+    id: item.id,
+    name: item.vehicle_name,
+    category: catName,
+    bodyType,
+    seats: item.seat_count ?? 4,
+    bags: item.luggage_capacity ?? 2,
+    bagLabel: `${item.luggage_capacity ?? 2} checked`,
+    transmission: "Automatic",
+    fuel: "Petrol",
+    features: (item.amenities || []).map((a) => a.name),
+    image: item.image_url || "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=800",
+    gridTags: [catName],
+  };
+}
 
 export function getFleetVehicleById(id: string): FleetVehicle | undefined {
   return FLEET_VEHICLES.find((vehicle) => vehicle.id === id);
@@ -379,7 +153,7 @@ export function getFleetGridVehicles(category: FleetGridCategory): FleetVehicle[
   if (category === "All Vehicles") {
     return FLEET_GRID_DISPLAY_IDS.map(
       (id) => FLEET_VEHICLES.find((v) => v.id === id)!,
-    );
+    ).filter(Boolean) as FleetVehicle[];
   }
   return FLEET_VEHICLES.filter((v) => v.gridTags.includes(category));
 }

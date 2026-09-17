@@ -25,6 +25,7 @@ import {
   type ServiceCoverageParams 
 } from "src/api/admin/serviceCoverage";
 import { Spinner } from "src/ui/Spinner";
+import { ConfirmModal } from "src/ui/ConfirmModal";
 import { AdminServiceCoverageModal } from "./AdminServiceCoverageModal";
 
 // Local static items for fallback if API is not working or empty
@@ -170,6 +171,11 @@ export function AdminServiceCoveragePage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<ServiceCoverageItem | null>(null);
 
+  // Delete Confirmation Modal states
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState<{ id: string; title: string } | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const loadData = async () => {
     setIsLoading(true);
     setError(null);
@@ -274,20 +280,28 @@ export function AdminServiceCoveragePage() {
     }
   };
 
-  const handleDelete = async (id: string, title: string) => {
-    if (!window.confirm(`Are you sure you want to delete "${title}"?`)) {
-      return;
-    }
+  const handleOpenDelete = (item: ServiceCoverageItem) => {
+    setItemToDelete({ id: item.id, title: item.title });
+    setDeleteModalOpen(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!itemToDelete) return;
+    setIsDeleting(true);
 
     try {
       if (isUsingFallback) {
-        setItems(prev => prev.filter(item => item.id !== id));
+        setItems(prev => prev.filter(item => item.id !== itemToDelete.id));
         notifySuccess("Card deleted locally (Offline Mode)");
+        setDeleteModalOpen(false);
+        setItemToDelete(null);
       } else {
-        const response = await deleteServiceCoverage(id);
+        const response = await deleteServiceCoverage(itemToDelete.id);
         if (response && response.success) {
           notifySuccess(response.message || "Card deleted successfully");
           loadData();
+          setDeleteModalOpen(false);
+          setItemToDelete(null);
         } else {
           throw new Error(response.message || "Delete request rejected by server");
         }
@@ -296,6 +310,8 @@ export function AdminServiceCoveragePage() {
       const errorMsg = err instanceof Error ? err.message : "Failed to delete card.";
       console.error("Error deleting service coverage:", err);
       setError(errorMsg);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -500,7 +516,7 @@ export function AdminServiceCoveragePage() {
                             <Edit3 className="h-4 w-4" />
                           </button>
                           <button
-                            onClick={() => handleDelete(item.id, item.title)}
+                            onClick={() => handleOpenDelete(item)}
                             className="rounded-lg p-1.5 border border-red-100 hover:bg-red-50 hover:text-red-600 transition text-red-400"
                             title="Delete Card"
                           >
@@ -527,6 +543,27 @@ export function AdminServiceCoveragePage() {
         isSaving={isSaving}
         error={error}
         setError={setError}
+      />
+
+      <ConfirmModal
+        isOpen={deleteModalOpen}
+        onClose={() => {
+          if (!isDeleting) {
+            setDeleteModalOpen(false);
+            setItemToDelete(null);
+          }
+        }}
+        onConfirm={handleConfirmDelete}
+        title="Delete Service Card"
+        description={
+          <>
+            Are you sure you want to delete <strong className="font-bold text-maseer-green-text">{itemToDelete?.title}</strong>? This card will be removed from your service coverage section.
+          </>
+        }
+        confirmText="Delete Card"
+        cancelText="Cancel"
+        variant="danger"
+        isLoading={isDeleting}
       />
     </div>
   );
