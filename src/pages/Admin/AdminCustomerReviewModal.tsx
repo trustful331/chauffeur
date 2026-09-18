@@ -9,6 +9,8 @@ type AdminCustomerReviewModalProps = {
   onClose: () => void;
   editingItem: CustomerReviewItem | null;
   defaultDisplayOrder: number;
+  defaultSectionTitle?: string;
+  defaultSectionSubtitle?: string;
   onSave: (payload: CustomerReviewParams) => Promise<void>;
   isSaving: boolean;
   error: string | null;
@@ -20,13 +22,15 @@ export function AdminCustomerReviewModal({
   onClose,
   editingItem,
   defaultDisplayOrder,
+  defaultSectionTitle = "What Our Clients Say",
+  defaultSectionSubtitle = "Real reviews",
   onSave,
   isSaving,
   error,
   setError,
 }: AdminCustomerReviewModalProps) {
-  const [sectionTitle, setSectionTitle] = useState("What Our Clients Say");
-  const [sectionSubtitle, setSectionSubtitle] = useState("Real reviews");
+  const [sectionTitle, setSectionTitle] = useState(defaultSectionTitle);
+  const [sectionSubtitle, setSectionSubtitle] = useState(defaultSectionSubtitle);
   const [customerName, setCustomerName] = useState("");
   const [customerImageUrl, setCustomerImageUrl] = useState("");
   const [starRating, setStarRating] = useState<number>(5);
@@ -39,8 +43,8 @@ export function AdminCustomerReviewModal({
   useEffect(() => {
     if (isOpen) {
       if (editingItem) {
-        setSectionTitle(editingItem.section_title || "What Our Clients Say");
-        setSectionSubtitle(editingItem.section_subtitle || "Real reviews");
+        setSectionTitle(editingItem.section_title || defaultSectionTitle);
+        setSectionSubtitle(editingItem.section_subtitle || defaultSectionSubtitle);
         setCustomerName(editingItem.customer_name);
         setCustomerImageUrl(editingItem.customer_image_url || "");
         setStarRating(editingItem.star_rating);
@@ -49,8 +53,8 @@ export function AdminCustomerReviewModal({
         setIsActive(editingItem.is_active);
         setDisplayOrder(editingItem.display_order);
       } else {
-        setSectionTitle("What Our Clients Say");
-        setSectionSubtitle("Real reviews");
+        setSectionTitle(defaultSectionTitle);
+        setSectionSubtitle(defaultSectionSubtitle);
         setCustomerName("");
         setCustomerImageUrl("");
         setStarRating(5);
@@ -60,7 +64,7 @@ export function AdminCustomerReviewModal({
         setDisplayOrder(defaultDisplayOrder);
       }
     }
-  }, [isOpen, editingItem, defaultDisplayOrder]);
+  }, [isOpen, editingItem, defaultDisplayOrder, defaultSectionTitle, defaultSectionSubtitle]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

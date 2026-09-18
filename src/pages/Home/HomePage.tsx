@@ -736,12 +736,10 @@ export function HomePage() {
 
   const filteredApiReviews = customerReviews
     .filter((item) => {
-      const blob =
-        `${item.review_title} ${item.review_content} ${item.customer_name}`.toLowerCase();
       return (
-        !blob.includes("test") &&
-        !blob.includes("api test") &&
-        item.review_content.trim().length > 8
+        item.is_active !== false &&
+        item.review_content &&
+        item.review_content.trim().length > 0
       );
     })
     .map((item) => ({
@@ -762,8 +760,22 @@ export function HomePage() {
   const itineraryHeading = itineraryCoverage[0]?.section_heading;
   const itinerarySubtitle = itineraryCoverage[0]?.section_subtitle;
 
-  const reviewHeading = customerReviews[0]?.section_title;
-  const reviewSubtitle = customerReviews[0]?.section_subtitle;
+  const latestReviewWithTitle = customerReviews
+    .slice()
+    .reverse()
+    .find((r) => r.is_active !== false && r.section_title && r.section_title.trim());
+
+  const latestReviewWithSubtitle = customerReviews
+    .slice()
+    .reverse()
+    .find((r) => r.is_active !== false && r.section_subtitle && r.section_subtitle.trim());
+
+  const reviewHeading =
+    latestReviewWithTitle?.section_title ||
+    customerReviews[0]?.section_title;
+  const reviewSubtitle =
+    latestReviewWithSubtitle?.section_subtitle ||
+    customerReviews[0]?.section_subtitle;
 
   const [_slidesToShow, setSlidesToShow] = useState(() => {
     if (typeof window !== "undefined") {

@@ -81,6 +81,14 @@ export function AdminCustomerReviewPage() {
   // Deletion state
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
+  // Section title & subtitle synchronization
+  const [lastSectionTitle, setLastSectionTitle] = useState(() => {
+    return localStorage.getItem("last_review_section_title") || "";
+  });
+  const [lastSectionSubtitle, setLastSectionSubtitle] = useState(() => {
+    return localStorage.getItem("last_review_section_subtitle") || "";
+  });
+
   async function loadReviews() {
     setIsLoading(true);
     setError(null);
@@ -88,13 +96,8 @@ export function AdminCustomerReviewPage() {
     try {
       const response = await fetchCustomerReviews();
       if (response && response.success && Array.isArray(response.data)) {
-        if (response.data.length === 0) {
-          // Empty dynamic registry -> fallback warning
-          setItems(FALLBACK_REVIEWS);
-          setIsUsingFallback(true);
-        } else {
-          setItems(response.data.sort((a, b) => a.display_order - b.display_order));
-        }
+        setItems(response.data.sort((a, b) => a.display_order - b.display_order));
+        setIsUsingFallback(false);
       } else {
         throw new Error(response?.message || "Invalid payload format received.");
       }
@@ -132,6 +135,14 @@ export function AdminCustomerReviewPage() {
     }
     setIsSaving(true);
     setModalError(null);
+    if (payload.section_title) {
+      localStorage.setItem("last_review_section_title", payload.section_title);
+      setLastSectionTitle(payload.section_title);
+    }
+    if (payload.section_subtitle) {
+      localStorage.setItem("last_review_section_subtitle", payload.section_subtitle);
+      setLastSectionSubtitle(payload.section_subtitle);
+    }
     try {
       if (editingItem) {
         // Edit update API
@@ -224,6 +235,20 @@ export function AdminCustomerReviewPage() {
   });
 
   const nextDisplayOrder = items.length > 0 ? Math.max(...items.map(i => i.display_order)) + 1 : 1;
+
+  const latestItemWithTitle = items.slice().reverse().find(i => i.section_title?.trim());
+  const defaultSectionTitle = 
+    lastSectionTitle || 
+    latestItemWithTitle?.section_title || 
+    items[0]?.section_title || 
+    "What Our Clients Say";
+
+  const latestItemWithSubtitle = items.slice().reverse().find(i => i.section_subtitle?.trim());
+  const defaultSectionSubtitle = 
+    lastSectionSubtitle || 
+    latestItemWithSubtitle?.section_subtitle || 
+    items[0]?.section_subtitle || 
+    "Real reviews";
 
   return (
     <div className="flex-1 space-y-6 bg-maseer-cream p-6 max-md:p-4 min-h-screen">
@@ -464,6 +489,8 @@ export function AdminCustomerReviewPage() {
         onClose={() => setIsModalOpen(false)}
         editingItem={editingItem}
         defaultDisplayOrder={nextDisplayOrder}
+        defaultSectionTitle={defaultSectionTitle}
+        defaultSectionSubtitle={defaultSectionSubtitle}
         onSave={handleSaveItem}
         isSaving={isSaving}
         error={modalError}

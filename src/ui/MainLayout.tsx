@@ -19,22 +19,22 @@ const navItems = [
 ];
 
 const footerServices = [
-  { label: "Airport Transfers", to: "/services" },
-  { label: "Corporate Bookings", to: "/corporate" },
-  { label: "Economy & Executive Sedans", to: "/fleet" },
-  { label: "Premium SUVs", to: "/fleet" },
-  { label: "Vans & Minivans", to: "/fleet" },
-  { label: "Electric Mobility", to: "/fleet" },
+  { label: "Executive Transfers"},
+  { label: "Airport Transfers", },
+  { label: "Hourly & Full-Day Chauffeur", },
+  { label: "Corporate Transportation", },
+  { label: "Events, Conferences & MICE", },
+  { label: "Staff & Employee Transportation", },
+  { label: "Intercity Transportation" },
+  { label: "VIP & VVIP Mobility", },
 ];
 
 const regionCities = [
   "Riyadh",
   "Jeddah",
   "Madinah",
-  "AlUla",
-  "Dammam",
-  "Khobar",
-  "Abha",
+  "Makkah",
+ 
 ];
 
 function FacebookIcon() {
@@ -280,9 +280,9 @@ export function MainLayout() {
               <ul className="mt-5 space-y-3 font-lato text-[13px] leading-5 text-maseer-green-text">
                 {footerServices.map((s) => (
                   <li key={s.label}>
-                    <NavLink to={s.to} className="transition hover:text-primary">
+                    <Link to={ ""} className="transition hover:text-primary">
                       {s.label}
-                    </NavLink>
+                    </Link>
                   </li>
                 ))}
               </ul>
