@@ -4,7 +4,17 @@ import { Link } from "react-router-dom";
 import { images } from "../../assets/images";
 import { HeroBackground } from "../../ui/HeroBackground";
 import { LoadingButton } from "../../ui/Spinner";
-import { ChevronDown, ChevronUp } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  Hotel,
+  Building2,
+  Globe,
+  Calendar,
+  Compass,
+  Car,
+  ArrowRight,
+} from "lucide-react";
 import { createGetInTouch } from "src/api/getInTouch";
 import toast from "react-hot-toast";
 import {
@@ -14,6 +24,15 @@ import {
   hasPhone,
   hasWhatsApp,
 } from "src/config/site";
+
+const PARTNER_CATEGORIES = [
+  { label: "Hotels & Hospitality", icon: Hotel },
+  { label: "Corporations", icon: Building2 },
+  { label: "Travel Companies", icon: Globe },
+  { label: "Event Organizers", icon: Calendar },
+  { label: "Tourism Businesses", icon: Compass },
+  { label: "Fleet Partners", icon: Car },
+];
 
 type ContactForm = {
   name: string;
@@ -258,6 +277,63 @@ export function ContactPage() {
                 </p>
               </article>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Partner With Maseer */}
+      <section className="bg-maseer-cream py-6 max-md:py-4">
+        <div className="page-container">
+          <div className="relative overflow-hidden rounded-3xl bg-maseer-green-deep p-8 md:p-12 text-white shadow-card">
+            {/* Ambient Background Glows */}
+            <div className="absolute -left-20 -top-20 h-72 w-72 rounded-full bg-primary/15 blur-3xl pointer-events-none" />
+            <div className="absolute -right-20 -bottom-20 h-72 w-72 rounded-full bg-maseer-gold/15 blur-3xl pointer-events-none" />
+
+            <div className="relative z-10 grid items-center gap-8 lg:grid-cols-[1.3fr_1fr]">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="h-0.5 w-8 bg-primary" aria-hidden />
+                  <p className="font-lato text-xs font-bold uppercase tracking-[0.16em] text-primary">
+                    | PARTNER WITH MASEER
+                  </p>
+                </div>
+                <h2 className="mt-4 font-serif text-[32px] md:text-[38px] font-semibold leading-[1.25] text-white">
+                  PARTNER WITH <span className="text-primary">MASEER</span>
+                </h2>
+                <p className="mt-4 font-lato text-[15.5px] leading-[26px] text-white/85 max-w-2xl">
+                  Whether you are a hotel, corporation, travel company, event organizer, tourism business or fleet partner, we would be pleased to explore how we can build a better transportation solution together.
+                </p>
+                <div className="mt-6">
+                  <a
+                    href="#contact-form"
+                    className="inline-flex items-center gap-2 rounded-xl bg-primary px-6 py-3 font-lato text-xs font-bold uppercase tracking-wider text-maseer-green-deep shadow-md transition-all duration-300 hover:bg-primary/90 hover:shadow-lg"
+                  >
+                    <span>Connect With Our Team</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </a>
+                </div>
+              </div>
+
+              {/* Partner Categories Grid */}
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-2">
+                {PARTNER_CATEGORIES.map((cat) => {
+                  const Icon = cat.icon;
+                  return (
+                    <div
+                      key={cat.label}
+                      className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.05] p-3.5 backdrop-blur-sm transition-all duration-300 hover:border-primary/50 hover:bg-white/[0.1]"
+                    >
+                      <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary transition-colors group-hover:bg-primary group-hover:text-maseer-green-deep">
+                        <Icon className="h-4 w-4" />
+                      </div>
+                      <span className="font-lato text-xs font-semibold text-white/90 group-hover:text-white">
+                        {cat.label}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </section>

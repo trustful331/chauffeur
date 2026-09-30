@@ -1,6 +1,131 @@
+import { Link } from "react-router-dom";
 import { images } from "../../assets/images";
 import { HeroBackground } from "../../ui/HeroBackground";
 import { GoldOffsetImage } from "../../ui/GoldOffsetImage";
+import {
+  ClipboardList,
+  CalendarCheck,
+  Network,
+  Car,
+  ShieldCheck,
+  Hotel,
+  Globe,
+  Building2,
+  Calendar,
+  Layers,
+  MessageSquare,
+  Search,
+  FileText,
+  UserCheck,
+  Sparkles,
+  TrendingUp,
+  ArrowRight,
+} from "lucide-react";
+
+const PARTNERSHIP_JOURNEY = [
+  {
+    stepNum: "01",
+    title: "Step 1 — Conversation",
+    text: "Tell us about your business, your guests and your transportation requirements.",
+    icon: MessageSquare,
+  },
+  {
+    stepNum: "02",
+    title: "Step 2 — Assessment",
+    text: "We review your requirements and identify the most suitable service model.",
+    icon: Search,
+  },
+  {
+    stepNum: "03",
+    title: "Step 3 — Proposal",
+    text: "We develop a commercial and operational proposal tailored to your needs.",
+    icon: FileText,
+  },
+  {
+    stepNum: "04",
+    title: "Step 4 — Onboarding",
+    text: "We establish the booking, communication, service and billing processes required for the partnership.",
+    icon: UserCheck,
+  },
+  {
+    stepNum: "05",
+    title: "Step 5 — Launch",
+    text: "Your transportation programme begins with dedicated coordination and operational support.",
+    icon: Sparkles,
+  },
+  {
+    stepNum: "06",
+    title: "Step 6 — Growth",
+    text: "As your requirements grow, we scale the solution with you.",
+    icon: TrendingUp,
+  },
+];
+
+const PARTNERSHIP_OPPORTUNITIES = [
+  {
+    title: "Hotels",
+    text: "Offer your guests premium transportation under a service model that complements your hospitality standards. We can support airport transfers, executive journeys, VIP movements, hourly bookings and event transportation.",
+    icon: Hotel,
+  },
+  {
+    title: "Travel Agencies & Tour Operators",
+    text: "Add dependable premium ground transportation to your packages and itineraries. We support individual travelers, families, groups, VIPs and multi-city programmes.",
+    icon: Globe,
+  },
+  {
+    title: "Corporate Clients",
+    text: "Create a more reliable way to move executives, employees, clients and visiting delegations with flexible, professionally coordinated transportation.",
+    icon: Building2,
+  },
+  {
+    title: "Event & MICE Partners",
+    text: "Work with a transportation partner capable of supporting the movement of guests, speakers, VIPs and teams across the full event lifecycle.",
+    icon: Calendar,
+  },
+  {
+    title: "Vehicle Owners & Fleet Operators",
+    text: "Join the Maseer vendor network and connect suitable vehicles with premium demand. Maseer can support the commercial and operational coordination required to bring vehicles into a professional mobility ecosystem.",
+    icon: Car,
+  },
+  {
+    title: "Strategic & White-Label Partners",
+    text: "Create a branded or co-branded transportation solution that allows your organization to offer premium ground transportation without building the entire operational infrastructure internally.",
+    icon: Layers,
+  },
+];
+
+const OPERATING_MODEL_STEPS = [
+  {
+    step: "01",
+    title: "1. REQUIREMENT",
+    text: "We understand the client's journey, service level, vehicle requirements, timing and operational needs.",
+    icon: ClipboardList,
+  },
+  {
+    step: "02",
+    title: "2. PLANNING",
+    text: "Our team selects the appropriate vehicle and operational resources based on the requirement.",
+    icon: CalendarCheck,
+  },
+  {
+    step: "03",
+    title: "3. COORDINATION",
+    text: "Bookings, dispatch, chauffeur assignment, guest details and operational communication are coordinated through a central point of control.",
+    icon: Network,
+  },
+  {
+    step: "04",
+    title: "4. DELIVERY",
+    text: "The journey is delivered according to the agreed service requirements, with attention to punctuality, professionalism and guest experience.",
+    icon: Car,
+  },
+  {
+    step: "05",
+    title: "5. OVERSIGHT",
+    text: "Our team remains available to manage changes, support the journey and coordinate follow-up requirements.",
+    icon: ShieldCheck,
+  },
+];
 
 const VALUES = [
   {
@@ -164,6 +289,99 @@ export function CorporatePage() {
         </div>
       </section>
 
+      {/* Our Operating Model */}
+      <section className="border-t border-maseer-line bg-gradient-to-b from-[#FAF9F5] via-white to-[#FAF9F5] py-24 max-md:py-16">
+        <div className="page-container">
+          {/* Header */}
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-2">
+              <span className="h-0.5 w-9 bg-primary" aria-hidden />
+              <p className="font-lato text-xs font-bold uppercase tracking-[0.16em] text-primary">
+                | OUR OPERATING MODEL
+              </p>
+            </div>
+            <h2 className="mt-4 font-serif text-[40px] font-semibold leading-[1.2] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.25]">
+              Flexible capacity. Centralized coordination. <span className="text-primary">Consistent standards.</span>
+            </h2>
+            <div className="mt-6 rounded-2xl border border-maseer-line/80 bg-white p-5 shadow-soft">
+              <p className="font-lato text-xs font-bold uppercase tracking-wider text-primary mb-1">
+                How It Works
+              </p>
+              <p className="font-lato text-[15px] leading-[25px] text-maseer-green-text/90">
+                Maseer brings together client requirements and transportation capacity through a professionally coordinated operating model.
+              </p>
+            </div>
+          </div>
+
+          {/* 5 Operating Steps */}
+          <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-5">
+            {OPERATING_MODEL_STEPS.map((item) => {
+              const Icon = item.icon;
+              return (
+                <article
+                  key={item.title}
+                  className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-maseer-line/90 bg-white p-6 shadow-soft transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/60 hover:shadow-card"
+                >
+                  <div>
+                    {/* Step badge & icon */}
+                    <div className="flex items-center justify-between mb-5">
+                      <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-maseer-surface font-lato text-xs font-bold text-maseer-green-text border border-maseer-line transition-colors duration-300 group-hover:bg-primary group-hover:text-maseer-green-deep group-hover:border-primary">
+                        {item.step}
+                      </span>
+                      <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors duration-300 group-hover:bg-primary/20">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                    </div>
+
+                    {/* Step Title */}
+                    <h3 className="font-lato text-[15px] font-bold tracking-wide text-maseer-green-text transition-colors group-hover:text-primary">
+                      {item.title}
+                    </h3>
+
+                    {/* Step Description */}
+                    <p className="mt-2.5 font-lato text-[13px] leading-[22px] text-maseer-muted">
+                      {item.text}
+                    </p>
+                  </div>
+
+                  {/* Step Accent Bar */}
+                  <div className="mt-5 pt-3 border-t border-maseer-line/50 flex items-center justify-between text-maseer-muted/60 text-[11px] font-lato font-medium">
+                    <span>Phase {item.step}</span>
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+
+          {/* The Advantage Banner */}
+          <div className="relative mt-10 overflow-hidden rounded-3xl bg-maseer-green-deep p-8 md:p-10 text-white shadow-card">
+            <div className="absolute -right-20 -top-20 h-60 w-60 rounded-full bg-primary/15 blur-3xl pointer-events-none" />
+            <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="max-w-3xl">
+                <div className="flex items-center gap-2">
+                  <span className="h-0.5 w-7 bg-primary" aria-hidden />
+                  <p className="font-lato text-xs font-bold uppercase tracking-[0.16em] text-primary">
+                    The Advantage
+                  </p>
+                </div>
+                <p className="mt-3 font-serif text-[20px] md:text-[23px] font-medium leading-[34px] text-white">
+                  Clients gain access to a scalable transportation capability without having to build and manage an entire transportation operation themselves.
+                </p>
+              </div>
+              <div className="shrink-0">
+                <div className="inline-flex items-center gap-2 rounded-2xl border border-white/15 bg-white/10 px-5 py-3.5 backdrop-blur-md">
+                  <ShieldCheck className="h-5 w-5 text-primary" />
+                  <span className="font-lato text-xs font-bold uppercase tracking-wider text-white">
+                    Centralized Control
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="bg-[#f5f5f0] py-[88px] max-md:py-12">
         <div className="page-container grid items-center gap-[97px] lg:grid-cols-2 max-md:gap-10">
           <GoldOffsetImage
@@ -188,6 +406,179 @@ export function CorporatePage() {
               innovation, premium tourism experiences, sustainable mobility, and
               world-class hospitality services.
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Partnership Opportunities */}
+      <section className="relative border-t border-maseer-line bg-gradient-to-b from-white via-[#FAF9F5] to-white py-24 max-md:py-16 overflow-hidden">
+        {/* Ambient Top Glow */}
+        <div className="absolute right-1/4 -top-24 h-64 w-96 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+
+        <div className="page-container relative z-10">
+          {/* Header */}
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-2">
+              <span className="h-0.5 w-9 bg-primary" aria-hidden />
+              <p className="font-lato text-xs font-bold uppercase tracking-[0.16em] text-primary">
+                | PARTNERSHIP OPPORTUNITIES
+              </p>
+            </div>
+            <h2 className="mt-4 font-serif text-[40px] font-semibold leading-[1.2] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.25]">
+              Build the journey <span className="text-primary">with us.</span>
+            </h2>
+          </div>
+
+          {/* 6 Opportunity Cards (3 cols x 2 rows) */}
+          <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {PARTNERSHIP_OPPORTUNITIES.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <article
+                  key={item.title}
+                  className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-maseer-line/90 bg-white p-7 shadow-soft transition-all duration-300 hover:-translate-y-2 hover:border-primary/60 hover:shadow-card"
+                >
+                  {/* Watermark Numeral */}
+                  <span className="pointer-events-none absolute -right-2 -top-3 select-none font-serif text-[56px] font-extrabold text-maseer-green/[0.04] transition-colors duration-300 group-hover:text-primary/10">
+                    0{index + 1}
+                  </span>
+
+                  <div>
+                    {/* Header with Icon */}
+                    <div className="flex items-center justify-between mb-5">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-maseer-surface text-maseer-green-text border border-maseer-line transition-all duration-300 group-hover:bg-primary group-hover:text-maseer-green-deep group-hover:border-primary group-hover:shadow-sm">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <span className="font-lato text-xs font-semibold text-maseer-muted/50 group-hover:text-primary transition-colors">
+                        0{index + 1}
+                      </span>
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="font-lato text-[17px] font-bold text-maseer-green-text transition-colors group-hover:text-primary">
+                      {item.title}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="mt-3 font-lato text-[13.5px] leading-[23px] text-maseer-muted">
+                      {item.text}
+                    </p>
+                  </div>
+
+                  {/* Bottom Accent Line */}
+                  <div className="mt-6 pt-3 border-t border-maseer-line/60 flex items-center justify-between text-[11.5px] font-lato font-medium text-maseer-muted/60">
+                    <span className="group-hover:text-maseer-green-text transition-colors">
+                      Explore Collaboration
+                    </span>
+                    <span className="h-1.5 w-1.5 rounded-full bg-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Partnership Journey */}
+      <section className="relative overflow-hidden bg-maseer-green-deep py-24 max-md:py-16 text-white">
+        {/* Ambient Luxury Glows */}
+        <div className="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-primary/10 blur-[120px] pointer-events-none" />
+        <div className="absolute -right-24 -bottom-24 h-96 w-96 rounded-full bg-maseer-gold/10 blur-[120px] pointer-events-none" />
+
+        <div className="page-container relative z-10">
+          <div className="grid items-start gap-12 lg:grid-cols-12 max-md:gap-10">
+            {/* Left Column: Sticky Executive Authority Block */}
+            <div className="lg:col-span-5 lg:sticky lg:top-28">
+              <div className="flex items-center gap-2">
+                <span className="h-0.5 w-9 bg-primary" aria-hidden />
+                <p className="font-lato text-xs font-bold uppercase tracking-[0.16em] text-primary">
+                  | PARTNERSHIP JOURNEY
+                </p>
+              </div>
+              <h2 className="mt-4 font-serif text-[42px] font-semibold leading-[1.18] text-white max-md:text-[28px] max-md:leading-[1.25]">
+                A structured approach to <span className="text-primary block mt-1">long-term collaboration.</span>
+              </h2>
+
+              {/* Interactive Stage Tracker Card */}
+              <div className="mt-8 rounded-3xl border border-white/15 bg-white/[0.04] p-6 backdrop-blur-md shadow-card">
+                <div className="flex items-center justify-between border-b border-white/10 pb-4">
+                  <span className="font-lato text-xs font-bold uppercase tracking-wider text-primary">
+                    6-Phase Framework
+                  </span>
+                  <span className="flex items-center gap-1.5 font-lato text-[11px] font-medium text-white/70">
+                    <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+                    End-to-End Execution
+                  </span>
+                </div>
+
+                <div className="mt-4 space-y-2">
+                  {PARTNERSHIP_JOURNEY.map((item, i) => (
+                    <div
+                      key={item.stepNum}
+                      className="flex items-center justify-between rounded-xl px-3 py-2 text-xs font-lato transition-colors hover:bg-white/[0.06]"
+                    >
+                      <span className="text-white/80 font-medium">
+                        {item.title}
+                      </span>
+                      <span className="font-bold text-primary text-[11px]">
+                        0{i + 1}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-6 pt-4 border-t border-white/10">
+                  <Link
+                    to="/contact"
+                    className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 font-lato text-xs font-bold uppercase tracking-wider text-maseer-green-deep shadow-md transition-all duration-300 hover:bg-primary/90 hover:shadow-lg"
+                  >
+                    <span>Start the Conversation</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: 6-Step Connected Timeline Rail */}
+            <div className="relative lg:col-span-7">
+              {/* Continuous Vertical Gold Line */}
+              <div className="absolute left-[27px] top-6 bottom-6 w-0.5 bg-gradient-to-b from-primary via-primary/50 to-primary/20 max-md:left-[21px]" />
+
+              <div className="space-y-6">
+                {PARTNERSHIP_JOURNEY.map((item) => {
+                  const Icon = item.icon;
+                  return (
+                    <article
+                      key={item.title}
+                      className="group relative flex items-start gap-5 rounded-2xl border border-white/10 bg-white/[0.04] p-6 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:bg-white/[0.08] hover:shadow-card max-md:p-5"
+                    >
+                      {/* Connected Number Milestone Node */}
+                      <div className="relative z-10 flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border-2 border-primary bg-maseer-green-deep shadow-glow transition-all duration-300 group-hover:scale-105 group-hover:bg-primary group-hover:text-maseer-green-deep max-md:h-11 max-md:w-11">
+                        <span className="font-serif text-sm font-bold text-primary group-hover:text-maseer-green-deep">
+                          {item.stepNum}
+                        </span>
+                      </div>
+
+                      {/* Content Area */}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center justify-between mb-2">
+                          <h3 className="font-lato text-[17px] font-bold text-white transition-colors group-hover:text-primary max-md:text-[15.5px]">
+                            {item.title}
+                          </h3>
+                          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
+                            <Icon className="h-4 w-4" />
+                          </div>
+                        </div>
+
+                        <p className="font-lato text-[13.5px] leading-[23px] text-white/70 max-md:text-[13px]">
+                          {item.text}
+                        </p>
+                      </div>
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
           </div>
         </div>
       </section>

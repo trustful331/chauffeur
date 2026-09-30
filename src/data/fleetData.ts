@@ -17,10 +17,8 @@ export const FLEET_GRID_CATEGORIES = [
   "All Vehicles",
   "Economy & Executive Sedans",
   "Business-Class Sedans",
-  "First-Class Sedans",
   "Premium SUVs",
   "Luxury & Ultra-Luxury Vehicles",
-  "Vans & Minivans",
   "Coasters & Buses",
   "Electric Mobility",
 ] as const;
@@ -39,7 +37,7 @@ export type FleetVehicle = {
   fuel: string;
   features: string[];
   image: string;
-  gridTags: FleetGridCategory[];
+  gridTags: FleetCategory[];
   isNew?: boolean;
   availabilityNote?: string;
 };
@@ -76,17 +74,17 @@ export const FLEET_CATEGORY_BACKEND_MAP: Record<
 export const FLEET_CATEGORY_LABEL_BY_API: Record<string, Exclude<FleetCategory, "All Vehicles">> = {
   economy_executive_sedans: "Economy & Executive Sedans",
   business_class_sedans: "Business-Class Sedans",
-  first_class_sedans: "First-Class Sedans",
+  first_class_sedans: "Luxury & Ultra-Luxury Vehicles",
   premium_suvs: "Premium SUVs",
   luxury_ultra_luxury: "Luxury & Ultra-Luxury Vehicles",
-  vans_minivans: "Vans & Minivans",
+  vans_minivans: "Coasters & Buses",
   coasters_buses: "Coasters & Buses",
   electric_mobility: "Electric Mobility",
   // legacy (pre-migration)
   economy_class: "Economy & Executive Sedans",
-  vip_business_class: "First-Class Sedans",
-  ultra_luxury: "Premium SUVs",
-  business_van: "Vans & Minivans",
+  vip_business_class: "Luxury & Ultra-Luxury Vehicles",
+  ultra_luxury: "Luxury & Ultra-Luxury Vehicles",
+  business_van: "Coasters & Buses",
   green_class: "Electric Mobility",
 };
 

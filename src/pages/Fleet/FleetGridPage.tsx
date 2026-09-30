@@ -28,6 +28,7 @@ import {
   FleetFilterBar,
   FleetHero,
   FleetStandards,
+  FleetSafetyQuality,
 } from "./FleetShared";
 import { Link, useNavigate } from "react-router-dom";
 import { Pencil } from "lucide-react";
@@ -311,6 +312,7 @@ export function FleetGridPage() {
       </section>
 
       <FleetStandards />
+      <FleetSafetyQuality />
       <FleetCta buttonLabel="Book a Ride" />
     </div>
   );

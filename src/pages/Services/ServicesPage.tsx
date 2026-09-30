@@ -304,7 +304,13 @@ const JOURNEY_STEPS = [
     title: "Confirm & Relax",
     text: "Receive booking confirmation; chauffeur details will be shared before pickup.",
   },
-] as const;
+  {
+    n: "4",
+    title: "Ride & Track on Mobile",
+    text: "Manage bookings, track your chauffeur in real-time, and get live updates directly on your device.",
+    hasAppLinks: true,
+  },
+];
 
 function CoverageCard({
   title,
@@ -593,19 +599,72 @@ export function ServicesPage() {
                 Our seamless booking process ensures you spend less time
                 planning and more time enjoying the ride.
               </p>
-              <ol className="mt-10 space-y-10">
+              <ol className="mt-10 space-y-7">
                 {JOURNEY_STEPS.map((step) => (
                   <li key={step.n} className="flex gap-4">
                     <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-maseer-gold font-lato text-base font-semibold text-maseer-gold">
                       {step.n}
                     </span>
-                    <div>
+                    <div className="flex-1">
                       <h3 className="font-lato text-base font-bold text-maseer-green-text">
                         {step.title}
                       </h3>
-                      <p className="mt-2 max-w-[420px] font-lato text-[13px] leading-[20px] text-maseer-muted">
+                      <p className="mt-1.5 max-w-[420px] font-lato text-[13px] leading-[20px] text-maseer-muted">
                         {step.text}
                       </p>
+                      {"hasAppLinks" in step && step.hasAppLinks && (
+                        <div className="mt-3.5 flex flex-wrap items-center gap-3">
+                          {/* iOS App Store Button */}
+                          <a
+                            href="https://apps.apple.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="Download on the App Store"
+                            className="inline-flex items-center gap-2.5 rounded-xl bg-maseer-green-deep px-3.5 py-2 text-white shadow-sm transition-all duration-300 hover:bg-maseer-green hover:shadow-md"
+                          >
+                            <svg
+                              className="h-5 w-5 fill-current"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M15.97 6.37c.62-.75 1.04-1.8 0.92-2.85-.9.04-1.98.6-2.62 1.34-.56.65-.99 1.7-0.86 2.73.99.08 2.01-.52 2.56-1.22z" />
+                            </svg>
+                            <div className="text-left font-lato leading-tight">
+                              <span className="block text-[8.5px] uppercase tracking-wider text-white/70">
+                                Download on the
+                              </span>
+                              <span className="block text-[12px] font-bold">
+                                App Store
+                              </span>
+                            </div>
+                          </a>
+
+                          {/* Android Google Play Button */}
+                          <a
+                            href="https://play.google.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label="Get it on Google Play"
+                            className="inline-flex items-center gap-2.5 rounded-xl bg-maseer-green-deep px-3.5 py-2 text-white shadow-sm transition-all duration-300 hover:bg-maseer-green hover:shadow-md"
+                          >
+                            <svg
+                              className="h-5 w-5 fill-current"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path d="M3.609 1.814L13.793 12 3.61 22.186a1.99 1.99 0 0 1-.22-.916V2.73c0-.34.08-.654.219-.916zm10.89 10.89l2.316 2.315-11.45 6.467 9.134-8.782zm0-1.408L5.365 2.512l11.45 6.467-2.316 2.317zm1.414.704l2.793 1.576a1.99 1.99 0 0 0 0-3.152l-2.793 1.576z" />
+                            </svg>
+                            <div className="text-left font-lato leading-tight">
+                              <span className="block text-[8.5px] uppercase tracking-wider text-white/70">
+                                Get it on
+                              </span>
+                              <span className="block text-[12px] font-bold">
+                                Google Play
+                              </span>
+                            </div>
+                          </a>
+                        </div>
+                      )}
                     </div>
                   </li>
                 ))}

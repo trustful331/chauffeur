@@ -1,6 +1,99 @@
 import { images } from "../../assets/images";
 import { HeroBackground } from "../../ui/HeroBackground";
 import { GoldOffsetImage } from "../../ui/GoldOffsetImage";
+import {
+  Crown,
+  Sparkles,
+  Briefcase,
+  Calendar,
+  Compass,
+  Users,
+  MapPin,
+  Car,
+  Hotel,
+  Globe,
+  Building2,
+  Landmark,
+  Handshake,
+  UserCheck,
+  Layers,
+  ShieldCheck,
+  Clock,
+  Heart,
+  Search,
+  SlidersHorizontal,
+  CheckCircle2,
+  Navigation,
+  TrendingUp,
+  ArrowRight,
+  Info,
+} from "lucide-react";
+
+const KEY_FACTS = [
+  {
+    value: "2020",
+    label: "Founded",
+    icon: Calendar,
+  },
+  {
+    value: "50+",
+    label: "Premium vehicles",
+    icon: Car,
+  },
+  {
+    value: "500+",
+    label: "Events served",
+    icon: Sparkles,
+  },
+  {
+    value: "24/7",
+    label: "Availability",
+    icon: Clock,
+  },
+  {
+    value: "100%",
+    label: "Satisfaction rate",
+    icon: Heart,
+  },
+  {
+    value: "KSA",
+    label: "Kingdom-wide operating capability",
+    icon: Globe,
+  },
+];
+
+const HOW_WE_WORK = [
+  {
+    step: "01",
+    title: "DISCOVER",
+    text: "We understand your requirements, guest profile, travel patterns, locations and service expectations.",
+    icon: Search,
+  },
+  {
+    step: "02",
+    title: "DESIGN",
+    text: "We create the appropriate transportation solution, vehicle mix and operating plan.",
+    icon: SlidersHorizontal,
+  },
+  {
+    step: "03",
+    title: "CONFIRM",
+    text: "We agree the scope, commercial terms, service standards and booking process.",
+    icon: CheckCircle2,
+  },
+  {
+    step: "04",
+    title: "DELIVER",
+    text: "Our operations coordinate the journey and manage the service delivery.",
+    icon: Navigation,
+  },
+  {
+    step: "05",
+    title: "DEVELOP",
+    text: "We review performance, identify opportunities and build a stronger long-term partnership.",
+    icon: TrendingUp,
+  },
+];
 
 const STATS = [
   {
@@ -105,65 +198,132 @@ const STATS = [
   },
 ];
 
-const VALUES = [
+const WHY_MASEER = [
   {
-    title: "Safety First",
-    text: "We prioritize the safety and security of our passengers and drivers above everything else.",
-    icon: (
-      <svg
-        width="35"
-        height="41"
-        viewBox="0 0 35 41"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M34.36 10.9607L34.3588 10.9293C34.3412 10.5412 34.3295 10.1307 34.3224 9.67396C34.2895 7.44658 32.5188 5.60414 30.2911 5.47962C25.6465 5.22042 22.0535 3.70591 18.9835 0.713568L18.9573 0.688603C17.9559 -0.229534 16.4454 -0.229534 15.4437 0.688603L15.4175 0.713568C12.3475 3.70591 8.7545 5.22042 4.10988 5.47993C1.88249 5.60414 0.111555 7.44658 0.0785775 9.67427C0.071797 10.1279 0.059777 10.5385 0.0422095 10.9293L0.0403603 11.0023C-0.0499433 15.7385 -0.162129 21.6329 1.80976 26.983C2.89401 29.9251 4.53612 32.4825 6.69016 34.5848C9.14345 36.9789 12.3568 38.8796 16.2408 40.2339C16.3671 40.2779 16.4984 40.3137 16.6322 40.3405C16.8208 40.3781 17.0107 40.3969 17.2005 40.3969C17.3904 40.3969 17.5805 40.3781 17.7688 40.3405C17.9026 40.3137 18.0348 40.2776 18.1618 40.2332C22.0411 38.8765 25.2511 36.9749 27.7022 34.5811C29.8553 32.4782 31.4974 29.9201 32.5826 26.9774C34.5619 21.6113 34.45 15.7058 34.36 10.9607Z"
-          fill="#002703"
-        />
-      </svg>
-    ),
+    title: "Kingdom-Wide Reach",
+    text: "A flexible operating capability designed to support transportation requirements across Saudi Arabia.",
+    icon: MapPin,
   },
   {
-    title: "Customer Focus",
-    text: "Every decision we make is centered around delivering exceptional customer experiences.",
-    icon: (
-      <svg
-        width="40"
-        height="36"
-        viewBox="0 0 40 36"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M29.375 0C27.2045 0 25.2145 0.687812 23.4604 2.04437C21.7787 3.34492 20.6591 5.00141 20 6.20594C19.3409 5.00133 18.2213 3.34492 16.5396 2.04437C14.7855 0.687812 12.7955 0 10.625 0C4.56781 0 0 4.95445 0 11.5245C0 18.6225 5.69867 23.4788 14.3257 30.8306C15.7907 32.0791 17.4513 33.4943 19.1772 35.0036C19.4047 35.2028 19.6969 35.3125 20 35.3125C20.3031 35.3125 20.5953 35.2028 20.8228 35.0037C22.5489 33.4941 24.2094 32.0791 25.6752 30.8298C34.3013 23.4788 40 18.6225 40 11.5245C40 4.95445 35.4322 0 29.375 0Z"
-          fill="#002703"
-        />
-      </svg>
-    ),
+    title: "Premium Vehicle Access",
+    text: "A curated range of vehicles across economy, business, first-class, ultra-luxury, SUV, van and group transportation categories.",
+    icon: Car,
   },
   {
-    title: "Reliability",
-    text: "Dependable service you can count on, day or night.",
-    icon: (
-      <svg width="21" height="42" viewBox="0 0 21 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M20.8 17.3337H13.8668V0L0 24.2674H6.93316V41.6L20.8 17.3337Z" fill="#002703" />
-      </svg>
+    title: "Professional Chauffeur Experience",
+    text: "Service delivered with professionalism, punctuality, discretion and hospitality.",
+    icon: UserCheck,
+  },
+  {
+    title: "Scalable Capacity",
+    text: "Solutions designed for individual journeys, recurring corporate requirements and large-scale events.",
+    icon: Layers,
+  },
+  {
+    title: "One Accountable Partner",
+    text: "A single point of coordination for transportation planning and execution.",
+    icon: ShieldCheck,
+  },
+  {
+    title: "Flexible Partnership Model",
+    text: "We work with clients, hotels, travel businesses, event companies and vehicle partners to build mutually valuable relationships.",
+    icon: Handshake,
+  },
+  {
+    title: "24/7 Availability",
+    text: "Transportation support is available around the clock for planned and time-sensitive requirements.",
+    icon: Clock,
+  },
+  {
+    title: "Hospitality Mindset",
+    text: "Our service is built around the experience of the guest, not simply the movement of the vehicle.",
+    icon: Heart,
+  },
+];
 
-    ),
+const WHAT_WE_DO = [
+  {
+    title: "EXECUTIVE MOBILITY",
+    text: "Professional chauffeur-driven transportation for executives, VIPs, business travelers and distinguished guests.",
+    icon: Crown,
   },
   {
-    title: "Innovation",
-    text: "Continuously improving our technology and services to better serve our community.",
-    icon: (
-      <svg width="28" height="41" viewBox="0 0 28 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M19.4775 14.8956L17.1569 17.2162C18.4506 19.7186 16.5257 22.8414 13.6958 22.8036C11.5638 22.8036 9.82932 21.0691 9.82932 18.9371C9.79175 16.1074 12.9143 14.1821 15.4167 15.4761L18.0977 12.795C18.3284 12.5642 18.6414 12.4345 18.9678 12.4345H27.3915C25.4846 -4.15091 1.90086 -4.13877 0 12.4345H7.91419L10.2348 10.1139C8.94107 7.61159 10.866 4.48877 13.6959 4.52659C15.8279 4.52659 17.5624 6.26108 17.5624 8.39303C17.5999 11.2227 14.4774 13.1481 11.975 11.854L9.29397 14.5351C9.0633 14.7658 8.75026 14.8955 8.42394 14.8955H0.00090249C0.311068 18.3329 1.91046 21.5395 4.49802 23.8375C5.90717 25.1401 6.82126 26.8904 7.10149 28.7693C7.10452 28.7689 20.2856 28.7689 20.2902 28.7693C20.5703 26.8908 21.4844 25.1403 22.8938 23.8375C25.4813 21.5396 27.0808 18.3329 27.3909 14.8955H19.4775V14.8956Z" fill="#002703" />
-        <path d="M7.19531 32.6358C7.19531 35.8005 9.46836 38.4429 12.4673 39.0199C12.345 40.9264 15.0511 40.9253 14.9283 39.0199C17.9272 38.4429 20.2003 35.8005 20.2003 32.6358V31.2302H7.19531V32.6358Z" fill="#002703" />
-        <path d="M15.0987 8.39307C15.0987 7.61812 14.4682 6.98755 13.6932 6.98755C11.8312 7.05826 11.8317 9.72813 13.6932 9.7986C14.4682 9.79851 15.0987 9.16802 15.0987 8.39307Z" fill="#002703" />
-        <path d="M12.2891 18.9372C12.2891 19.7121 12.9196 20.3427 13.6946 20.3427C15.5566 20.272 15.5561 17.6021 13.6946 17.5317C12.9196 17.5317 12.2891 18.1622 12.2891 18.9372Z" fill="#002703" />
-      </svg>
+    title: "HOSPITALITY TRANSPORTATION",
+    text: "Transportation solutions designed to complement the standards of hotels, resorts, residences and hospitality operators.",
+    icon: Sparkles,
+  },
+  {
+    title: "CORPORATE MOBILITY",
+    text: "Reliable transportation for executives, employees, clients, delegations and business travel programmes.",
+    icon: Briefcase,
+  },
+  {
+    title: "EVENTS & MICE",
+    text: "Planned, coordinated and scalable transportation for conferences, exhibitions, incentives, meetings and VIP occasions.",
+    icon: Calendar,
+  },
+  {
+    title: "TRAVEL & TOURISM TRANSPORTATION",
+    text: "Ground transportation support for travel agencies, tour operators, DMCs and tourism businesses.",
+    icon: Compass,
+  },
+  {
+    title: "GROUP & SHUTTLE TRANSPORTATION",
+    text: "Coordinated movement for groups, staff, guests and delegates using suitable vehicles and operational planning.",
+    icon: Users,
+  },
+  {
+    title: "INTERCITY MOBILITY",
+    text: "Comfortable and professionally managed transportation between destinations across the Kingdom.",
+    icon: MapPin,
+  },
+  {
+    title: "PARTNER & FLEET SOLUTIONS",
+    text: "A structured channel for vehicle owners and fleet operators to connect their vehicles with premium transportation demand.",
+    icon: Car,
+  },
+];
 
-    ),
+const INDUSTRIES_WE_SERVE = [
+  {
+    title: "Hotels & Hospitality",
+    text: "Enhance the guest experience with premium airport transfers, executive mobility, concierge transportation and white-label service options.",
+    icon: Hotel,
+  },
+  {
+    title: "Travel Agencies & Tour Operators",
+    text: "Extend your travel product with dependable ground transportation, premium vehicles and professionally coordinated chauffeur services.",
+    icon: Globe,
+  },
+  {
+    title: "Destination Management Companies",
+    text: "Support inbound programmes, VIP movements, tours, delegations and multi-city itineraries across the Kingdom.",
+    icon: Compass,
+  },
+  {
+    title: "Corporations & Multinational Companies",
+    text: "Simplify business travel with reliable executive transportation, corporate billing and scalable mobility support.",
+    icon: Building2,
+  },
+  {
+    title: "Events & MICE Companies",
+    text: "Move guests, speakers, executives and delegations with coordinated transportation built around the event programme.",
+    icon: Calendar,
+  },
+  {
+    title: "Government & Institutional Delegations",
+    text: "Support high-standard movements with professional coordination, discretion and appropriate vehicle solutions.",
+    icon: Landmark,
+  },
+  {
+    title: "Tourism & Experience Companies",
+    text: "Add dependable mobility to premium experiences, excursions and destination programmes.",
+    icon: Sparkles,
+  },
+  {
+    title: "Vehicle Owners & Fleet Operators",
+    text: "Connect suitable vehicles with premium transportation demand through a structured vendor partnership model.",
+    icon: Handshake,
   },
 ];
 
@@ -192,7 +352,7 @@ export function AboutPage() {
         </div>
       </section>
 
-      <section className="border-b border-[#f0f0f0] bg-white py-[72px] max-md:py-12">
+      {/* <section className="border-b border-[#f0f0f0] bg-white py-[72px] max-md:py-12">
         <div className="page-container grid grid-cols-4 gap-8 max-md:grid-cols-2">
           {STATS.map((stat) => (
             <article key={stat.label} className="text-center">
@@ -206,9 +366,50 @@ export function AboutPage() {
             </article>
           ))}
         </div>
+      </section> */}
+
+      {/* What We Do */}
+      <section className="border-b border-maseer-line bg-gradient-to-b from-[#FAF9F5] to-white py-20 max-md:py-14">
+        <div className="page-container">
+          {/* Header */}
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-2">
+              <span className="h-0.5 w-9 bg-primary" aria-hidden />
+              <p className="font-lato text-xs font-bold uppercase tracking-[0.14em] text-primary">
+                | WHAT WE DO
+              </p>
+            </div>
+            <h2 className="mt-4 font-serif text-[40px] font-semibold leading-[1.2] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.25]">
+              From one journey to a <span className="text-primary">complete transportation programme.</span>
+            </h2>
+          </div>
+
+          {/* 8 Pillar Cards Grid */}
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {WHAT_WE_DO.map((item) => {
+              const Icon = item.icon;
+              return (
+                <article
+                  key={item.title}
+                  className="rounded-2xl border border-maseer-line/80 bg-white p-7 shadow-soft transition-all duration-300 hover:border-primary/50 hover:shadow-md flex flex-col justify-start"
+                >
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-maseer-surface text-maseer-green mb-5">
+                    <Icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <h3 className="font-lato text-[14.5px] font-bold tracking-wider text-maseer-green-text">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2.5 font-lato text-[13px] leading-[21px] text-maseer-muted">
+                    {item.text}
+                  </p>
+                </article>
+              );
+            })}
+          </div>
+        </div>
       </section>
 
-      <section className="bg-[#f5f5f5] py-[88px] max-md:py-12">
+      {/* <section className="bg-[#f5f5f5] py-[88px] max-md:py-12">
         <div className="page-container grid items-center gap-[97px] lg:grid-cols-2 max-md:gap-10">
           <div className="relative">
             <GoldOffsetImage
@@ -245,23 +446,424 @@ export function AboutPage() {
             </p>
           </div>
         </div>
+      </section> */}
+
+      {/* Industries We Serve */}
+      <section className="relative overflow-hidden bg-maseer-green-deep py-24 max-md:py-16 text-white">
+        {/* Ambient Luxury Glows */}
+        <div className="absolute -left-24 -top-24 h-96 w-96 rounded-full bg-primary/10 blur-[110px] pointer-events-none" />
+        <div className="absolute -right-24 -bottom-24 h-96 w-96 rounded-full bg-maseer-gold/10 blur-[110px] pointer-events-none" />
+
+        <div className="page-container relative z-10">
+          {/* Header */}
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-2">
+              <span className="h-0.5 w-9 bg-primary" aria-hidden />
+              <p className="font-lato text-xs font-bold uppercase tracking-[0.14em] text-primary">
+                | INDUSTRIES WE SERVE
+              </p>
+            </div>
+            <h2 className="mt-4 font-serif text-[40px] font-semibold leading-[1.2] text-white max-md:text-[28px] max-md:leading-[1.25]">
+              Transportation designed around the way <span className="text-primary">your business operates.</span>
+            </h2>
+          </div>
+
+          {/* 8 Industry Cards Grid */}
+          <div className="mt-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {INDUSTRIES_WE_SERVE.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <article
+                  key={item.title}
+                  className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] p-7 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/50 hover:bg-white/[0.08] hover:shadow-float flex flex-col justify-start"
+                >
+                  <div className="flex items-center justify-between mb-5">
+                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/15 text-primary transition-colors duration-300 group-hover:bg-primary group-hover:text-maseer-green-deep">
+                      <Icon className="h-5 w-5" />
+                    </div>
+                    <span className="font-lato text-xs font-semibold text-white/30 group-hover:text-primary transition-colors">
+                      0{index + 1}
+                    </span>
+                  </div>
+                  <h3 className="font-lato text-[16px] font-bold text-white group-hover:text-primary transition-colors">
+                    {item.title}
+                  </h3>
+                  <p className="mt-2.5 font-lato text-[13px] leading-[22px] text-white/70">
+                    {item.text}
+                  </p>
+                </article>
+              );
+            })}
+          </div>
+        </div>
       </section>
 
-      <section className="bg-white py-[88px] max-md:py-12">
-        <div className="page-container grid grid-cols-4 gap-8 max-md:grid-cols-1">
-          {VALUES.map((item) => (
-            <article key={item.title} className="text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center">
-                {item.icon}
-              </div>
-              <h3 className="mt-5 text-lg font-bold text-maseer-green">
-                {item.title}
-              </h3>
-              <p className="mx-auto mt-3 max-w-[220px] text-[13px] leading-5 text-maseer-muted">
-                {item.text}
+      {/* Why Maseer */}
+      <section className="border-t border-maseer-line bg-gradient-to-b from-white to-[#FAF9F5] py-20 max-md:py-14">
+        <div className="page-container">
+          {/* Header */}
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-2">
+              <span className="h-0.5 w-9 bg-primary" aria-hidden />
+              <p className="font-lato text-xs font-bold uppercase tracking-[0.14em] text-primary">
+                | WHY MASEER
               </p>
-            </article>
-          ))}
+            </div>
+            <h2 className="mt-4 font-serif text-[40px] font-semibold leading-[1.2] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.25]">
+              The difference is <span className="text-primary">in the details.</span>
+            </h2>
+          </div>
+
+          {/* 2-Column Horizontal Cards (4 rows x 2 columns) */}
+          <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6">
+            {WHY_MASEER.map((item) => {
+              const Icon = item.icon;
+              return (
+                <article
+                  key={item.title}
+                  className="flex items-start gap-5 rounded-2xl border border-maseer-line/80 bg-white p-6 shadow-soft transition-all duration-300 hover:border-primary/50 hover:shadow-md"
+                >
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-maseer-surface text-primary shadow-sm">
+                    <Icon className="h-6 w-6 text-primary" />
+                  </div>
+                  <div>
+                    <h3 className="font-lato text-[16px] font-bold text-maseer-green-text">
+                      {item.title}
+                    </h3>
+                    <p className="mt-1.5 font-lato text-[13.5px] leading-[22px] text-maseer-muted">
+                      {item.text}
+                    </p>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Saudi Arabia Coverage */}
+      <section className="border-t border-maseer-line bg-[#FAF9F5] py-20 max-md:py-14">
+        <div className="page-container">
+          {/* Header */}
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-2">
+              <span className="h-0.5 w-9 bg-primary" aria-hidden />
+              <p className="font-lato text-xs font-bold uppercase tracking-[0.14em] text-primary">
+                | SAUDI ARABIA COVERAGE
+              </p>
+            </div>
+            <p className="mt-2 font-lato text-xs font-semibold text-maseer-green uppercase tracking-wider">
+              One Kingdom. One chauffeur transportation partner.
+            </p>
+            <h2 className="mt-3 font-serif text-[40px] font-semibold leading-[1.2] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.25]">
+              FROM THE CITY TO THE <span className="text-primary">DESTINATION.</span>
+            </h2>
+          </div>
+
+          <div className="mt-10 grid items-start gap-10 lg:grid-cols-2 max-md:gap-8">
+            {/* Left Narrative Column */}
+            <div>
+              <p className="font-lato text-[15.5px] leading-[28px] text-maseer-green-text/85">
+                Maseer is built to support transportation requirements across Saudi Arabia. Our network-based operating model enables us to coordinate premium chauffeur chauffeur and transportation solutions across the Kingdom, subject to vehicle and operational availability.
+              </p>
+
+              {/* Hub Badges */}
+              <div className="mt-8">
+                <p className="font-lato text-xs font-bold uppercase tracking-wider text-maseer-muted mb-3.5">
+                  Key Hubs & Destinations
+                </p>
+                <div className="flex flex-wrap gap-2.5">
+                  {[
+                    "Riyadh",
+                    "Jeddah",
+                    "Makkah",
+                    "Madinah",
+                    "AlUla",
+                    "Dammam",
+                    "Khobar",
+                    "Kingdom-Wide",
+                  ].map((city) => (
+                    <span
+                      key={city}
+                      className="inline-flex items-center gap-2 rounded-xl border border-maseer-line bg-white px-4 py-2.5 font-lato text-xs font-semibold text-maseer-green-text shadow-soft"
+                    >
+                      <span className="h-2 w-2 rounded-full bg-primary" />
+                      {city}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Coverage Statement Card */}
+              <div className="mt-8 rounded-2xl border border-maseer-line bg-white p-6 shadow-soft">
+                <div className="flex items-center gap-2 border-b border-maseer-line pb-3">
+                  <span className="h-0.5 w-6 bg-primary" aria-hidden />
+                  <p className="font-lato text-xs font-bold uppercase tracking-[0.12em] text-primary">
+                    Coverage Statement
+                  </p>
+                </div>
+                <p className="mt-3.5 font-serif text-[18px] font-medium leading-relaxed text-maseer-green-text">
+                  Riyadh • Jeddah • Makkah • Madinah • AlUla • Dammam • Khobar • and destinations across Saudi Arabia
+                </p>
+              </div>
+            </div>
+
+            {/* Right Map Showcase Card */}
+            <div className="relative overflow-hidden rounded-3xl bg-maseer-green-deep p-8 text-white shadow-card min-h-[420px] flex flex-col justify-between">
+              {/* Ambient Glows */}
+              <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/15 blur-3xl pointer-events-none" />
+              <div className="absolute -bottom-20 -left-20 h-64 w-64 rounded-full bg-maseer-gold/15 blur-3xl pointer-events-none" />
+
+              <div className="relative z-10 flex items-center justify-between border-b border-white/15 pb-4">
+                <span className="font-lato text-xs font-bold uppercase tracking-[0.14em] text-primary">
+                  Kingdom-Wide Operations
+                </span>
+                <span className="rounded-full bg-white/10 px-3 py-1 font-lato text-[11px] font-medium text-white/80">
+                  Saudi Arabia Network
+                </span>
+              </div>
+
+              {/* Stylized Constellation Map of KSA */}
+              <div className="relative z-10 my-8 flex items-center justify-center">
+                <div className="relative h-[220px] w-full max-w-[360px]">
+                  {/* Subtle Grid Background */}
+                  <div className="absolute inset-0 rounded-2xl border border-dashed border-white/10 bg-white/[0.02]" />
+
+                  {/* SVG Routes */}
+                  <svg className="absolute inset-0 h-full w-full" viewBox="0 0 360 220" fill="none">
+                    {/* Route Lines between major hubs */}
+                    <path
+                      d="M 80,65 L 105,95 L 115,140 L 190,110 L 270,95 L 285,105"
+                      stroke="rgba(249, 187, 0, 0.4)"
+                      strokeWidth="1.5"
+                      strokeDasharray="4 4"
+                    />
+                    <path
+                      d="M 190,110 L 105,95"
+                      stroke="rgba(249, 187, 0, 0.3)"
+                      strokeWidth="1.5"
+                      strokeDasharray="3 3"
+                    />
+                    <path
+                      d="M 190,110 L 115,140"
+                      stroke="rgba(249, 187, 0, 0.3)"
+                      strokeWidth="1.5"
+                      strokeDasharray="3 3"
+                    />
+                  </svg>
+
+                  {/* AlUla */}
+                  <div className="absolute left-[70px] top-[50px] -translate-x-1/2 -translate-y-1/2 text-center group cursor-default">
+                    <span className="relative flex h-3 w-3 mx-auto">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
+                    </span>
+                    <span className="mt-1 block font-lato text-[10.5px] font-bold text-white/90">AlUla</span>
+                  </div>
+
+                  {/* Madinah */}
+                  <div className="absolute left-[105px] top-[90px] -translate-x-1/2 -translate-y-1/2 text-center group cursor-default">
+                    <span className="relative flex h-3 w-3 mx-auto">
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
+                    </span>
+                    <span className="mt-1 block font-lato text-[10.5px] font-bold text-white/90">Madinah</span>
+                  </div>
+
+                  {/* Jeddah & Makkah */}
+                  <div className="absolute left-[110px] top-[140px] -translate-x-1/2 -translate-y-1/2 text-center group cursor-default">
+                    <span className="relative flex h-3.5 w-3.5 mx-auto">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75" />
+                      <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-primary" />
+                    </span>
+                    <span className="mt-1 block font-lato text-[10.5px] font-bold text-white">Jeddah / Makkah</span>
+                  </div>
+
+                  {/* Riyadh (Capital / Central Hub) */}
+                  <div className="absolute left-[190px] top-[105px] -translate-x-1/2 -translate-y-1/2 text-center group cursor-default">
+                    <span className="relative flex h-4 w-4 mx-auto">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-80" />
+                      <span className="relative inline-flex rounded-full h-4 w-4 bg-primary border-2 border-maseer-green-deep shadow-glow" />
+                    </span>
+                    <span className="mt-1 block font-lato text-[11px] font-extrabold text-primary">Riyadh</span>
+                  </div>
+
+                  {/* Dammam & Khobar */}
+                  <div className="absolute left-[275px] top-[95px] -translate-x-1/2 -translate-y-1/2 text-center group cursor-default">
+                    <span className="relative flex h-3 w-3 mx-auto">
+                      <span className="relative inline-flex rounded-full h-3 w-3 bg-primary" />
+                    </span>
+                    <span className="mt-1 block font-lato text-[10.5px] font-bold text-white">Dammam / Khobar</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Quote Badge */}
+              <div className="relative z-10 rounded-2xl bg-white/10 backdrop-blur-md p-4 border border-white/15 text-center">
+                <p className="font-serif text-[15px] font-normal leading-relaxed text-white/95 italic">
+                  “Premium chauffeur chauffeur and transportation solutions across the Kingdom.”
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* How We Work */}
+      <section className="relative border-t border-maseer-line bg-gradient-to-b from-[#FBFBFA] via-white to-[#F7F6F1] py-24 max-md:py-16 overflow-hidden">
+        {/* Subtle Decorative Background Matrix */}
+        <div className="absolute inset-0 bg-[radial-gradient(#062111_1px,transparent_1px)] [background-size:24px_24px] opacity-[0.03] pointer-events-none" />
+        
+        <div className="page-container relative z-10">
+          {/* Header Area with Top Badge */}
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 pb-4">
+            <div className="max-w-2xl">
+              <div className="flex items-center gap-2">
+                <span className="h-0.5 w-9 bg-primary" aria-hidden />
+                <p className="font-lato text-xs font-bold uppercase tracking-[0.16em] text-primary">
+                  | HOW WE WORK
+                </p>
+              </div>
+              <h2 className="mt-4 font-serif text-[42px] font-semibold leading-[1.18] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.25]">
+                Simple for the client. <span className="text-primary block md:inline">Precise behind the scenes.</span>
+              </h2>
+            </div>
+            
+            <div className="hidden lg:flex items-center gap-2 rounded-full border border-maseer-line bg-white/80 px-4 py-2 backdrop-blur-sm shadow-soft">
+              <span className="h-2 w-2 rounded-full bg-primary animate-pulse" />
+              <span className="font-lato text-xs font-semibold text-maseer-green-text">5-Stage Operational Framework</span>
+            </div>
+          </div>
+
+          {/* Stepper Progression Rail (Visible on Desktop) */}
+          <div className="relative mt-14 hidden lg:block">
+            {/* Connecting Track Line */}
+            <div className="absolute top-6 left-[6%] right-[6%] h-0.5 bg-gradient-to-r from-primary/30 via-primary to-primary/30 z-0" />
+            
+            {/* 5 Milestone Nodes along the Track */}
+            <div className="relative z-10 grid grid-cols-5 text-center">
+              {HOW_WE_WORK.map((item, index) => (
+                <div key={item.step} className="flex flex-col items-center">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-primary bg-white text-maseer-green-deep shadow-md font-serif text-sm font-bold transition-all duration-300 hover:scale-110 hover:bg-primary hover:text-white">
+                    {item.step}
+                  </div>
+                  <span className="mt-2 font-lato text-[11px] font-bold uppercase tracking-wider text-maseer-muted">
+                    Step {index + 1}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* 5 Cards Grid */}
+          <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-5">
+            {HOW_WE_WORK.map((item, index) => {
+              const Icon = item.icon;
+              return (
+                <article
+                  key={item.title}
+                  className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-maseer-line/90 bg-white p-6 shadow-soft transition-all duration-300 hover:-translate-y-2 hover:border-primary/80 hover:shadow-float"
+                >
+                  {/* Top Ambient Highlight Band */}
+                  <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-primary/60 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  
+                  {/* Giant Ambient Watermark Number in background */}
+                  <span className="pointer-events-none absolute -right-2 -top-3 select-none font-serif text-[64px] font-extrabold text-maseer-green/[0.04] transition-colors duration-300 group-hover:text-primary/10">
+                    {item.step}
+                  </span>
+
+                  <div>
+                    {/* Header: Icon & Mobile Step Badge */}
+                    <div className="flex items-center justify-between mb-5">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-maseer-surface text-maseer-green-text border border-maseer-line transition-all duration-300 group-hover:bg-primary group-hover:text-maseer-green-deep group-hover:border-primary group-hover:shadow-sm">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <span className="lg:hidden rounded-full bg-maseer-surface border border-maseer-line px-2.5 py-0.5 font-lato text-[11px] font-bold text-primary">
+                        Phase {item.step}
+                      </span>
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="font-lato text-[15.5px] font-bold tracking-wide text-maseer-green-text transition-colors group-hover:text-primary">
+                      {index + 1}. {item.title}
+                    </h3>
+
+                    {/* Exact Text */}
+                    <p className="mt-3 font-lato text-[13px] leading-[22px] text-maseer-muted">
+                      {item.text}
+                    </p>
+                  </div>
+
+                  {/* Bottom Flow Direction Indicator */}
+                  <div className="mt-6 flex items-center justify-between border-t border-maseer-line/60 pt-3 text-[11.5px] font-lato font-medium text-maseer-muted/70">
+                    <span className="group-hover:text-maseer-green-text transition-colors">
+                      {index === 4 ? "Partnership" : "Next Phase"}
+                    </span>
+                    <ArrowRight className="h-3.5 w-3.5 text-primary opacity-60 transition-all duration-300 group-hover:translate-x-1 group-hover:opacity-100" />
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Key Facts */}
+      <section className="relative border-t border-maseer-line bg-white py-24 max-md:py-16 overflow-hidden">
+        {/* Ambient Top Glow */}
+        <div className="absolute left-1/2 -top-24 h-64 w-[600px] -translate-x-1/2 rounded-full bg-primary/5 blur-3xl pointer-events-none" />
+
+        <div className="page-container relative z-10">
+          {/* Header */}
+          <div className="max-w-3xl">
+            <div className="flex items-center gap-2">
+              <span className="h-0.5 w-9 bg-primary" aria-hidden />
+              <p className="font-lato text-xs font-bold uppercase tracking-[0.16em] text-primary">
+                | KEY FACTS
+              </p>
+            </div>
+            <h2 className="mt-4 font-serif text-[42px] font-semibold leading-[1.18] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.25]">
+              The numbers behind the <span className="text-primary">Maseer proposition.</span>
+            </h2>
+          </div>
+
+          {/* 6 Key Facts Cards Grid */}
+          <div className="mt-14 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6 lg:gap-5">
+            {KEY_FACTS.map((item) => {
+              const Icon = item.icon;
+              return (
+                <article
+                  key={item.label}
+                  className="group relative flex flex-col justify-between rounded-2xl border border-maseer-line/90 bg-gradient-to-b from-white to-[#FAF9F5] p-6 shadow-soft transition-all duration-300 hover:-translate-y-2 hover:border-primary/60 hover:shadow-float text-center"
+                >
+                  <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-maseer-surface text-primary border border-maseer-line transition-all duration-300 group-hover:bg-primary group-hover:text-maseer-green-deep group-hover:border-primary">
+                    <Icon className="h-5 w-5" />
+                  </div>
+                  <p className="mt-4 font-serif text-[34px] font-bold leading-none tracking-tight text-maseer-green-text transition-colors group-hover:text-primary">
+                    {item.value}
+                  </p>
+                  <p className="mt-2.5 font-lato text-[13px] font-medium leading-[18px] text-maseer-muted">
+                    {item.label}
+                  </p>
+                  <div className="mt-4 mx-auto h-0.5 w-6 rounded-full bg-primary/30 transition-all duration-300 group-hover:w-12 group-hover:bg-primary" />
+                </article>
+              );
+            })}
+          </div>
+
+          {/* Important Internal Note */}
+          <div className="mt-12 rounded-2xl border border-maseer-line/80 bg-[#FAF9F5] p-5 md:p-6 shadow-soft flex items-start gap-4">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/15 text-primary">
+              <Info className="h-4 w-4" />
+            </div>
+            <div>
+              <p className="font-lato text-xs font-bold uppercase tracking-[0.14em] text-maseer-green-text">
+                Important Internal Note
+              </p>
+              <p className="mt-1 font-lato text-[13px] leading-relaxed text-maseer-muted">
+                Before final publication, verify that all numerical claims are current, documented and approved for external corporate communications.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
     </div>

@@ -21,10 +21,8 @@ import { ImageUpload } from "src/ui/ImageUpload";
 const CATEGORY_MAP = {
   economy_executive_sedans: "Economy & Executive Sedans",
   business_class_sedans: "Business-Class Sedans",
-  first_class_sedans: "First-Class Sedans",
   premium_suvs: "Premium SUVs",
   luxury_ultra_luxury: "Luxury & Ultra-Luxury Vehicles",
-  vans_minivans: "Vans & Minivans",
   coasters_buses: "Coasters & Buses",
   electric_mobility: "Electric Mobility",
 } as const;

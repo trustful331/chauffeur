@@ -65,10 +65,8 @@ const BOOKING_TABS: BookingTab[] = [
 const FLEET_CLASS_OPTIONS = [
   "Economy & Executive Sedans",
   "Business-Class Sedans",
-  "First-Class Sedans",
   "Premium SUVs",
   "Luxury & Ultra-Luxury Vehicles",
-  "Vans & Minivans",
   "Coasters & Buses",
   "Electric Mobility",
 ];

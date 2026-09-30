@@ -268,10 +268,8 @@ export function AdminBookingPage() {
             <option value="all">All Classes</option>
             <option value="economy_executive_sedans">Economy & Executive Sedans</option>
             <option value="business_class_sedans">Business-Class Sedans</option>
-            <option value="first_class_sedans">First-Class Sedans</option>
             <option value="premium_suvs">Premium SUVs</option>
             <option value="luxury_ultra_luxury">Luxury & Ultra-Luxury Vehicles</option>
-            <option value="vans_minivans">Vans & Minivans</option>
             <option value="coasters_buses">Coasters & Buses</option>
             <option value="electric_mobility">Electric Mobility</option>
           </select>

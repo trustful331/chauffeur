@@ -8,7 +8,12 @@ import {
   type VehicleBodyType,
   type FleetVehicle,
 } from "../../../data/fleetData";
-import { FleetCta, FleetHero, FleetStandards } from "../FleetShared";
+import {
+  FleetCta,
+  FleetHero,
+  FleetStandards,
+  FleetSafetyQuality,
+} from "../FleetShared";
 import { BookingModal } from "../../../ui/BookingModal";
 import { fetchFleetById, fetchFleets, type FleetItem } from "src/api/admin/fleet";
 import { fetchFleetDetails, type FleetDetailItem } from "src/api/admin/fleetDetail";
@@ -643,6 +648,7 @@ export function FleetDetailsPage() {
       </section>
 
       <FleetStandards />
+      <FleetSafetyQuality />
       <FleetCta buttonLabel="Book a Ride" />
 
       <BookingModal

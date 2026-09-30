@@ -13,6 +13,7 @@ import {
   FleetFilterBar,
   FleetHero,
   FleetStandards,
+  FleetSafetyQuality,
 } from "./FleetShared";
 import { fetchFleets } from "src/api/admin/fleet";
 
@@ -164,6 +165,7 @@ export function FleetPage() {
       </section>
 
       <FleetStandards />
+      <FleetSafetyQuality />
       <FleetCta buttonLabel="Book a Ride" />
 
       <BookingModal
