@@ -36,7 +36,6 @@ import {
   UserCheck,
   Car,
   Building2,
-  ArrowRight,
 } from "lucide-react";
 import { useAppSelector } from "src/store/hooks";
 import { selectAuthUser } from "src/store/slices/auth/selectors";

@@ -3,22 +3,13 @@ import {
   Plus,
   Trash2,
   Edit3,
-  Wifi,
   User,
   Briefcase,
   CheckCircle2,
   AlertCircle,
   Car,
   RefreshCw,
-  Droplets,
-  Snowflake,
-  Music,
-  UserCheck,
-  Zap,
-  Camera,
-  Tv,
   Info,
-  ScrollText
 } from "lucide-react";
 import {
   fetchFleets,
