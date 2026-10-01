@@ -15,6 +15,10 @@ import {
   Tv,
   User,
   Luggage,
+  Armchair,
+  Eye,
+  Sun,
+  Leaf,
 } from "lucide-react";
 import {
   FLEET_GRID_CATEGORIES,
@@ -53,30 +57,41 @@ function getFeatureIcon(feature: string) {
   if (feat.includes("wifi") || feat.includes("hotspot")) {
     return <Wifi className={className} />;
   }
+  if (feat.includes("tissue") || feat.includes("napkin")) {
+    return <Sparkles className={className} />;
+  }
   if (
-    feat.includes("climate") ||
-    feat.includes("seats") ||
-    feat.includes("heated") ||
-    feat.includes("ventilated")
+    feat.includes("usb") ||
+    feat.includes("charg") ||
+    feat.includes("power") ||
+    feat.includes("port")
   ) {
-    return <Snowflake className={className} />;
+    return <Zap className={className} />;
+  }
+  if (
+    feat.includes("leather") ||
+    feat.includes("massage") ||
+    feat.includes("seat")
+  ) {
+    return <Armchair className={className} />;
   }
   if (
     feat.includes("privacy") ||
-    feat.includes("safety") ||
-    feat.includes("awd") ||
-    feat.includes("shield") ||
-    feat.includes("glass")
+    feat.includes("glass") ||
+    feat.includes("eye")
   ) {
-    return <Shield className={className} />;
+    return <Eye className={className} />;
   }
   if (
-    feat.includes("sound") ||
-    feat.includes("audio") ||
-    feat.includes("music") ||
-    feat.includes("premium sound")
+    feat.includes("ambient") ||
+    feat.includes("lighting") ||
+    feat.includes("sun") ||
+    feat.includes("light")
   ) {
-    return <Music className={className} />;
+    return <Sun className={className} />;
+  }
+  if (feat.includes("riyadh") || feat.includes("leaf")) {
+    return <Leaf className={className} />;
   }
   if (
     feat.includes("water") ||
@@ -84,6 +99,28 @@ function getFeatureIcon(feature: string) {
     feat.includes("mineral")
   ) {
     return <Droplets className={className} />;
+  }
+  if (
+    feat.includes("climate") ||
+    feat.includes("heated") ||
+    feat.includes("ventilated") ||
+    feat.includes("ac")
+  ) {
+    return <Snowflake className={className} />;
+  }
+  if (
+    feat.includes("safety") ||
+    feat.includes("awd") ||
+    feat.includes("shield")
+  ) {
+    return <Shield className={className} />;
+  }
+  if (
+    feat.includes("sound") ||
+    feat.includes("audio") ||
+    feat.includes("music")
+  ) {
+    return <Music className={className} />;
   }
   if (
     feat.includes("chauffeur") ||
@@ -100,14 +137,6 @@ function getFeatureIcon(feature: string) {
     return <Briefcase className={className} />;
   }
   if (
-    feat.includes("charging") ||
-    feat.includes("ports") ||
-    feat.includes("power") ||
-    feat.includes("usb")
-  ) {
-    return <Zap className={className} />;
-  }
-  if (
     feat.includes("camera") ||
     feat.includes("vision") ||
     feat.includes("360")
@@ -115,17 +144,10 @@ function getFeatureIcon(feature: string) {
     return <Camera className={className} />;
   }
   if (
-    feat.includes("lighting") ||
-    feat.includes("led") ||
-    feat.includes("ambient") ||
-    feat.includes("mood")
-  ) {
-    return <Sparkles className={className} />;
-  }
-  if (
     feat.includes("tablet") ||
     feat.includes("screen") ||
-    feat.includes("device")
+    feat.includes("device") ||
+    feat.includes("tv")
   ) {
     return <Tv className={className} />;
   }
@@ -177,17 +199,22 @@ function VehicleCard({ vehicle, isAdmin, onEdit }: { vehicle: FleetVehicle; isAd
               {vehicle.bagLabel}
             </span>
           </div>
-          <ul className="mt-4 space-y-2.5">
-            {vehicle.features.slice(0, 3).map((feature) => (
-              <li
-                key={feature}
-                className="flex items-center gap-2 font-lato text-[12px] leading-[18px] text-maseer-green-text/85"
-              >
-                {getFeatureIcon(feature)}
-                {feature}
-              </li>
-            ))}
-          </ul>
+          {/* 2-by-2 Amenities Grid */}
+          {vehicle.features && vehicle.features.length > 0 && (
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              {vehicle.features.map((feature) => (
+                <div
+                  key={feature}
+                  className="flex items-center gap-2 rounded-lg bg-maseer-surface/60 border border-maseer-line/60 px-2.5 py-1.5 font-lato text-[11px] font-semibold text-maseer-green-text transition hover:border-maseer-gold/50"
+                >
+                  <div className="shrink-0 flex items-center justify-center">
+                    {getFeatureIcon(feature)}
+                  </div>
+                  <span className="truncate">{feature}</span>
+                </div>
+              ))}
+            </div>
+          )}
           {vehicle.availabilityNote ? (
             <p className="mt-3 font-lato text-[11px] font-semibold uppercase tracking-wide text-maseer-gold">
               {vehicle.availabilityNote}
@@ -270,8 +297,8 @@ export function FleetGridPage() {
     if (category === "All Vehicles") {
       return liveVehicles;
     }
-    return liveVehicles.filter((v) => 
-      v.category === category || 
+    return liveVehicles.filter((v) =>
+      v.category === category ||
       (v.gridTags && v.gridTags.includes(category as FleetGridCategory))
     );
   }, [category, liveVehicles]);

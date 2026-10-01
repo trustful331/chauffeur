@@ -481,34 +481,6 @@ const hospitalityFeatures = [
   "Flexible Solutions for individuals and organizations",
 ];
 
-const fallbackFeatured = [
-  {
-    title: "Airport Transfer Service",
-    subtitle: "Enjoy professional and seamless airport transfers.",
-    image: images.services.coverage[0],
-  },
-  {
-    title: "Limousine Service",
-    subtitle: "Travel in Luxury with our VIP limousine service.",
-    image: images.services.coverage[1],
-  },
-  {
-    title: "Intercity Travel service",
-    subtitle: "Travel Between cities with comfort.",
-    image: images.services.coverage[2],
-  },
-  {
-    title: "Hire by the Hour",
-    subtitle: "Book a chauffeur-driven vehicle by the hour.",
-    image: images.services.coverage[3],
-  },
-  {
-    title: "Event Transportation",
-    subtitle: "Chauffeur service for occasions and VIP arrivals.",
-    image: images.services.coverage[4],
-  },
-];
-
 const bestFeatures = [
   {
     icon: "clock",
@@ -723,15 +695,13 @@ export function HomePage() {
     getReviews();
   }, []);
 
-  const finalFeatured = (
-    featuredCoverage.length > 0
-      ? featuredCoverage.map((item) => ({
-        title: item.title,
-        subtitle: item.description,
-        image: item.image_url || "",
-      }))
-      : fallbackFeatured
-  ).slice(0, 5);
+  const finalFeatured = featuredCoverage
+    .map((item) => ({
+      title: item.title,
+      subtitle: item.description,
+      image: item.image_url || "",
+    }))
+    .slice(0, 5);
 
   const coverageLarge = finalFeatured.slice(0, 2);
   const coverageSmall = finalFeatured.slice(2);
@@ -1388,72 +1358,82 @@ export function HomePage() {
           {dynamicSubtitle ||
             "From the door of your residence to the door of your private jet — every detail attended to. "}
         </p>
-        <div className="mt-10 space-y-3">
-          <div className="grid grid-cols-[1.55fr_1fr] gap-3 max-md:grid-cols-1">
-            {coverageLarge.map((item) => (
-              <div
-                key={item.title}
-                className="card-image h-[290px] max-md:h-[200px]"
-                style={{
-                  backgroundImage: `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.75) 100%), url(${item.image})`,
-                }}
-              >
-                {/* Admin edit button */}
-                {isAdmin && (
-                  <button
-                    type="button"
-                    aria-label={`Edit ${item.title} card`}
-                    title="Edit in admin panel"
-                    onClick={() => navigate("/admin/services")}
-                    className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+        {finalFeatured.length > 0 ? (
+          <div className="mt-10 space-y-3">
+            {coverageLarge.length > 0 && (
+              <div className="grid grid-cols-[1.55fr_1fr] gap-3 max-md:grid-cols-1">
+                {coverageLarge.map((item) => (
+                  <div
+                    key={item.title}
+                    className="card-image h-[290px] max-md:h-[200px]"
+                    style={{
+                      backgroundImage: `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.75) 100%), url(${item.image})`,
+                    }}
                   >
-                    <Pencil size={13} />
-                  </button>
-                )}
-                <div className="absolute bottom-6 left-6 text-white">
-                  <p className="font-serif text-[26px] font-medium max-md:text-lg">
-                    {item.title}
-                  </p>
-                  <p className="mt-1 text-[13px] text-white/80">
-                    {item.subtitle}
-                  </p>
-                </div>
+                    {/* Admin edit button */}
+                    {isAdmin && (
+                      <button
+                        type="button"
+                        aria-label={`Edit ${item.title} card`}
+                        title="Edit in admin panel"
+                        onClick={() => navigate("/admin/services")}
+                        className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                      >
+                        <Pencil size={13} />
+                      </button>
+                    )}
+                    <div className="absolute bottom-6 left-6 text-white">
+                      <p className="font-serif text-[26px] font-medium max-md:text-lg">
+                        {item.title}
+                      </p>
+                      <p className="mt-1 text-[13px] text-white/80">
+                        {item.subtitle}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-          <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
-            {coverageSmall.map((item) => (
-              <div
-                key={item.title}
-                className="card-image h-[240px] max-md:h-[200px]"
-                style={{
-                  backgroundImage: `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.75) 100%), url(${item.image})`,
-                }}
-              >
-                {/* Admin edit button */}
-                {isAdmin && (
-                  <button
-                    type="button"
-                    aria-label={`Edit ${item.title} card`}
-                    title="Edit in admin panel"
-                    onClick={() => navigate("/admin/services")}
-                    className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+            )}
+            {coverageSmall.length > 0 && (
+              <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
+                {coverageSmall.map((item) => (
+                  <div
+                    key={item.title}
+                    className="card-image h-[240px] max-md:h-[200px]"
+                    style={{
+                      backgroundImage: `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.75) 100%), url(${item.image})`,
+                    }}
                   >
-                    <Pencil size={13} />
-                  </button>
-                )}
-                <div className="absolute bottom-5 left-5 text-white">
-                  <p className="font-serif text-[22px] font-medium max-md:text-base">
-                    {item.title}
-                  </p>
-                  <p className="mt-1 text-[12px] text-white/80">
-                    {item.subtitle}
-                  </p>
-                </div>
+                    {/* Admin edit button */}
+                    {isAdmin && (
+                      <button
+                        type="button"
+                        aria-label={`Edit ${item.title} card`}
+                        title="Edit in admin panel"
+                        onClick={() => navigate("/admin/services")}
+                        className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                      >
+                        <Pencil size={13} />
+                      </button>
+                    )}
+                    <div className="absolute bottom-5 left-5 text-white">
+                      <p className="font-serif text-[22px] font-medium max-md:text-base">
+                        {item.title}
+                      </p>
+                      <p className="mt-1 text-[12px] text-white/80">
+                        {item.subtitle}
+                      </p>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
-        </div>
+        ) : (
+          <div className="mt-10 rounded-2xl border border-dashed border-maseer-line bg-[#FAFBF9] p-10 text-center">
+            <p className="font-lato text-sm text-maseer-muted">No featured service coverages available.</p>
+          </div>
+        )}
       </section>
       {/* Company Overview */}
       <section className="border-b border-maseer-line bg-gradient-to-b from-[#FAFBF9] to-white py-20 max-md:py-14">

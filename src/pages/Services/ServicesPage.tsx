@@ -426,18 +426,36 @@ export function ServicesPage() {
           image={images.services.hero}
           gradient="linear-gradient(90deg, rgba(7,28,11,0.88) 0%, rgba(7,18,11,0.45) 35%, rgba(7,58,11,0.15) 100%)"
         />
-        <div className="page-container relative pb-24 pt-[132px] max-md:pb-16 max-md:pt-24">
-          <p className="eyebrow text-white">EXCELLENCE IN MOTION</p>
-          <h1 className="mt-4 max-w-[640px] font-serif text-figma-hero font-semibold text-white max-md:text-[32px] max-md:leading-[1.15]">
-            Tailored Travel Solutions
+        <div className="page-container relative pb-24 pt-[115px] max-md:pb-16 max-md:pt-20">
+          <div className="mb-4">
+            <img
+              src={images.logo}
+              alt="Maseer"
+              className="h-16 w-auto object-contain md:h-20 drop-shadow-md"
+            />
+          </div>
+
+          <h1 className="max-w-[680px] font-serif text-figma-hero font-semibold text-white max-md:text-[30px] max-md:leading-[1.15]">
+            Premium Chauffeur and Mobility services
           </h1>
-          <p className="mt-5 max-w-[520px] text-figma-body text-white/85">
+
+          <div className="my-4 flex items-center gap-3">
+            <span className="h-[1.5px] w-24 bg-maseer-gold/90" />
+            <span className="h-1.5 w-1.5 rounded-full bg-maseer-gold" />
+            <span className="h-[1.5px] w-24 bg-maseer-gold/90" />
+          </div>
+
+          <p className="font-serif text-[20px] italic text-maseer-gold max-md:text-[17px]">
+            Luxury in Motion. Confidence at Every Arrival
+          </p>
+
+          <p className="mt-4 max-w-[540px] text-figma-body text-white/85">
             We specialize in airport transfers, executive transportation,
             city-to-city travel, chauffeur services, and customized mobility
             solutions for corporates, hotels, travel management companies, event
             organizers, and VIP guests.
           </p>
-          <div className="mt-9 flex flex-wrap items-center gap-4">
+          <div className="mt-8 flex flex-wrap items-center gap-4">
             <Link to="/booking" className="btn-gold min-w-[180px]">
               Book a Ride
             </Link>

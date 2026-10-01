@@ -1,15 +1,15 @@
 import { useEffect, useState } from "react";
-import { 
-  Plus, 
-  Trash2, 
-  Edit3, 
-  Wifi, 
-  User, 
-  Briefcase, 
-  CheckCircle2, 
-  AlertCircle, 
-  Car, 
-  RefreshCw, 
+import {
+  Plus,
+  Trash2,
+  Edit3,
+  Wifi,
+  User,
+  Briefcase,
+  CheckCircle2,
+  AlertCircle,
+  Car,
+  RefreshCw,
   Droplets,
   Snowflake,
   Music,
@@ -17,20 +17,21 @@ import {
   Zap,
   Camera,
   Tv,
-  Info
+  Info,
+  ScrollText
 } from "lucide-react";
-import { 
-  fetchFleets, 
-  createFleet, 
-  updateFleet, 
-  deleteFleet, 
-  type FleetItem, 
-  type FleetParams 
+import {
+  fetchFleets,
+  createFleet,
+  updateFleet,
+  deleteFleet,
+  type FleetItem,
+  type FleetParams
 } from "src/api/admin/fleet";
 import { FLEET_VEHICLES, FLEET_CATEGORY_BACKEND_MAP } from "src/data/fleetData";
 import { Spinner } from "src/ui/Spinner";
 import { ConfirmModal } from "src/ui/ConfirmModal";
-import { AdminFleetModal } from "./AdminFleetModal";
+import { AdminFleetModal, getAmenityIcon } from "./AdminFleetModal";
 import { AdminFleetDetailModal } from "./AdminFleetDetailModal";
 
 // Map backend categories to approved website labels
@@ -58,7 +59,7 @@ const TYPES = Object.entries(TYPE_MAP) as [keyof typeof TYPE_MAP, string][];
 const FALLBACK_FLEET: FleetItem[] = FLEET_VEHICLES.map((v, index) => {
   const catKey = (FLEET_CATEGORY_BACKEND_MAP[v.category] ||
     "economy_executive_sedans") as FleetItem["category"];
-  
+
   let typeKey: FleetItem["vehicle_type"] = "sedan";
   if (v.bodyType === "SUV") typeKey = "suv";
   else if (v.bodyType === "VAN" || v.bodyType === "BUS") typeKey = "van";
@@ -75,6 +76,7 @@ const FALLBACK_FLEET: FleetItem[] = FLEET_VEHICLES.map((v, index) => {
       let icon = "info";
       if (f.toLowerCase().includes("wifi") || f.toLowerCase().includes("hotspot")) icon = "wifi";
       else if (f.toLowerCase().includes("water") || f.toLowerCase().includes("drink")) icon = "droplet";
+      else if (f.toLowerCase().includes("tissue") || f.toLowerCase().includes("napkin")) icon = "tissue";
       else if (f.toLowerCase().includes("seats") || f.toLowerCase().includes("heated")) icon = "snowflake";
       else if (f.toLowerCase().includes("sound") || f.toLowerCase().includes("audio")) icon = "music";
       else if (f.toLowerCase().includes("chauffeur") || f.toLowerCase().includes("driver")) icon = "user-check";
@@ -88,29 +90,6 @@ const FALLBACK_FLEET: FleetItem[] = FLEET_VEHICLES.map((v, index) => {
   };
 });
 
-function getAmenityIcon(iconKey: string) {
-  const className = "h-3.5 w-3.5 shrink-0 text-maseer-gold";
-  switch (iconKey) {
-    case "wifi":
-      return <Wifi className={className} />;
-    case "droplet":
-      return <Droplets className={className} />;
-    case "snowflake":
-      return <Snowflake className={className} />;
-    case "music":
-      return <Music className={className} />;
-    case "user-check":
-      return <UserCheck className={className} />;
-    case "zap":
-      return <Zap className={className} />;
-    case "camera":
-      return <Camera className={className} />;
-    case "tv":
-      return <Tv className={className} />;
-    default:
-      return <Info className={className} />;
-  }
-}
 
 export function AdminFleetPage() {
   const [fleets, setFleets] = useState<FleetItem[]>([]);
@@ -286,11 +265,11 @@ export function AdminFleetPage() {
   const filteredFleets = fleets.filter((car) => {
     const matchesCategory = filterCategory === "all" || car.category === filterCategory;
     const matchesType = filterType === "all" || car.vehicle_type === filterType;
-    const matchesStatus = 
-      filterStatus === "all" || 
-      (filterStatus === "active" && car.is_active) || 
+    const matchesStatus =
+      filterStatus === "all" ||
+      (filterStatus === "active" && car.is_active) ||
       (filterStatus === "inactive" && !car.is_active);
-    
+
     return matchesCategory && matchesType && matchesStatus;
   }).sort((a, b) => a.display_order - b.display_order);
 
@@ -346,8 +325,8 @@ export function AdminFleetPage() {
               Your changes will update instantly in your local browser storage. Make sure your local or live API server is accessible to persist changes permanently.
             </div>
           </div>
-          <button 
-            onClick={loadFleetData} 
+          <button
+            onClick={loadFleetData}
             className="flex items-center gap-1.5 rounded-lg border border-yellow-300 bg-white px-3.5 py-1.5 font-lato text-xs font-bold text-yellow-800 hover:bg-yellow-100/50 transition"
           >
             <RefreshCw className="h-3.5 w-3.5" />
@@ -448,8 +427,8 @@ export function AdminFleetPage() {
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredFleets.map((car) => (
-            <article 
-              key={car.id} 
+            <article
+              key={car.id}
               className="group overflow-hidden rounded-xl border border-maseer-line bg-white shadow-soft hover:shadow-card hover:-translate-y-1 transition-all duration-300"
             >
               {/* Cover Image & Type badge */}
@@ -462,16 +441,15 @@ export function AdminFleetPage() {
                     (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=800";
                   }}
                 />
-                
+
                 {/* Vehicle Type overlay tag */}
                 <span className="absolute right-3.5 top-3.5 rounded-lg bg-black/60 px-2.5 py-1 font-lato text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-[2px]">
                   {TYPE_MAP[car.vehicle_type] || car.vehicle_type}
                 </span>
 
                 {/* Active Indicator overlay */}
-                <span className={`absolute left-3.5 top-3.5 flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-lato text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-[2px] ${
-                  car.is_active ? "bg-green-600/80" : "bg-red-600/80"
-                }`}>
+                <span className={`absolute left-3.5 top-3.5 flex items-center gap-1.5 rounded-lg px-2.5 py-1 font-lato text-[10px] font-bold uppercase tracking-wider text-white backdrop-blur-[2px] ${car.is_active ? "bg-green-600/80" : "bg-red-600/80"
+                  }`}>
                   <span className={`h-1.5 w-1.5 rounded-full bg-white ${car.is_active ? "animate-pulse" : ""}`} />
                   {car.is_active ? "Active" : "Inactive"}
                 </span>
@@ -518,7 +496,7 @@ export function AdminFleetPage() {
                   ) : (
                     <div className="flex flex-wrap gap-1.5 max-h-[70px] overflow-y-auto pr-1">
                       {car.amenities.map((item, index) => (
-                        <div 
+                        <div
                           key={index}
                           className="inline-flex items-center gap-1.5 rounded-lg bg-maseer-surface border border-maseer-line/50 px-2 py-1 font-lato text-[10px] font-semibold text-maseer-green-text"
                         >
