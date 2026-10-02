@@ -522,23 +522,11 @@ export function FleetDetailsPage() {
         </div>
 
         <div className="relative mx-auto h-[680px] max-w-[1200px] px-4 max-md:h-auto max-md:min-h-0 max-md:pb-24">
-          {/* sage-green semicircle arch background */}
-          <div
-            className="absolute bottom-[120px] left-1/2 -translate-x-1/2 max-md:hidden"
-            style={{
-              width: "992.89px",
-              height: "496.44px",
-              background: "rgba(0, 39, 3, 0.2)",
-              borderRadius: "496.44px 496.44px 0 0",
-            }}
-            aria-hidden
-          />
-
-          {/* feature badges */}
+          {/* feature badges around perimeter */}
           {currentHighlights.map((feat) => (
             <div
               key={feat.label}
-              className={`absolute ${feat.pos} z-10 flex items-center gap-2.5 max-md:hidden`}
+              className={`absolute ${feat.pos} z-20 flex items-center gap-2.5 max-md:hidden`}
             >
               {/* left side: label → icon */}
               {feat.side === "left" && (
@@ -575,19 +563,36 @@ export function FleetDetailsPage() {
             </div>
           ))}
 
-          {/* car image centered over arch */}
-          <div className="absolute bottom-[120px] left-1/2 w-[680px] -translate-x-1/2 max-md:relative max-md:bottom-auto max-md:left-auto max-md:w-full max-md:translate-x-0">
+          {/* Semicircle Arch Car Showcase Container - Exact 992.89px x 496.44px matching dimensions */}
+          <div
+            className="absolute bottom-[120px] left-1/2 -translate-x-1/2 overflow-hidden bg-white  max-md:relative max-md:bottom-auto max-md:left-auto max-md:translate-x-0 max-md:w-full max-md:max-w-[360px] max-md:h-[180px] max-md:mx-auto max-md:mt-6"
+            style={{
+              width: "992.89px",
+              height: "496.44px",
+              borderRadius: "496.44px 496.44px 0 0",
+            }}
+          >
             {current && (
               <img
-                src={(current.id === liveVehicle.id && detail?.vehicle_image_url) ? detail.vehicle_image_url : current.image}
+                src={
+                  current.id === liveVehicle.id && detail?.vehicle_image_url
+                    ? detail.vehicle_image_url
+                    : current.image
+                }
                 alt={current.name}
-                className="mx-auto h-[400px] w-[700px] object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.18)] max-md:h-[200px] max-md:w-full max-md:max-w-[340px]"
+                className="h-full w-full object-contain object-center"
+               
               />
             )}
+            {/* Subtle inner ring */}
+            <div
+              className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-maseer-gold/30"
+              style={{ borderRadius: "496.44px 496.44px 0 0" }}
+            />
           </div>
 
           {/* CTA + dots — absolute at bottom center, overlapping arch base */}
-          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-center max-md:relative max-md:bottom-auto max-md:left-auto max-md:mt-6 max-md:translate-x-0">
+          <div className="absolute bottom-5 left-1/2 -translate-x-1/2 text-center z-20 max-md:relative max-md:bottom-auto max-md:left-auto max-md:mt-6 max-md:translate-x-0">
             <button
               type="button"
               onClick={() => setBookingModalOpen(true)}

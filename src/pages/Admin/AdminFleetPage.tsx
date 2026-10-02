@@ -427,7 +427,7 @@ export function AdminFleetPage() {
                 <img
                   src={car.image_url}
                   alt={car.vehicle_name}
-                  className="h-full w-full object-cover group-hover:scale-102 transition duration-500"
+                  className="h-full w-full object-contain group-hover:scale-102 transition duration-500"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=800";
                   }}

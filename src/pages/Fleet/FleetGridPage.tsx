@@ -160,11 +160,11 @@ function VehicleCard({ vehicle, isAdmin, onEdit }: { vehicle: FleetVehicle; isAd
   return (
     <>
       <article className="overflow-hidden rounded-xl bg-white shadow-[0_4px_24px_rgba(0,0,0,0.08)] transition duration-300 hover:shadow-card">
-        <div className="relative h-[210px] bg-[#f3f4f2]">
+        <div className="relative h-[210px] ">
           <img
             src={vehicle.image}
             alt={vehicle.name}
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain"
             onError={(e) => {
               (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=800";
             }}
