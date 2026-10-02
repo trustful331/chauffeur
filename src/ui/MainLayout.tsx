@@ -254,7 +254,7 @@ export function MainLayout() {
             )}
             <button
               type="button"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-maseer-green transition hover:bg-maseer-surface md:hidden"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg text-maseer-green transition hover:bg-maseer-surface xl:hidden"
               aria-label={mobileNavOpen ? "Close menu" : "Open menu"}
               aria-expanded={mobileNavOpen}
               onClick={() => setMobileNavOpen((open) => !open)}
@@ -265,7 +265,7 @@ export function MainLayout() {
         </div>
 
         {mobileNavOpen ? (
-          <nav className="border-t border-maseer-line/60 bg-white px-4 py-4 md:hidden">
+          <nav className="border-t border-maseer-line/60 bg-white px-4 py-4 xl:hidden">
             <ul className="space-y-1">
               {navItems.map((item) => (
                 <li key={item.to}>

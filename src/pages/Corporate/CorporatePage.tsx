@@ -231,7 +231,7 @@ export function CorporatePage() {
             />
           </div>
           <p className="eyebrow">UNMATCHED LUXURY</p>
-          <h1 className="mt-3 font-serif text-figma-hero text-white max-md:text-[32px] max-md:leading-[1.15]">
+          <h1 className="mt-3 font-serif text-[30px] leading-tight text-white sm:text-[42px] lg:text-figma-hero">
             Our Mission
           </h1>
           <p className="mt-4 max-w-[560px] text-figma-body text-white/90">
@@ -243,7 +243,7 @@ export function CorporatePage() {
       </section>
 
       <section className="bg-[#f5f5f0] py-[88px] max-md:py-12">
-        <div className="page-container grid items-center gap-[97px] lg:grid-cols-2 max-md:gap-10">
+        <div className="page-container grid items-center gap-10 lg:grid-cols-2 xl:gap-[97px]">
           <div>
             <p className="eyebrow">OUR MISSION</p>
             <h2 className="mt-3 font-serif text-figma-h2 text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
@@ -279,7 +279,7 @@ export function CorporatePage() {
       </section>
 
       <section className="bg-white py-[88px] max-md:py-12">
-        <div className="page-container grid grid-cols-4 gap-8 max-md:grid-cols-1">
+        <div className="page-container grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
           {VALUES.map((item) => (
             <article key={item.title} className="text-center">
               <div className="mx-auto flex h-14 w-14 items-center justify-center">
@@ -321,7 +321,7 @@ export function CorporatePage() {
           </div>
 
           {/* 5 Operating Steps */}
-          <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-5">
+          <div className="mt-12 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-5">
             {OPERATING_MODEL_STEPS.map((item) => {
               const Icon = item.icon;
               return (
@@ -390,7 +390,7 @@ export function CorporatePage() {
       </section>
 
       <section className="bg-[#f5f5f0] py-[88px] max-md:py-12">
-        <div className="page-container grid items-center gap-[97px] lg:grid-cols-2 max-md:gap-10">
+        <div className="page-container grid items-center gap-10 lg:grid-cols-2 xl:gap-[97px]">
           <GoldOffsetImage
             src={images.corporate.sustainability}
             alt="Sustainability and corporate partnership"

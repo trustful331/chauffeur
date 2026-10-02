@@ -240,7 +240,7 @@ export function AboutPage() {
             />
           </div>
           <p className="eyebrow">UNMATCHED LUXURY</p>
-          <h1 className="mt-3 font-serif text-figma-hero text-white max-md:text-[32px] max-md:leading-[1.15]">
+          <h1 className="mt-3 font-serif text-[30px] leading-tight text-white sm:text-[42px] lg:text-figma-hero">
             About Us
           </h1>
           <p className="mt-4 max-w-[580px] text-figma-body text-white/90">
@@ -256,7 +256,7 @@ export function AboutPage() {
       </section>
 
       {/* <section className="border-b border-[#f0f0f0] bg-white py-[72px] max-md:py-12">
-        <div className="page-container grid grid-cols-4 gap-8 max-md:grid-cols-2">
+        <div className="page-container grid grid-cols-2 gap-4 sm:gap-8 lg:grid-cols-4">
           {STATS.map((stat) => (
             <article key={stat.label} className="text-center">
               <div className="mx-auto flex h-14 w-14 items-center justify-center">
@@ -313,7 +313,7 @@ export function AboutPage() {
       </section>
 
       {/* <section className="bg-[#f5f5f5] py-[88px] max-md:py-12">
-        <div className="page-container grid items-center gap-[97px] lg:grid-cols-2 max-md:gap-10">
+        <div className="page-container grid items-center gap-10 lg:grid-cols-2 xl:gap-[97px]">
           <div className="relative">
             <GoldOffsetImage
               src={images.about.hospitality}
@@ -658,7 +658,7 @@ export function AboutPage() {
           </div>
 
           {/* 5 Cards Grid */}
-          <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-5">
+          <div className="mt-8 grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-5">
             {HOW_WE_WORK.map((item, index) => {
               const Icon = item.icon;
               return (
@@ -730,7 +730,7 @@ export function AboutPage() {
           </div>
 
           {/* 6 Key Facts Cards Grid */}
-          <div className="mt-14 grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-6 lg:gap-5">
+          <div className="mt-14 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6 lg:gap-5">
             {KEY_FACTS.map((item) => {
               const Icon = item.icon;
               return (
@@ -741,7 +741,7 @@ export function AboutPage() {
                   <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-xl bg-maseer-surface text-primary border border-maseer-line transition-all duration-300 group-hover:bg-primary group-hover:text-maseer-green-deep group-hover:border-primary">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <p className="mt-4 font-serif text-[34px] font-bold leading-none tracking-tight text-maseer-green-text transition-colors group-hover:text-primary">
+                  <p className="mt-4 font-serif text-[28px] sm:text-[34px] font-bold leading-none tracking-tight text-maseer-green-text transition-colors group-hover:text-primary">
                     {item.value}
                   </p>
                   <p className="mt-2.5 font-lato text-[13px] font-medium leading-[18px] text-maseer-muted">

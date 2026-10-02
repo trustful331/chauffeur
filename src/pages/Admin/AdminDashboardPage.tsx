@@ -413,7 +413,7 @@ export function AdminDashboardPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left font-lato text-xs">
+            <table className="w-full min-w-[720px] text-left font-lato text-xs">
               <thead>
                 <tr className="border-b border-maseer-line/40 bg-maseer-cream/40 text-maseer-muted font-semibold">
                   <th className="py-3 px-4">Service</th>

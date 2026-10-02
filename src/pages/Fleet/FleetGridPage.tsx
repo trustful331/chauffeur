@@ -325,7 +325,7 @@ export function FleetGridPage() {
             <h3 className="font-serif text-[18px] font-bold text-[#1a2e1f]">No listings match criteria</h3>
           </div>
         ) : (
-          <div className="grid grid-cols-3 gap-8 max-md:grid-cols-1">
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {filteredVehicles.map((vehicle, index) => (
               <VehicleCard
                 key={`${vehicle.id}-${index}`}

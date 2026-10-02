@@ -715,7 +715,7 @@ export function BookingFormBody({
       {step === 1 && (
         <>
           {/* tabs */}
-          <div className="grid grid-cols-4 overflow-hidden border-b border-primary/30 p-8 max-md:grid-cols-2 max-md:p-4">
+          <div className="grid grid-cols-2 overflow-hidden border-b border-primary/30 p-4 sm:grid-cols-4 sm:p-8">
             {BOOKING_TABS.map((tab, index) => {
               const isActive = bookingTab === tab;
               return (
@@ -1420,11 +1420,11 @@ export function BookingModal({
       />
 
       {/* panel */}
-      <div className="relative z-10 flex flex-col h-[650px] w-full max-w-[1000px] overflow-hidden rounded-[32px] bg-white shadow-[0_24px_64px_rgba(0,0,0,0.22)] max-md:h-[88vh] max-md:rounded-2xl">
+      <div className="relative z-10 flex flex-col h-[min(650px,90vh)] w-full max-w-[1000px] overflow-hidden rounded-[32px] bg-white shadow-[0_24px_64px_rgba(0,0,0,0.22)] max-md:h-[88vh] max-md:max-w-full max-md:rounded-2xl">
         {/* fixed header */}
         <div className="flex shrink-0 items-center justify-between px-8 pb-4 pt-6 max-md:px-4 bg-white z-10">
-          <div>
-            <h2 className="font-serif text-[22px] font-semibold text-maseer-green-text">
+          <div className="min-w-0">
+            <h2 className="font-serif text-[20px] sm:text-[22px] font-semibold text-maseer-green-text truncate">
               Book a Ride
             </h2>
             {vehicleName && (

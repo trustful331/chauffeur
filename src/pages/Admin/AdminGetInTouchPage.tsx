@@ -190,7 +190,7 @@ export function AdminGetInTouchPage() {
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-[#E5E7EB] bg-white shadow-sm">
-          <table className="w-full border-collapse text-left font-lato text-sm text-[#062111]">
+          <table className="w-full min-w-[800px] border-collapse text-left font-lato text-sm text-[#062111]">
             <thead className="bg-gray-50 border-b border-[#E5E7EB] text-xs font-bold uppercase tracking-wider text-maseer-muted">
               <tr>
                 <th className="px-6 py-4">Full Name</th>

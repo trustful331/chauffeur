@@ -72,7 +72,7 @@ export function AdminBookingDetailModal({
         {/* Details List */}
         <div className="flex-1 overflow-y-auto no-scrollbar py-5 space-y-6">
           {/* Service Badge & Class */}
-          <div className="flex items-center justify-between gap-3 bg-[#F8FAF8] p-4 rounded-xl border border-gray-100">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between bg-[#F8FAF8] p-4 rounded-xl border border-gray-100">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-wider text-maseer-muted leading-tight">
                 Service Type
@@ -131,7 +131,7 @@ export function AdminBookingDetailModal({
           <hr className="border-gray-100" />
 
           {/* Booking Metadata Grid */}
-          <div className="grid grid-cols-2 gap-y-4 gap-x-6">
+          <div className="grid grid-cols-1 gap-y-4 gap-x-6 sm:grid-cols-2">
             <div className="flex items-start gap-3">
               <Calendar className="h-5 w-5 text-maseer-muted mt-0.5 shrink-0" />
               <div>

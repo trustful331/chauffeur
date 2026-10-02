@@ -563,14 +563,9 @@ export function FleetDetailsPage() {
             </div>
           ))}
 
-          {/* Semicircle Arch Car Showcase Container - Exact 992.89px x 496.44px matching dimensions */}
+          {/* Semicircle Arch Car Showcase Container */}
           <div
-            className="absolute bottom-[120px] left-1/2 -translate-x-1/2 overflow-hidden bg-white  max-md:relative max-md:bottom-auto max-md:left-auto max-md:translate-x-0 max-md:w-full max-md:max-w-[360px] max-md:h-[180px] max-md:mx-auto max-md:mt-6"
-            style={{
-              width: "992.89px",
-              height: "496.44px",
-              borderRadius: "496.44px 496.44px 0 0",
-            }}
+            className="absolute bottom-[120px] left-1/2 h-auto w-full max-w-[min(100%,993px)] aspect-[2/1] -translate-x-1/2 overflow-hidden rounded-t-full bg-white max-lg:max-w-[min(100%,640px)] max-md:relative max-md:bottom-auto max-md:left-auto max-md:mx-auto max-md:mt-6 max-md:h-[180px] max-md:max-w-[360px] max-md:translate-x-0 max-md:aspect-auto"
           >
             {current && (
               <img
