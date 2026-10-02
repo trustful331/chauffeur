@@ -52,18 +52,37 @@ import { BookingModal } from "src/ui/BookingModal";
 const SlickSlider =
   (Slider as unknown as { default?: typeof Slider }).default ?? Slider;
 
-const carouselSliderSettings = {
+const getCarouselSliderSettings = (itemCount: number) => ({
   dots: false,
   arrows: false,
   infinite: false,
   speed: 500,
-  slidesToShow: 3.15,
+  slidesToShow: Math.min(Math.max(itemCount, 1), 3.15),
   slidesToScroll: 1,
   responsive: [
-    { breakpoint: 1280, settings: { slidesToShow: 2.15, slidesToScroll: 1 } },
-    { breakpoint: 767, settings: { slidesToShow: 1, slidesToScroll: 1 } },
+    {
+      breakpoint: 1280,
+      settings: {
+        slidesToShow: Math.min(Math.max(itemCount, 1), 2.15),
+        slidesToScroll: 1,
+      },
+    },
+    {
+      breakpoint: 768,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+      },
+    },
+    {
+      breakpoint: 480,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+      },
+    },
   ],
-};
+});
 
 type BookingTab = BookingServiceTab;
 
@@ -1734,14 +1753,10 @@ export function HomePage() {
             Loading fleet...
           </div>
         ) : liveFleets.length > 0 ? (
-          <div className="fleet-carousel mt-12 w-full overflow-hidden pl-6 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] pr-0">
-            <SlickSlider
-              {...carouselSliderSettings}
-              responsive={undefined}
-              slidesToShow={Math.min(liveFleets.length, 3.15)}
-            >
+          <div className="fleet-carousel mt-12 w-full overflow-hidden px-4 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] sm:pr-0">
+            <SlickSlider {...getCarouselSliderSettings(liveFleets.length)}>
               {liveFleets.map((car, index) => (
-                <div key={`${car.id}-${index}`}>
+                <div key={`${car.id}-${index}`} className="px-1 sm:px-0">
                   <article
                     className={[
                       "h-full px-6 lg:px-8",
@@ -1985,15 +2000,11 @@ export function HomePage() {
             Loading reviews...
           </div>
         ) : finalReviews.length > 0 ? (
-          <div className="fleet-carousel mt-10 w-full overflow-hidden pl-6 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] pr-0">
-            <SlickSlider
-              {...carouselSliderSettings}
-              responsive={undefined}
-              slidesToShow={Math.min(finalReviews.length, 3.15)}
-            >
+          <div className="fleet-carousel mt-10 w-full overflow-hidden px-4 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] sm:pr-0">
+            <SlickSlider {...getCarouselSliderSettings(finalReviews.length)}>
               {finalReviews.map((r, index) => (
-                <div key={`${r.name}-${index}`} className="pr-6 pb-6">
-                  <article className="relative rounded-2xl border border-maseer-line/80 bg-white p-8 shadow-soft">
+                <div key={`${r.name}-${index}`} className="px-1 sm:px-0 sm:pr-6 pb-6">
+                  <article className="relative flex flex-col justify-between h-full rounded-2xl border border-maseer-line/80 bg-white p-5 sm:p-8 shadow-soft">
                     {/* Admin edit button */}
                     {isAdmin && (
                       <button
@@ -2006,46 +2017,49 @@ export function HomePage() {
                         <Pencil size={13} />
                       </button>
                     )}
-                    <div className="flex items-center justify-between">
-                      <div className="flex gap-1 text-primary text-[14px]">
-                        {"★".repeat(r.rating || 5)}
+                    <div>
+                      <div className="flex items-center justify-between">
+                        <div className="flex gap-1 text-primary text-[14px]">
+                          {"★".repeat(r.rating || 5)}
+                        </div>
+                        <svg
+                          width="36"
+                          height="24"
+                          viewBox="0 0 48 31"
+                          fill="none"
+                          className="text-maseer-green shrink-0"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M20.6738 0.916992V20.0439C20.6738 25.0396 15.4753 29.4403 8.62695 29.4404H4.79199V23.9336H8.62695C10.9869 23.9335 13.2803 22.3737 13.2803 20.0439V16.2588H0.916992V0.916992H20.6738Z"
+                            stroke="#002703"
+                            strokeWidth="1.83317"
+                          />
+                          <path
+                            d="M46.3223 0.916992V20.0439C46.3223 25.0396 41.1237 29.4403 34.2754 29.4404H30.4404V23.9336H34.2754C36.6353 23.9335 38.9287 22.3737 38.9287 20.0439V16.2588H26.5654V0.916992H46.3223Z"
+                            stroke="#002703"
+                            strokeWidth="1.83317"
+                          />
+                        </svg>
                       </div>
-                      <svg
-                        width="48"
-                        height="31"
-                        viewBox="0 0 48 31"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M20.6738 0.916992V20.0439C20.6738 25.0396 15.4753 29.4403 8.62695 29.4404H4.79199V23.9336H8.62695C10.9869 23.9335 13.2803 22.3737 13.2803 20.0439V16.2588H0.916992V0.916992H20.6738Z"
-                          stroke="#002703"
-                          strokeWidth="1.83317"
-                        />
-                        <path
-                          d="M46.3223 0.916992V20.0439C46.3223 25.0396 41.1237 29.4403 34.2754 29.4404H30.4404V23.9336H34.2754C36.6353 23.9335 38.9287 22.3737 38.9287 20.0439V16.2588H26.5654V0.916992H46.3223Z"
-                          stroke="#002703"
-                          strokeWidth="1.83317"
-                        />
-                      </svg>
+                      <h3 className="mt-3 font-serif text-[18px] sm:text-[20px] font-semibold leading-tight text-maseer-green-text break-words">
+                        {r.title}
+                      </h3>
+                      <p className="mt-3 font-lato text-[13px] leading-[20px] sm:leading-[22px] text-maseer-muted break-words">
+                        {r.quote}
+                      </p>
                     </div>
-                    <h3 className="mt-4 font-serif text-[20px] font-semibold leading-tight text-maseer-green-text">
-                      {r.title}
-                    </h3>
-                    <p className="mt-4 font-lato text-[13px] leading-[22px] text-maseer-muted">
-                      {r.quote}
-                    </p>
-                    <div className="mt-6 flex items-center gap-3 border-t-2 border-maseer-line/80 pt-6">
+                    <div className="mt-5 flex items-center gap-3 border-t-2 border-maseer-line/80 pt-4 sm:pt-6">
                       <img
                         src={r.avatar}
                         alt={r.name}
-                        className="h-10 w-10 rounded-full object-cover"
+                        className="h-10 w-10 shrink-0 rounded-full object-cover"
                         onError={(e) => {
                           (e.target as HTMLImageElement).src =
                             "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80";
                         }}
                       />
-                      <span className="font-lato text-[14px] font-semibold text-maseer-green-text">
+                      <span className="font-lato text-[14px] font-semibold text-maseer-green-text truncate">
                         {r.name}
                       </span>
                     </div>
