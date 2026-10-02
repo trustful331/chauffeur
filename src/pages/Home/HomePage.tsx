@@ -1,4 +1,4 @@
-import { useState, useEffect, type ReactNode } from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { fetchServiceCoverages } from "src/api/admin/serviceCoverage";
 import { fetchCustomerReviews } from "src/api/admin/customerReview";
 import { fetchFleets } from "src/api/admin/fleet";
@@ -36,6 +36,8 @@ import {
   UserCheck,
   Car,
   Building2,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { useAppSelector } from "src/store/hooks";
 import { selectAuthUser } from "src/store/slices/auth/selectors";
@@ -52,13 +54,21 @@ import { BookingModal } from "src/ui/BookingModal";
 const SlickSlider =
   (Slider as unknown as { default?: typeof Slider }).default ?? Slider;
 
-const getCarouselSliderSettings = (itemCount: number) => ({
+const getCarouselSliderSettings = (
+  itemCount: number,
+  onSlideChange?: (current: number) => void,
+) => ({
   dots: false,
   arrows: false,
   infinite: false,
   speed: 500,
   slidesToShow: Math.min(Math.max(itemCount, 1), 3.15),
   slidesToScroll: 1,
+  swipeToSlide: true,
+  touchThreshold: 15,
+  beforeChange: (_current: number, next: number) => {
+    if (onSlideChange) onSlideChange(next);
+  },
   responsive: [
     {
       breakpoint: 1280,
@@ -69,13 +79,6 @@ const getCarouselSliderSettings = (itemCount: number) => ({
     },
     {
       breakpoint: 768,
-      settings: {
-        slidesToShow: 1,
-        slidesToScroll: 1,
-      },
-    },
-    {
-      breakpoint: 480,
       settings: {
         slidesToShow: 1,
         slidesToScroll: 1,
@@ -654,6 +657,10 @@ export function HomePage() {
   const [isFleetLoading, setIsFleetLoading] = useState<boolean>(true);
   const [bookingModalOpen, setBookingModalOpen] = useState(false);
   const [modalInitialData, setModalInitialData] = useState<any>(null);
+  const fleetSliderRef = useRef<Slider | null>(null);
+  const reviewSliderRef = useRef<Slider | null>(null);
+  const [fleetSlideIndex, setFleetSlideIndex] = useState(0);
+  const [reviewSlideIndex, setReviewSlideIndex] = useState(0);
 
   useEffect(() => {
     async function getFleets() {
@@ -1720,32 +1727,57 @@ export function HomePage() {
       {/* Fleet slider */}
       <section className="overflow-hidden py-16">
         <div className="page-container">
-          <div className="mb-4 flex items-center gap-2">
-            <span className="h-0.5 w-9 bg-primary" aria-hidden />
-            <p className="font-lato text-xs font-bold uppercase tracking-[0.12em] text-primary">
-              OUR FLEET
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
-              Explore Our{" "}
-              <span className="text-maseer-gold">Exquisite Fleet</span>
-            </h2>
-            {isAdmin && (
-              <button
-                type="button"
-                title="Edit fleet in admin panel"
-                onClick={() => navigate("/admin/fleet")}
-                className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
-              >
-                <Pencil size={13} />
-              </button>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <div className="mb-4 flex items-center gap-2">
+                <span className="h-0.5 w-9 bg-primary" aria-hidden />
+                <p className="font-lato text-xs font-bold uppercase tracking-[0.12em] text-primary">
+                  OUR FLEET
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
+                  Explore Our{" "}
+                  <span className="text-maseer-gold">Exquisite Fleet</span>
+                </h2>
+                {isAdmin && (
+                  <button
+                    type="button"
+                    title="Edit fleet in admin panel"
+                    onClick={() => navigate("/admin/fleet")}
+                    className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                  >
+                    <Pencil size={13} />
+                  </button>
+                )}
+              </div>
+              <p className="mt-4 max-w-[580px] font-lato text-[14px] leading-[22px] text-maseer-green">
+                Approved chauffeur categories from executive sedans to group
+                transport and electric options where available.
+              </p>
+            </div>
+
+            {liveFleets.length > 1 && (
+              <div className="flex items-center gap-2 self-start md:self-end">
+                <button
+                  type="button"
+                  aria-label="Previous vehicle"
+                  onClick={() => fleetSliderRef.current?.slickPrev()}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-maseer-line bg-white text-maseer-green shadow-soft transition-all duration-200 hover:border-maseer-gold hover:bg-maseer-gold hover:text-white active:scale-95"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next vehicle"
+                  onClick={() => fleetSliderRef.current?.slickNext()}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-maseer-line bg-white text-maseer-green shadow-soft transition-all duration-200 hover:border-maseer-gold hover:bg-maseer-gold hover:text-white active:scale-95"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
             )}
           </div>
-          <p className="mt-4 max-w-[580px] font-lato text-[14px] leading-[22px] text-maseer-green">
-            Approved chauffeur categories from executive sedans to group
-            transport and electric options where available.
-          </p>
         </div>
 
         {isFleetLoading ? (
@@ -1753,43 +1785,68 @@ export function HomePage() {
             Loading fleet...
           </div>
         ) : liveFleets.length > 0 ? (
-          <div className="fleet-carousel mt-12 w-full overflow-hidden px-4 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] sm:pr-0">
-            <SlickSlider {...getCarouselSliderSettings(liveFleets.length)}>
-              {liveFleets.map((car, index) => (
-                <div key={`${car.id}-${index}`} className="px-1 sm:px-0">
-                  <article
-                    className={[
-                      "h-full px-6 lg:px-8",
-                      index > 0 ? "border-l border-maseer-gold/55" : "",
-                    ].join(" ")}
-                  >
-                    <img
-                      src={car.image}
-                      alt={car.name}
-                      className="mx-auto h-[200px] w-full max-w-[340px] object-contain"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).src =
-                          "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=800";
-                      }}
-                    />
-                    <p className="mt-8 font-lato text-[10px] font-bold uppercase tracking-[0.14em] text-maseer-muted">
-                      {car.category} • {car.seats} GUESTS
-                    </p>
-                    <div className="mt-3 flex items-end justify-between gap-4">
-                      <h3 className="font-serif text-[16px] font-medium leading-tight text-maseer-green-text">
-                        {car.name}
-                      </h3>
-                      <Link
-                        to={`/fleet/${car.id}`}
-                        className="link-arrow shrink-0 whitespace-nowrap pb-1"
-                      >
-                        View Details <span aria-hidden>↗</span>
-                      </Link>
-                    </div>
-                  </article>
-                </div>
-              ))}
-            </SlickSlider>
+          <div className="mt-10 sm:mt-12">
+            <div className="fleet-carousel w-full overflow-hidden px-4 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] sm:pr-0">
+              <SlickSlider
+                ref={fleetSliderRef}
+                {...getCarouselSliderSettings(liveFleets.length, (idx) =>
+                  setFleetSlideIndex(idx),
+                )}
+              >
+                {liveFleets.map((car, index) => (
+                  <div key={`${car.id}-${index}`} className="px-1.5 sm:px-0">
+                    <article
+                      className={[
+                        "h-full rounded-2xl bg-white sm:bg-transparent border border-maseer-line/80 sm:border-0 sm:border-l sm:border-maseer-gold/55 p-5 sm:p-0 sm:px-6 lg:px-8 shadow-soft sm:shadow-none transition-all duration-300",
+                        index === 0 ? "sm:border-l-0" : "",
+                      ].join(" ")}
+                    >
+                      <img
+                        src={car.image}
+                        alt={car.name}
+                        className="mx-auto h-[190px] sm:h-[200px] w-full max-w-[340px] object-contain transition-transform duration-300 hover:scale-105"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).src =
+                            "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=800";
+                        }}
+                      />
+                      <p className="mt-6 sm:mt-8 font-lato text-[11px] sm:text-[10px] font-bold uppercase tracking-[0.14em] text-maseer-muted">
+                        {car.category} • {car.seats} GUESTS
+                      </p>
+                      <div className="mt-3 flex items-end justify-between gap-4">
+                        <h3 className="font-serif text-[18px] sm:text-[16px] font-medium leading-tight text-maseer-green-text">
+                          {car.name}
+                        </h3>
+                        <Link
+                          to={`/fleet/${car.id}`}
+                          className="link-arrow shrink-0 whitespace-nowrap pb-1"
+                        >
+                          View Details <span aria-hidden>↗</span>
+                        </Link>
+                      </div>
+                    </article>
+                  </div>
+                ))}
+              </SlickSlider>
+            </div>
+
+            {liveFleets.length > 1 && (
+              <div className="mt-6 flex items-center justify-center gap-2 sm:hidden">
+                {liveFleets.map((car, idx) => (
+                  <button
+                    key={`fleet-dot-${car.id || idx}`}
+                    type="button"
+                    aria-label={`Go to vehicle ${idx + 1}`}
+                    onClick={() => fleetSliderRef.current?.slickGoTo(idx)}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      fleetSlideIndex === idx
+                        ? "w-7 bg-maseer-gold"
+                        : "w-2 bg-maseer-green/20 hover:bg-maseer-green/40"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         ) : (
           <div className="page-container mt-8 rounded-xl border border-dashed border-maseer-line p-8 text-center">
@@ -1960,39 +2017,64 @@ export function HomePage() {
       {/* Reviews */}
       <section className="bg-maseer-surface py-16">
         <div className="page-container">
-          <div className="mb-4 flex items-center gap-2">
-            <span className="h-0.5 w-9 bg-primary" aria-hidden />
-            <p className="font-lato text-xs font-bold uppercase tracking-[0.12em] text-primary">
-              Ratings and reviews
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <GoldHeading
-              before={
-                reviewHeading
-                  ? reviewHeading.split(" ").slice(0, -1).join(" ") + " "
-                  : "What Our "
-              }
-              accent={
-                reviewHeading
-                  ? reviewHeading.split(" ").slice(-1)[0]
-                  : "Customers Say"
-              }
-            />
-            {isAdmin && (
-              <button
-                type="button"
-                title="Edit reviews in admin panel"
-                onClick={() => navigate("/admin/reviews")}
-                className="mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
-              >
-                <Pencil size={13} />
-              </button>
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+            <div>
+              <div className="mb-4 flex items-center gap-2">
+                <span className="h-0.5 w-9 bg-primary" aria-hidden />
+                <p className="font-lato text-xs font-bold uppercase tracking-[0.12em] text-primary">
+                  Ratings and reviews
+                </p>
+              </div>
+              <div className="flex items-center gap-3">
+                <GoldHeading
+                  before={
+                    reviewHeading
+                      ? reviewHeading.split(" ").slice(0, -1).join(" ") + " "
+                      : "What Our "
+                  }
+                  accent={
+                    reviewHeading
+                      ? reviewHeading.split(" ").slice(-1)[0]
+                      : "Customers Say"
+                  }
+                />
+                {isAdmin && (
+                  <button
+                    type="button"
+                    title="Edit reviews in admin panel"
+                    onClick={() => navigate("/admin/reviews")}
+                    className="mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                  >
+                    <Pencil size={13} />
+                  </button>
+                )}
+              </div>
+              <p className="mt-3 text-[14px] text-maseer-green">
+                {reviewSubtitle || "Guest feedback from recent Maseer journeys"}
+              </p>
+            </div>
+
+            {finalReviews.length > 1 && (
+              <div className="flex items-center gap-2 self-start md:self-end">
+                <button
+                  type="button"
+                  aria-label="Previous review"
+                  onClick={() => reviewSliderRef.current?.slickPrev()}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-maseer-line bg-white text-maseer-green shadow-soft transition-all duration-200 hover:border-maseer-gold hover:bg-maseer-gold hover:text-white active:scale-95"
+                >
+                  <ChevronLeft size={18} />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next review"
+                  onClick={() => reviewSliderRef.current?.slickNext()}
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-maseer-line bg-white text-maseer-green shadow-soft transition-all duration-200 hover:border-maseer-gold hover:bg-maseer-gold hover:text-white active:scale-95"
+                >
+                  <ChevronRight size={18} />
+                </button>
+              </div>
             )}
           </div>
-          <p className="mt-3 text-[14px] text-maseer-green">
-            {reviewSubtitle || "Guest feedback from recent Maseer journeys"}
-          </p>
         </div>
 
         {isReviewsLoading ? (
@@ -2000,73 +2082,98 @@ export function HomePage() {
             Loading reviews...
           </div>
         ) : finalReviews.length > 0 ? (
-          <div className="fleet-carousel mt-10 w-full overflow-hidden px-4 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] sm:pr-0">
-            <SlickSlider {...getCarouselSliderSettings(finalReviews.length)}>
-              {finalReviews.map((r, index) => (
-                <div key={`${r.name}-${index}`} className="px-1 sm:px-0 sm:pr-6 pb-6">
-                  <article className="relative flex flex-col justify-between h-full rounded-2xl border border-maseer-line/80 bg-white p-5 sm:p-8 shadow-soft">
-                    {/* Admin edit button */}
-                    {isAdmin && (
-                      <button
-                        type="button"
-                        aria-label={`Edit ${r.name} review`}
-                        title="Edit in admin panel"
-                        onClick={() => navigate("/admin/reviews")}
-                        className="absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
-                      >
-                        <Pencil size={13} />
-                      </button>
-                    )}
-                    <div>
-                      <div className="flex items-center justify-between">
-                        <div className="flex gap-1 text-primary text-[14px]">
-                          {"★".repeat(r.rating || 5)}
-                        </div>
-                        <svg
-                          width="36"
-                          height="24"
-                          viewBox="0 0 48 31"
-                          fill="none"
-                          className="text-maseer-green shrink-0"
-                          xmlns="http://www.w3.org/2000/svg"
+          <div className="mt-10">
+            <div className="fleet-carousel w-full overflow-hidden px-4 sm:pl-10 xl:pl-[116px] min-[1440px]:pl-[calc((100vw-1440px)/2+116px)] sm:pr-0">
+              <SlickSlider
+                ref={reviewSliderRef}
+                {...getCarouselSliderSettings(finalReviews.length, (idx) =>
+                  setReviewSlideIndex(idx),
+                )}
+              >
+                {finalReviews.map((r, index) => (
+                  <div key={`${r.name}-${index}`} className="px-1.5 sm:px-0 sm:pr-6 pb-6">
+                    <article className="relative flex flex-col justify-between h-full rounded-2xl border border-maseer-line/80 bg-white p-5 sm:p-8 shadow-soft transition-all duration-300">
+                      {/* Admin edit button */}
+                      {isAdmin && (
+                        <button
+                          type="button"
+                          aria-label={`Edit ${r.name} review`}
+                          title="Edit in admin panel"
+                          onClick={() => navigate("/admin/reviews")}
+                          className="absolute right-4 top-4 flex h-7 w-7 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
                         >
-                          <path
-                            d="M20.6738 0.916992V20.0439C20.6738 25.0396 15.4753 29.4403 8.62695 29.4404H4.79199V23.9336H8.62695C10.9869 23.9335 13.2803 22.3737 13.2803 20.0439V16.2588H0.916992V0.916992H20.6738Z"
-                            stroke="#002703"
-                            strokeWidth="1.83317"
-                          />
-                          <path
-                            d="M46.3223 0.916992V20.0439C46.3223 25.0396 41.1237 29.4403 34.2754 29.4404H30.4404V23.9336H34.2754C36.6353 23.9335 38.9287 22.3737 38.9287 20.0439V16.2588H26.5654V0.916992H46.3223Z"
-                            stroke="#002703"
-                            strokeWidth="1.83317"
-                          />
-                        </svg>
+                          <Pencil size={13} />
+                        </button>
+                      )}
+                      <div>
+                        <div className="flex items-center justify-between">
+                          <div className="flex gap-1 text-primary text-[14px]">
+                            {"★".repeat(r.rating || 5)}
+                          </div>
+                          <svg
+                            width="36"
+                            height="24"
+                            viewBox="0 0 48 31"
+                            fill="none"
+                            className="text-maseer-green shrink-0"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              d="M20.6738 0.916992V20.0439C20.6738 25.0396 15.4753 29.4403 8.62695 29.4404H4.79199V23.9336H8.62695C10.9869 23.9335 13.2803 22.3737 13.2803 20.0439V16.2588H0.916992V0.916992H20.6738Z"
+                              stroke="#002703"
+                              strokeWidth="1.83317"
+                            />
+                            <path
+                              d="M46.3223 0.916992V20.0439C46.3223 25.0396 41.1237 29.4403 34.2754 29.4404H30.4404V23.9336H34.2754C36.6353 23.9335 38.9287 22.3737 38.9287 20.0439V16.2588H26.5654V0.916992H46.3223Z"
+                              stroke="#002703"
+                              strokeWidth="1.83317"
+                            />
+                          </svg>
+                        </div>
+                        <h3 className="mt-3 font-serif text-[18px] sm:text-[20px] font-semibold leading-tight text-maseer-green-text break-words">
+                          {r.title}
+                        </h3>
+                        <p className="mt-3 font-lato text-[13px] leading-[20px] sm:leading-[22px] text-maseer-muted break-words">
+                          {r.quote}
+                        </p>
                       </div>
-                      <h3 className="mt-3 font-serif text-[18px] sm:text-[20px] font-semibold leading-tight text-maseer-green-text break-words">
-                        {r.title}
-                      </h3>
-                      <p className="mt-3 font-lato text-[13px] leading-[20px] sm:leading-[22px] text-maseer-muted break-words">
-                        {r.quote}
-                      </p>
-                    </div>
-                    <div className="mt-5 flex items-center gap-3 border-t-2 border-maseer-line/80 pt-4 sm:pt-6">
-                      <img
-                        src={r.avatar}
-                        alt={r.name}
-                        className="h-10 w-10 shrink-0 rounded-full object-cover"
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src =
-                            "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80";
-                        }}
-                      />
-                      <span className="font-lato text-[14px] font-semibold text-maseer-green-text truncate">
-                        {r.name}
-                      </span>
-                    </div>
-                  </article>
-                </div>
-              ))}
-            </SlickSlider>
+                      <div className="mt-5 flex items-center gap-3 border-t-2 border-maseer-line/80 pt-4 sm:pt-6">
+                        <img
+                          src={r.avatar}
+                          alt={r.name}
+                          className="h-10 w-10 shrink-0 rounded-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).src =
+                              "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=150&h=150&q=80";
+                          }}
+                        />
+                        <span className="font-lato text-[14px] font-semibold text-maseer-green-text truncate">
+                          {r.name}
+                        </span>
+                      </div>
+                    </article>
+                  </div>
+                ))}
+              </SlickSlider>
+            </div>
+
+            {finalReviews.length > 1 && (
+              <div className="mt-6 flex items-center justify-center gap-2 sm:hidden">
+                {finalReviews.map((r, idx) => (
+                  <button
+                    key={`review-dot-${r.name || idx}`}
+                    type="button"
+                    aria-label={`Go to review ${idx + 1}`}
+                    onClick={() => reviewSliderRef.current?.slickGoTo(idx)}
+                    className={`h-2 rounded-full transition-all duration-300 ${
+                      reviewSlideIndex === idx
+                        ? "w-7 bg-maseer-gold"
+                        : "w-2 bg-maseer-green/20 hover:bg-maseer-green/40"
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         ) : (
           <div className="page-container mt-8 rounded-xl border border-dashed border-maseer-line p-8 text-center bg-white">
