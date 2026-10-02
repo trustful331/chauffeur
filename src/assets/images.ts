@@ -1,6 +1,7 @@
 import logo from './logo.png'
 
 import homeHero from './home/hero.png'
+import homeHeroVideo from './home/hero.mp4'
 import homeWheels from './home/wheels.png'
 import homeSClass from './home/s_class.png'
 import homeSClass2 from './home/s_class_2.png'
@@ -34,6 +35,7 @@ export const images = {
   logo,
   home: {
     hero: homeHero,
+    heroVideo: homeHeroVideo,
     wheels: homeWheels,
     fleet: [homeSClass, homeSClass2, homeSClass3] as const,
   },

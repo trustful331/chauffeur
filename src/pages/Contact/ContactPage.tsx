@@ -227,12 +227,19 @@ export function ContactPage() {
 
   return (
     <div className="overflow-hidden bg-maseer-cream">
-      <section className="relative w-full min-h-[480px] overflow-hidden bg-maseer-green-deep max-md:min-h-[400px]">
+      <section className="relative w-full min-h-[620px] overflow-hidden bg-maseer-green-deep max-md:min-h-[480px]">
         <HeroBackground
           image={images.contact.hero}
           gradient="linear-gradient(90deg, rgba(7,18,11,0.88) 0%, rgba(7,18,11,0.45) 35%, rgba(7,58,11,0.15) 100%)"
         />
-        <div className="page-container relative flex min-h-[480px] flex-col justify-end pb-14 pt-8 max-md:min-h-[400px] max-md:pb-10">
+        <div className="page-container relative pb-24 pt-[115px] max-md:pb-16 max-md:pt-20">
+          <div className="mb-4">
+            <img
+              src={images.logo}
+              alt="Maseer"
+              className="h-16 w-auto object-contain md:h-20 drop-shadow-md"
+            />
+          </div>
           <p className="eyebrow">UNMATCHED LUXURY</p>
           <h1 className="mt-3 font-serif text-figma-hero text-white max-md:text-[32px] max-md:leading-[1.15]">
             Contact Us

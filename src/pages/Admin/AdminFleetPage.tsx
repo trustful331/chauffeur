@@ -423,7 +423,7 @@ export function AdminFleetPage() {
               className="group overflow-hidden rounded-xl border border-maseer-line bg-white shadow-soft hover:shadow-card hover:-translate-y-1 transition-all duration-300"
             >
               {/* Cover Image & Type badge */}
-              <div className="relative h-[180px] bg-maseer-surface overflow-hidden">
+              <div className="relative h-[180px]  overflow-hidden">
                 <img
                   src={car.image_url}
                   alt={car.vehicle_name}

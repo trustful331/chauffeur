@@ -5,42 +5,12 @@ import { images } from "../../assets/images";
 import { SplitHeading } from "../../ui/SplitHeading";
 import { HeroBackground } from "../../ui/HeroBackground";
 import { Pencil } from "lucide-react";
+import { Spinner } from "src/ui/Spinner";
 import { useAppSelector } from "src/store/hooks";
 import { selectAuthUser } from "src/store/slices/auth/selectors";
 import type { AuthUser } from "src/store/slices/auth/types";
 
-const fallbackCoverageLarge = [
-  {
-    title: "Airport Transfer Service",
-    text: "Professional airport pickup and drop-off with meet-and-greet support.",
-    span: "col-span-7",
-    image: images.services.coverage[0],
-  },
-  {
-    title: "Limousine Service",
-    text: "Travel in comfort with our VIP limousine and chauffeur service.",
-    span: "col-span-5",
-    image: images.services.coverage[1],
-  },
-];
 
-const fallbackCoverageSmall = [
-  {
-    title: "Intercity Travel",
-    text: "Comfortable transportation between major Saudi cities.",
-    image: images.services.coverage[2],
-  },
-  {
-    title: "Hire by the Hour",
-    text: "Book a chauffeur-driven vehicle by the hour.",
-    image: images.services.coverage[3],
-  },
-  {
-    title: "Event Transportation",
-    text: "Coordinated chauffeur service for occasions and VIP arrivals.",
-    image: images.services.coverage[4],
-  },
-];
 
 const fallbackItineraryCards = [
   {
@@ -373,23 +343,47 @@ export function ServicesPage() {
   const isAdmin = authUser && typeof authUser === "object" && authUser.currentRole === "admin";
   const [featuredCoverage, setFeaturedCoverage] = useState<any[]>([]);
   const [itineraryCoverage, setItineraryCoverage] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
+    let isMounted = true;
     async function getCoverage() {
+      setIsLoading(true);
       try {
         const response = await fetchServiceCoverages({ is_active: true });
         if (response && response.success && Array.isArray(response.data)) {
           const featured = response.data.filter(item => item.section_type === "featured");
           const itinerary = response.data.filter(item => item.section_type === "itinerary");
-          setFeaturedCoverage(featured);
-          setItineraryCoverage(itinerary);
+          if (isMounted) {
+            setFeaturedCoverage(featured);
+            setItineraryCoverage(itinerary);
+          }
         }
       } catch (err) {
         console.error("Error fetching service coverage on services page:", err);
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     }
     getCoverage();
+    return () => {
+      isMounted = false;
+    };
   }, []);
+
+  useEffect(() => {
+    if (!isLoading && window.location.hash) {
+      const id = window.location.hash.replace("#", "");
+      const el = document.getElementById(id);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+    }
+  }, [isLoading]);
 
   const dynamicHeading = featuredCoverage[0]?.section_heading;
   const dynamicSubtitle = featuredCoverage[0]?.section_subtitle;
@@ -397,19 +391,15 @@ export function ServicesPage() {
   const itineraryHeading = itineraryCoverage[0]?.section_heading;
   const itinerarySubtitle = itineraryCoverage[0]?.section_subtitle;
 
-  const finalFeatured = featuredCoverage.length > 0
-    ? featuredCoverage.map((item, index) => ({
-      title: item.title,
-      text: item.description,
-      image: item.image_url || "",
-      span: index % 2 === 0 ? "col-span-7" : "col-span-5"
-    }))
-    : [];
+  const finalFeatured = featuredCoverage.map((item, index) => ({
+    title: item.title,
+    text: item.description,
+    image: item.image_url || "",
+    span: index % 2 === 0 ? "col-span-7" : "col-span-5",
+  }));
 
-  const COVERAGE_LARGE = finalFeatured.length > 0 ? finalFeatured.slice(0, 2) : fallbackCoverageLarge;
-  const COVERAGE_SMALL = finalFeatured.length > 0
-    ? finalFeatured.slice(2)
-    : fallbackCoverageSmall;
+  const COVERAGE_LARGE = finalFeatured.slice(0, 2);
+  const COVERAGE_SMALL = finalFeatured.slice(2);
 
   const ITINERARY_CARDS = itineraryCoverage.length > 0
     ? itineraryCoverage.map(item => ({
@@ -466,145 +456,162 @@ export function ServicesPage() {
         </div>
       </section>
 
-      <section className="page-container py-[100px] max-md:py-12">
-        <div className="text-left">
-          <div className="mb-4 flex items-center gap-2">
-            <span className="h-0.5 w-9 bg-primary" aria-hidden />
-            <p className="font-lato text-xs font-bold uppercase tracking-[0.12em] text-primary">
-              FEATURES
-            </p>
-          </div>
-          <div className="flex items-center gap-3">
-            <SplitHeading
-              before={dynamicHeading ? dynamicHeading.split(" ").slice(0, -1).join(" ") + " " : "Our "}
-              accent={dynamicHeading ? dynamicHeading.split(" ").slice(-1)[0] : "Service Coverage"}
-              align="left"
-            />
-            {isAdmin && (
-              <button
-                type="button"
-                title="Edit section in admin panel"
-                onClick={() => navigate("/admin/services")}
-                className="mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
-              >
-                <Pencil size={13} />
-              </button>
-            )}
-          </div>
-          <p className="mt-4 max-w-[690px] text-[18px] leading-[26px] text-maseer-green-text">
-            {dynamicSubtitle || "From the door of your residence to the door of your private jet every detail attended to."}
+      {isLoading ? (
+        <section className="page-container py-[100px] max-md:py-16 flex flex-col items-center justify-center gap-4">
+          <Spinner size="lg" className="text-maseer-gold" />
+          <p className="font-lato text-sm font-medium text-maseer-muted animate-pulse">
+            Loading services...
           </p>
-        </div>
-        <div className="mt-[52px] space-y-3">
-          <div className="grid grid-cols-12 gap-3">
-            {COVERAGE_LARGE.map((card) => (
-              <div key={card.title} className={`${card.span} max-md:col-span-12 relative`}>
-                {isAdmin && (
-                  <button
-                    type="button"
-                    aria-label={`Edit ${card.title} card`}
-                    title="Edit in admin panel"
-                    onClick={() => navigate("/admin/services")}
-                    className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
-                  >
-                    <Pencil size={13} />
-                  </button>
-                )}
-                <CoverageCard
-                  title={card.title}
-                  text={card.text}
-                  image={card.image}
-                />
+        </section>
+      ) : (
+        <>
+          {finalFeatured.length > 0 && (
+            <section id="service-coverage" className="page-container py-[100px] max-md:py-12 scroll-mt-24">
+              <div className="text-left">
+                <div className="mb-4 flex items-center gap-2">
+                  <span className="h-0.5 w-9 bg-primary" aria-hidden />
+                  <p className="font-lato text-xs font-bold uppercase tracking-[0.12em] text-primary">
+                    FEATURES
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <SplitHeading
+                    before={dynamicHeading ? dynamicHeading.split(" ").slice(0, -1).join(" ") + " " : "Our "}
+                    accent={dynamicHeading ? dynamicHeading.split(" ").slice(-1)[0] : "Service Coverage"}
+                    align="left"
+                  />
+                  {isAdmin && (
+                    <button
+                      type="button"
+                      title="Edit section in admin panel"
+                      onClick={() => navigate("/admin/services")}
+                      className="mb-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                    >
+                      <Pencil size={13} />
+                    </button>
+                  )}
+                </div>
+                <p className="mt-4 max-w-[690px] text-[18px] leading-[26px] text-maseer-green-text">
+                  {dynamicSubtitle || "From the door of your residence to the door of your private jet every detail attended to."}
+                </p>
               </div>
-            ))}
-          </div>
-          <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
-            {COVERAGE_SMALL.map((card) => (
-              <div key={card.title} className="relative">
-                {isAdmin && (
-                  <button
-                    type="button"
-                    aria-label={`Edit ${card.title} card`}
-                    title="Edit in admin panel"
-                    onClick={() => navigate("/admin/services")}
-                    className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
-                  >
-                    <Pencil size={13} />
-                  </button>
+              <div className="mt-[52px] space-y-3">
+                {COVERAGE_LARGE.length > 0 && (
+                  <div className="grid grid-cols-12 gap-3">
+                    {COVERAGE_LARGE.map((card) => (
+                      <div key={card.title} className={`${card.span} max-md:col-span-12 relative`}>
+                        {isAdmin && (
+                          <button
+                            type="button"
+                            aria-label={`Edit ${card.title} card`}
+                            title="Edit in admin panel"
+                            onClick={() => navigate("/admin/services")}
+                            className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                          >
+                            <Pencil size={13} />
+                          </button>
+                        )}
+                        <CoverageCard
+                          title={card.title}
+                          text={card.text}
+                          image={card.image}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 )}
-                <CoverageCard
-                  title={card.title}
-                  text={card.text}
-                  image={card.image}
-                  height="h-[260px]"
-                />
+                {COVERAGE_SMALL.length > 0 && (
+                  <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
+                    {COVERAGE_SMALL.map((card) => (
+                      <div key={card.title} className="relative">
+                        {isAdmin && (
+                          <button
+                            type="button"
+                            aria-label={`Edit ${card.title} card`}
+                            title="Edit in admin panel"
+                            onClick={() => navigate("/admin/services")}
+                            className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white/90 shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                          >
+                            <Pencil size={13} />
+                          </button>
+                        )}
+                        <CoverageCard
+                          title={card.title}
+                          text={card.text}
+                          image={card.image}
+                          height="h-[260px]"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+            </section>
+          )}
 
-      <section className="bg-maseer-cream py-[88px] max-md:py-12">
-        <div className="page-container">
-          <div className="max-w-2xl">
-            <div className="mb-4 flex items-center gap-2">
-              <span className="h-0.5 w-9 bg-primary" aria-hidden />
-              <p className="font-lato text-xs font-bold uppercase tracking-[0.12em] text-primary">
-                SERVICES
-              </p>
-            </div>
-            <div className="flex items-center gap-3">
-              <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
-                {itineraryHeading ? (
-                  <>
-                    {itineraryHeading.split(" ").slice(0, -1).join(" ") + " "}
-                    <span className="text-primary">{itineraryHeading.split(" ").slice(-1)[0]}</span>
-                  </>
-                ) : (
-                  <>
-                    An itinerary, <span className="text-primary">composed.</span>
-                  </>
-                )}
-              </h2>
-              {isAdmin && (
-                <button
-                  type="button"
-                  title="Edit section in admin panel"
-                  onClick={() => navigate("/admin/services")}
-                  className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
-                >
-                  <Pencil size={13} />
-                </button>
-              )}
-            </div>
-            <p className="mt-4 max-w-[560px] font-lato text-[14px] leading-[22px] text-maseer-green-text/80">
-              {itinerarySubtitle || "Professional airport pickup and drop-off services with real-time coordination, meet and greet support, and premium chauffeur experience for business and leisure travelers."}
-            </p>
-          </div>
-          <div className="mt-12 grid grid-cols-4 gap-6 max-md:grid-cols-1">
-            {ITINERARY_CARDS.map((card) => (
-              <div key={card.title} className="relative">
-                {isAdmin && (
-                  <button
-                    type="button"
-                    aria-label={`Edit ${card.title} card`}
-                    title="Edit in admin panel"
-                    onClick={() => navigate("/admin/services")}
-                    className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
-                  >
-                    <Pencil size={13} />
-                  </button>
-                )}
-                <ItineraryCard
-                  title={card.title}
-                  text={card.text}
-                  icon={card.icon}
-                />
+          <section className="bg-maseer-cream py-[88px] max-md:py-12">
+            <div className="page-container">
+              <div className="max-w-2xl">
+                <div className="mb-4 flex items-center gap-2">
+                  <span className="h-0.5 w-9 bg-primary" aria-hidden />
+                  <p className="font-lato text-xs font-bold uppercase tracking-[0.12em] text-primary">
+                    SERVICES
+                  </p>
+                </div>
+                <div className="flex items-center gap-3">
+                  <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
+                    {itineraryHeading ? (
+                      <>
+                        {itineraryHeading.split(" ").slice(0, -1).join(" ") + " "}
+                        <span className="text-primary">{itineraryHeading.split(" ").slice(-1)[0]}</span>
+                      </>
+                    ) : (
+                      <>
+                        An itinerary, <span className="text-primary">composed.</span>
+                      </>
+                    )}
+                  </h2>
+                  {isAdmin && (
+                    <button
+                      type="button"
+                      title="Edit section in admin panel"
+                      onClick={() => navigate("/admin/services")}
+                      className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-maseer-surface shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                    >
+                      <Pencil size={13} />
+                    </button>
+                  )}
+                </div>
+                <p className="mt-4 max-w-[560px] font-lato text-[14px] leading-[22px] text-maseer-green-text/80">
+                  {itinerarySubtitle || "Professional airport pickup and drop-off services with real-time coordination, meet and greet support, and premium chauffeur experience for business and leisure travelers."}
+                </p>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              <div className="mt-12 grid grid-cols-4 gap-6 max-md:grid-cols-1">
+                {ITINERARY_CARDS.map((card) => (
+                  <div key={card.title} className="relative">
+                    {isAdmin && (
+                      <button
+                        type="button"
+                        aria-label={`Edit ${card.title} card`}
+                        title="Edit in admin panel"
+                        onClick={() => navigate("/admin/services")}
+                        className="absolute right-3 top-3 z-10 flex h-7 w-7 items-center justify-center rounded-full bg-white shadow-md text-maseer-green transition hover:bg-maseer-green hover:text-white"
+                      >
+                        <Pencil size={13} />
+                      </button>
+                    )}
+                    <ItineraryCard
+                      title={card.title}
+                      text={card.text}
+                      icon={card.icon}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        </>
+      )}
 
       <section className="bg-maseer-cream py-[100px] max-md:py-12">
         <div className="page-container">

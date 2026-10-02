@@ -841,6 +841,7 @@ export function HomePage() {
       {/* Hero + Booking — Figma node 201-203 */}
       <section className="relative w-full min-h-[640px] bg-maseer-green-deep max-md:min-h-[480px]">
         <HeroBackground
+          video={images.home.heroVideo}
           image={images.home.hero}
           gradient="linear-gradient(90deg, rgba(7,18,11,0.88) 0%, rgba(7,18,11,0.45) 35%, rgba(7,58,11,0.15) 100%)"
         />

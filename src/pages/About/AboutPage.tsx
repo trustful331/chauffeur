@@ -226,12 +226,19 @@ const INDUSTRIES_WE_SERVE = [
 export function AboutPage() {
   return (
     <div className="overflow-hidden bg-white">
-      <section className="relative w-full min-h-[520px] overflow-hidden bg-maseer-green-deep max-md:min-h-[420px]">
+      <section className="relative w-full min-h-[620px] overflow-hidden bg-maseer-green-deep max-md:min-h-[480px]">
         <HeroBackground
           image={images.about.hero}
           gradient="linear-gradient(90deg, rgba(7,18,11,0.88) 0%, rgba(7,18,11,0.45) 35%, rgba(7,58,11,0.15) 100%)"
         />
-        <div className="page-container relative flex min-h-[520px] flex-col justify-end pb-16 pt-8 max-md:min-h-[420px] max-md:pb-12">
+        <div className="page-container relative pb-24 pt-[115px] max-md:pb-16 max-md:pt-20">
+          <div className="mb-4">
+            <img
+              src={images.logo}
+              alt="Maseer"
+              className="h-16 w-auto object-contain md:h-20 drop-shadow-md"
+            />
+          </div>
           <p className="eyebrow">UNMATCHED LUXURY</p>
           <h1 className="mt-3 font-serif text-figma-hero text-white max-md:text-[32px] max-md:leading-[1.15]">
             About Us

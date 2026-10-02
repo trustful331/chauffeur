@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { useAppSelector } from "src/store/hooks";
 import { selectIsAuthenticated } from "src/store/slices/auth/selectors";
@@ -9,6 +9,8 @@ import { useFirebaseMessaging } from "src/hooks/useFirebaseMessaging";
 import { PageMeta } from "./PageMeta";
 import { SITE, getWhatsAppUrl, hasWhatsApp } from "src/config/site";
 
+import { fetchServiceCoverages } from "src/api/admin/serviceCoverage";
+
 const navItems = [
   { to: "/", label: "Home", end: true },
   { to: "/services", label: "Services", end: true },
@@ -18,15 +20,12 @@ const navItems = [
   { to: "/contact", label: "Contact Us", end: true },
 ];
 
-const footerServices = [
-  { label: "Executive Transfers"},
-  { label: "Airport Transfers", },
-  { label: "Hourly & Full-Day Chauffeur", },
-  { label: "Corporate Transportation", },
-  { label: "Events, Conferences & MICE", },
-  { label: "Staff & Employee Transportation", },
-  { label: "Intercity Transportation" },
-  { label: "VIP & VVIP Mobility", },
+const fallbackFooterServices = [
+  { label: "Airport Transfer Service", to: "/services#service-coverage" },
+  { label: "VIP Limousine Service", to: "/services#service-coverage" },
+  { label: "Intercity Travel Service", to: "/services#service-coverage" },
+  { label: "Hourly & Daily Chauffeur", to: "/services#service-coverage" },
+  { label: "Event Transportation", to: "/services#service-coverage" },
 ];
 
 const regionCities = [
@@ -123,10 +122,60 @@ function CloseIcon() {
 export function MainLayout() {
   useFirebaseMessaging();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  const { pathname } = useLocation();
-  const contactPage = pathname === "/contact";
+  const location = useLocation();
+  const contactPage = location.pathname === "/contact";
   const pageBg = contactPage ? "bg-maseer-cream" : "bg-white";
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [dynamicServices, setDynamicServices] = useState<{ label: string; to: string }[]>([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadFooterServices() {
+      try {
+        const response = await fetchServiceCoverages({ is_active: true });
+        if (response && response.success && Array.isArray(response.data) && response.data.length > 0) {
+          const titles = response.data
+            .filter((item) => Boolean(item.title && item.title.trim()))
+            .map((item) => ({
+              label: item.title.trim(),
+              to: "/services#service-coverage",
+            }));
+          const uniqueServices = Array.from(new Map(titles.map((s) => [s.label, s])).values());
+          if (isMounted && uniqueServices.length > 0) {
+            setDynamicServices(uniqueServices);
+          }
+        }
+      } catch (err) {
+        console.error("Error loading footer services:", err);
+      }
+    }
+    loadFooterServices();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const footerServicesList = dynamicServices.length > 0 ? dynamicServices : fallbackFooterServices;
+
+  useEffect(() => {
+    if (location.hash) {
+      const targetId = location.hash.replace("#", "");
+      const scrollToEl = () => {
+        const el = document.getElementById(targetId);
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        }
+      };
+      const t1 = setTimeout(scrollToEl, 100);
+      const t2 = setTimeout(scrollToEl, 400);
+      return () => {
+        clearTimeout(t1);
+        clearTimeout(t2);
+      };
+    } else {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [location.pathname, location.hash]);
 
   const closeMobileNav = () => setMobileNavOpen(false);
   const whatsappHref = getWhatsAppUrl("Hello Maseer, I would like to enquire about a booking.");
@@ -278,9 +327,18 @@ export function MainLayout() {
                 Services
               </p>
               <ul className="mt-5 space-y-3 font-lato text-[13px] leading-5 text-maseer-green-text">
-                {footerServices.map((s) => (
+                {footerServicesList.map((s) => (
                   <li key={s.label}>
-                    <Link to={ ""} className="transition hover:text-primary">
+                    <Link
+                      to={s.to}
+                      onClick={() => {
+                        const el = document.getElementById("service-coverage");
+                        if (el) {
+                          el.scrollIntoView({ behavior: "smooth" });
+                        }
+                      }}
+                      className="transition hover:text-primary"
+                    >
                       {s.label}
                     </Link>
                   </li>
