@@ -601,7 +601,7 @@ export function AdminPricingPage() {
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-left font-lato text-xs">
+                <table className="w-full min-w-[720px] text-left font-lato text-xs">
                   <thead className="border-b bg-gray-50 text-[11px] font-bold uppercase tracking-wider text-gray-600">
                     <tr>
                       <th className="px-4 py-3">Fleet Vehicle</th>
@@ -697,7 +697,7 @@ export function AdminPricingPage() {
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-left font-lato text-xs">
+                <table className="w-full min-w-[720px] text-left font-lato text-xs">
                   <thead className="border-b bg-gray-50 text-[11px] font-bold uppercase tracking-wider text-gray-600">
                     <tr>
                       <th className="px-4 py-3">Fleet Vehicle</th>

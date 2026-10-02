@@ -293,7 +293,7 @@ export function AdminBookingPage() {
         </div>
       ) : (
         <div className="overflow-x-auto rounded-2xl border border-[#E5E7EB] bg-white shadow-sm">
-          <table className="w-full border-collapse text-left font-lato text-sm text-[#062111]">
+          <table className="w-full min-w-[960px] border-collapse text-left font-lato text-sm text-[#062111]">
             <thead className="bg-gray-50/80 border-b border-[#E5E7EB] text-[11px] font-bold uppercase tracking-wider text-maseer-muted">
               <tr>
                 <th className="px-5 py-4 whitespace-nowrap">Service Type</th>

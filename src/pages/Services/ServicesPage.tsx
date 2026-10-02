@@ -425,7 +425,7 @@ export function ServicesPage() {
             />
           </div>
 
-          <h1 className="max-w-[680px] font-serif text-figma-hero font-semibold text-white max-md:text-[30px] max-md:leading-[1.15]">
+          <h1 className="max-w-[680px] font-serif text-[30px] leading-tight font-semibold text-white sm:text-[42px] lg:text-figma-hero">
             Premium Chauffeur and Mobility services
           </h1>
 
@@ -445,11 +445,11 @@ export function ServicesPage() {
             solutions for corporates, hotels, travel management companies, event
             organizers, and VIP guests.
           </p>
-          <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Link to="/booking" className="btn-gold min-w-[180px]">
+          <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
+            <Link to="/booking" className="btn-gold min-w-0 w-full sm:min-w-[180px] sm:w-auto">
               Book a Ride
             </Link>
-            <Link to="/fleet" className="btn-outline min-w-[160px]">
+            <Link to="/fleet" className="btn-outline min-w-0 w-full sm:min-w-[160px] sm:w-auto">
               Explore Fleet
             </Link>
           </div>
@@ -521,7 +521,7 @@ export function ServicesPage() {
                   </div>
                 )}
                 {COVERAGE_SMALL.length > 0 && (
-                  <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
+                  <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                     {COVERAGE_SMALL.map((card) => (
                       <div key={card.title} className="relative">
                         {isAdmin && (
@@ -586,7 +586,7 @@ export function ServicesPage() {
                   {itinerarySubtitle || "Professional airport pickup and drop-off services with real-time coordination, meet and greet support, and premium chauffeur experience for business and leisure travelers."}
                 </p>
               </div>
-              <div className="mt-12 grid grid-cols-4 gap-6 max-md:grid-cols-1">
+              <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                 {ITINERARY_CARDS.map((card) => (
                   <div key={card.title} className="relative">
                     {isAdmin && (

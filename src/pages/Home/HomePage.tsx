@@ -865,7 +865,7 @@ export function HomePage() {
           gradient="linear-gradient(90deg, rgba(7,18,11,0.88) 0%, rgba(7,18,11,0.45) 35%, rgba(7,58,11,0.15) 100%)"
         />
         <div className="page-container relative pb-[200px] pt-16 max-md:pb-8 max-md:pt-10">
-          <h1 className="max-w-[650px] font-serif text-[44px] font-semibold leading-[1.5] text-white max-md:text-[28px] max-md:leading-[1.25]">
+          <h1 className="max-w-[650px] font-serif text-[28px] font-semibold leading-[1.25] text-white sm:text-[36px] md:text-[44px] md:leading-[1.5]">
             <span className="inline-block rounded-2xl bg-primary px-4 py-1 text-center text-white max-md:h-auto">
               Luxury chauffeur
             </span>{" "}
@@ -879,13 +879,13 @@ export function HomePage() {
           </p>
         </div>
 
-        <div className="absolute bottom-0 left-1/2 z-10 w-[calc(100%-232px)] max-w-[1100px] -translate-x-1/2 translate-y-1/2 max-md:static max-md:mt-6 max-md:w-full max-md:max-w-none max-md:translate-x-0 max-md:translate-y-0 max-md:px-4">
+        <div className="absolute bottom-0 left-1/2 z-10 w-full max-w-[1100px] -translate-x-1/2 translate-y-1/2 px-4 md:w-[calc(100%-64px)] xl:w-[calc(100%-232px)] max-md:static max-md:mt-6 max-md:w-full max-md:max-w-none max-md:translate-x-0 max-md:translate-y-0">
           <form
             noValidate
             onSubmit={handleSubmit(onBookingSubmit)}
             className="rounded-[32px] bg-white p-5 shadow-[0_12px_48px_rgba(0,0,0,0.14)] max-md:rounded-2xl"
           >
-            <div className="grid grid-cols-4 border-b border-primary/30 max-md:grid-cols-2">
+            <div className="grid grid-cols-2 border-b border-primary/30 sm:grid-cols-4">
               {BOOKING_TABS.map((tab, index) => {
                 const isActive = bookingTab === tab;
                 return (
@@ -974,7 +974,7 @@ export function HomePage() {
                 ) : null}
               </div>
 
-              <div className="mt-6 grid grid-cols-1 gap-5 md:grid-cols-[1.35fr_1fr_0.7fr_0.7fr]">
+              <div className="mt-6 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-[1.35fr_1fr_0.7fr_0.7fr]">
                 <div>
                   <FieldLabel htmlFor="home-fleet-class" required>
                     Class
@@ -1270,7 +1270,7 @@ export function HomePage() {
           </Link>
         </div>
 
-        <div className="mt-12 grid grid-cols-4 gap-6 max-md:grid-cols-1">
+        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {servicesCards.map((card) => (
             <article
               key={card.title}
@@ -1414,7 +1414,7 @@ export function HomePage() {
               </div>
             )}
             {coverageSmall.length > 0 && (
-              <div className="grid grid-cols-3 gap-3 max-md:grid-cols-1">
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {coverageSmall.map((item) => (
                   <div
                     key={item.title}
@@ -1697,7 +1697,7 @@ export function HomePage() {
           every detail attended to.
         </p>
 
-        <div className="mt-12 grid grid-cols-4 gap-6 max-md:grid-cols-1">
+        <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {bestFeatures.map((f) => (
             <article
               key={f.title}

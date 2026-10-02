@@ -103,16 +103,16 @@ export function FleetPage() {
             </div>
           ))}
 
-          <div className="absolute bottom-0 left-1/2 w-[720px] -translate-x-1/2 max-md:relative max-md:w-full max-md:translate-x-0">
+          <div className="absolute bottom-0 left-1/2 w-full max-w-[720px] -translate-x-1/2 max-md:relative max-md:w-full max-md:translate-x-0">
             <div
-              className="mx-auto h-[120px] w-[620px] rounded-t-full bg-maseer-line max-md:h-[80px] max-md:w-[min(100%,360px)]"
+              className="mx-auto h-[120px] w-[min(100%,620px)] rounded-t-full bg-maseer-line max-md:h-[80px] max-md:w-[min(100%,360px)]"
               aria-hidden
             />
             {current && (
               <img
                 src={current.image}
                 alt={current.name}
-                className="relative -mt-[100px] mx-auto h-[220px] w-[480px] object-contain drop-shadow-float max-md:-mt-[60px] max-md:h-[160px] max-md:w-full max-md:max-w-[340px]"
+                className="relative -mt-[100px] mx-auto h-[220px] w-full max-w-[480px] object-contain drop-shadow-float max-md:-mt-[60px] max-md:h-[160px] max-md:max-w-[340px]"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&q=80&w=800";
                 }}

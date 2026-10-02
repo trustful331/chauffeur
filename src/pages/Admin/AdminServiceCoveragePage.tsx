@@ -424,7 +424,7 @@ export function AdminServiceCoveragePage() {
       ) : (
         <div className="overflow-hidden rounded-2xl border border-maseer-line bg-white shadow-sm">
           <div className="overflow-x-auto">
-            <table className="w-full border-collapse text-left text-xs font-medium text-maseer-green-text">
+            <table className="w-full min-w-[900px] border-collapse text-left text-xs font-medium text-maseer-green-text">
               <thead className="bg-[#F8FAF8] border-b border-maseer-line font-bold text-maseer-muted uppercase tracking-wider text-[10px]">
                 <tr>
                   <th className="px-6 py-4">Visual Icon/Img</th>

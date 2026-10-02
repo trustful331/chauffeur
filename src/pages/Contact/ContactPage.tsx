@@ -241,7 +241,7 @@ export function ContactPage() {
             />
           </div>
           <p className="eyebrow">UNMATCHED LUXURY</p>
-          <h1 className="mt-3 font-serif text-figma-hero text-white max-md:text-[32px] max-md:leading-[1.15]">
+          <h1 className="mt-3 font-serif text-[30px] leading-tight text-white sm:text-[42px] lg:text-figma-hero">
             Contact Us
           </h1>
           <p className="mt-4 max-w-[560px] text-figma-body text-white/90">
@@ -253,7 +253,7 @@ export function ContactPage() {
 
       <section className="bg-maseer-cream py-[80px] max-md:py-12">
         <div className="page-container">
-          <div className="grid grid-cols-4 gap-10 max-md:grid-cols-1">
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
             {contactCards.map((card) => (
               <article key={card.title} className="text-center">
                 <div className="mx-auto flex h-[56px] w-[56px] items-center justify-center rounded-full bg-maseer-green text-white">
@@ -347,9 +347,9 @@ export function ContactPage() {
 
       <section className="bg-maseer-cream pb-[88px] pt-6 max-md:pb-12">
         <div className="page-container">
-          <div className="grid grid-cols-[1fr_1.15fr] items-start gap-14 max-md:grid-cols-1 max-md:gap-8">
+          <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[1fr_1.15fr] lg:gap-14">
             <div className="pt-4">
-              <h2 className="max-w-[420px] font-lato text-[28px] font-bold leading-[1.25] text-maseer-green max-md:text-[22px]">
+              <h2 className="max-w-[420px] font-lato text-[22px] sm:text-[28px] font-bold leading-[1.25] text-maseer-green">
                 We&apos;re Excited To Hear From You!
               </h2>
               <div className="mt-8">
@@ -364,7 +364,7 @@ export function ContactPage() {
             <form
               id="contact-form"
               onSubmit={handleSubmit(onContactSubmit)}
-              className="rounded-2xl border border-[#e8e8e8] bg-white p-8 shadow-[0_4px_24px_rgba(0,0,0,0.05)] lg:p-10"
+              className="rounded-2xl border border-[#e8e8e8] bg-white p-4 shadow-[0_4px_24px_rgba(0,0,0,0.05)] sm:p-6 lg:p-10"
             >
               <div className="space-y-4">
                 {/* Honeypot — leave empty; hidden from users */}
@@ -376,7 +376,7 @@ export function ContactPage() {
                   className="absolute -left-[9999px] h-0 w-0 opacity-0"
                   {...register("website")}
                 />
-                <div className="grid grid-cols-2 gap-4 max-md:grid-cols-1">
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                   <div>
                     <label className="mb-1.5 block font-lato text-[12px] font-semibold text-maseer-green">
                       Full name

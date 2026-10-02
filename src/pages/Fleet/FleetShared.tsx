@@ -15,7 +15,7 @@ export function FleetHero({ tagline = "UNMATCHED LUXURY" }: FleetHeroProps) {
       />
       <div className="page-container relative flex min-h-[620px] flex-col justify-end pb-20 pt-28 max-md:min-h-[420px] max-md:pb-12 max-md:pt-20">
         <p className="eyebrow">{tagline}</p>
-        <h1 className="mt-4 max-w-2xl font-serif text-figma-hero text-white max-md:text-[32px] max-md:leading-[1.15]">
+        <h1 className="mt-4 max-w-2xl font-serif text-[30px] leading-tight text-white sm:text-[42px] lg:text-figma-hero">
           Our Elite Fleet
         </h1>
         <p className="mt-5 max-w-xl text-figma-body text-white/85">
@@ -184,17 +184,17 @@ export function FleetStandards({
               </div>
             </article>
 
-            <div className="grid grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
               {[
                 { val: fleetAge, label: "FLEET READINESS" },
                 { val: "24/7", label: "SUPPORT READY" },
               ].map((item) => (
                 <article
                   key={item.label}
-                  className="flex min-h-[190px] lg:min-h-[210px] items-center justify-center rounded-2xl bg-[#F5F5F5] p-8 text-center"
+                  className="flex min-h-[160px] sm:min-h-[190px] lg:min-h-[210px] items-center justify-center rounded-2xl bg-[#F5F5F5] p-6 sm:p-8 text-center"
                 >
                   <div>
-                    <p className="font-serif text-[38px] font-semibold leading-none text-maseer-green-text">
+                    <p className="font-serif text-[28px] sm:text-[38px] font-semibold leading-none text-maseer-green-text">
                       {item.val}
                     </p>
                     <p className="mt-4 font-lato text-[11px] font-bold uppercase tracking-[0.12em] text-maseer-muted">
