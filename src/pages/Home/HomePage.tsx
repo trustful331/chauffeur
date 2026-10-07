@@ -510,8 +510,8 @@ const bestFeatures = [
   },
   {
     icon: "pin",
-    title: "GPS Tracking for Safety",
-    text: "Real-time tracking keeps you informed and supports a safer journey",
+    title: "Ride Monitoring for Safety",
+    text: "Real-time Ride Monitoring keeps you informed and supports a safer journey",
   },
   {
     icon: "tag",
@@ -1382,7 +1382,7 @@ export function HomePage() {
         </div>
         <p className="mt-3 text-[14px] text-maseer-green ">
           {dynamicSubtitle ||
-            "From the door of your residence to the door of your private jet — every detail attended to. "}
+            "From the door of your residence to your destination every detail attended to."}
         </p>
         {finalFeatured.length > 0 ? (
           <div className="mt-10 space-y-3">
@@ -1700,8 +1700,7 @@ export function HomePage() {
           Our <span className="text-primary">Best Features</span>
         </h2>
         <p className="mt-4 max-w-[550px] font-lato text-[14px] leading-[22px] text-maseer-green-text/80">
-          From the door of your residence to the door of your private jet —
-          every detail attended to.
+          From the door of your residence to your destination every detail attended to.
         </p>
 
         <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
