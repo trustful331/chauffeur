@@ -1399,11 +1399,15 @@ export function HomePage() {
                 {coverageLarge.map((item) => (
                   <div
                     key={item.title}
-                    className="card-image h-[290px] max-md:h-[200px]"
+                    className="card-image relative h-[290px] max-md:h-[200px]"
                     style={{
-                      backgroundImage: `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.75) 100%), url(${item.image})`,
+                      backgroundImage: `url(${item.image})`,
                     }}
                   >
+                    <div
+                      className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 from-0% via-black/45 via-[42%] to-transparent to-[78%]"
+                      aria-hidden
+                    />
                     {/* Admin edit button */}
                     {isAdmin && (
                       <button
@@ -1416,11 +1420,11 @@ export function HomePage() {
                         <Pencil size={13} />
                       </button>
                     )}
-                    <div className="absolute bottom-6 left-6 text-white">
+                    <div className="absolute bottom-6 left-6 z-10 text-white">
                       <p className="font-serif text-[26px] font-medium max-md:text-lg">
                         {item.title}
                       </p>
-                      <p className="mt-1 text-[13px] text-white/80">
+                      <p className="mt-1 text-[13px] text-white">
                         {item.subtitle}
                       </p>
                     </div>
@@ -1433,11 +1437,15 @@ export function HomePage() {
                 {coverageSmall.map((item) => (
                   <div
                     key={item.title}
-                    className="card-image h-[240px] max-md:h-[200px]"
+                    className="card-image relative h-[240px] max-md:h-[200px]"
                     style={{
-                      backgroundImage: `linear-gradient(180deg, transparent 40%, rgba(0,0,0,0.75) 100%), url(${item.image})`,
+                      backgroundImage: `url(${item.image})`,
                     }}
                   >
+                    <div
+                      className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 from-0% via-black/45 via-[42%] to-transparent to-[78%]"
+                      aria-hidden
+                    />
                     {/* Admin edit button */}
                     {isAdmin && (
                       <button
@@ -1450,11 +1458,11 @@ export function HomePage() {
                         <Pencil size={13} />
                       </button>
                     )}
-                    <div className="absolute bottom-5 left-5 text-white">
+                    <div className="absolute bottom-5 left-5 z-10 text-white">
                       <p className="font-serif text-[22px] font-medium max-md:text-base">
                         {item.title}
                       </p>
-                      <p className="mt-1 text-[12px] text-white/80">
+                      <p className="mt-1 text-[12px] text-white">
                         {item.subtitle}
                       </p>
                     </div>

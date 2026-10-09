@@ -10,8 +10,6 @@ import { useAppSelector } from "src/store/hooks";
 import { selectAuthUser } from "src/store/slices/auth/selectors";
 import type { AuthUser } from "src/store/slices/auth/types";
 
-
-
 const fallbackItineraryCards = [
   {
     title: "Airport Transfers",
@@ -295,16 +293,21 @@ function CoverageCard({
 }) {
   return (
     <article
-      className={`card-image ${height}`}
+      className={`card-image relative ${height}`}
       style={{
-        backgroundImage: `linear-gradient(180deg, rgba(0,0,0,0) 54.21%, rgba(0,0,0,0.84) 100%), url(${image})`,
+        backgroundImage: `url(${image})`,
       }}
     >
-      <div className="absolute bottom-6 left-6 right-6 text-white">
-        <h3 className="font-serif text-[29.48px] leading-[35px] max-md:text-xl max-md:leading-7">{title}</h3>
-        <p className="mt-2 max-w-[90%] text-[16.09px] leading-[19px] text-white/90">
-          {text}
-        </p>
+      {/* Bottom → top fade: dark behind text, almost clear above it */}
+      <div
+        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 from-0% via-black/45 via-[42%] to-transparent to-[78%]"
+        aria-hidden
+      />
+      <div className="absolute bottom-6 left-6 right-6 z-10 text-white">
+        <h3 className="font-serif text-[24.48px] leading-[25px] max-md:text-xl max-md:leading-7">
+          {title}
+        </h3>
+        <p className="mt-2 text-[14.09px] leading-[19px] text-white">{text}</p>
       </div>
     </article>
   );
@@ -340,7 +343,10 @@ function ItineraryCard({
 export function ServicesPage() {
   const navigate = useNavigate();
   const authUser = useAppSelector(selectAuthUser) as AuthUser | "";
-  const isAdmin = authUser && typeof authUser === "object" && authUser.currentRole === "admin";
+  const isAdmin =
+    authUser &&
+    typeof authUser === "object" &&
+    authUser.currentRole === "admin";
   const [featuredCoverage, setFeaturedCoverage] = useState<any[]>([]);
   const [itineraryCoverage, setItineraryCoverage] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -352,8 +358,12 @@ export function ServicesPage() {
       try {
         const response = await fetchServiceCoverages({ is_active: true });
         if (response && response.success && Array.isArray(response.data)) {
-          const featured = response.data.filter(item => item.section_type === "featured");
-          const itinerary = response.data.filter(item => item.section_type === "itinerary");
+          const featured = response.data.filter(
+            (item) => item.section_type === "featured",
+          );
+          const itinerary = response.data.filter(
+            (item) => item.section_type === "itinerary",
+          );
           if (isMounted) {
             setFeaturedCoverage(featured);
             setItineraryCoverage(itinerary);
@@ -401,13 +411,14 @@ export function ServicesPage() {
   const COVERAGE_LARGE = finalFeatured.slice(0, 2);
   const COVERAGE_SMALL = finalFeatured.slice(2);
 
-  const ITINERARY_CARDS = itineraryCoverage.length > 0
-    ? itineraryCoverage.map(item => ({
-      title: item.title,
-      text: item.description,
-      icon: item.icon_key || "briefcase"
-    }))
-    : fallbackItineraryCards;
+  const ITINERARY_CARDS =
+    itineraryCoverage.length > 0
+      ? itineraryCoverage.map((item) => ({
+          title: item.title,
+          text: item.description,
+          icon: item.icon_key || "briefcase",
+        }))
+      : fallbackItineraryCards;
 
   return (
     <div className="overflow-hidden bg-white">
@@ -446,10 +457,16 @@ export function ServicesPage() {
             organizers, and VIP guests.
           </p>
           <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-4">
-            <Link to="/booking" className="btn-gold min-w-0 w-full sm:min-w-[180px] sm:w-auto">
+            <Link
+              to="/booking"
+              className="btn-gold min-w-0 w-full sm:min-w-[180px] sm:w-auto"
+            >
               Book a Ride
             </Link>
-            <Link to="/fleet" className="btn-outline min-w-0 w-full sm:min-w-[160px] sm:w-auto">
+            <Link
+              to="/fleet"
+              className="btn-outline min-w-0 w-full sm:min-w-[160px] sm:w-auto"
+            >
               Explore Fleet
             </Link>
           </div>
@@ -466,7 +483,10 @@ export function ServicesPage() {
       ) : (
         <>
           {finalFeatured.length > 0 && (
-            <section id="service-coverage" className="page-container py-[100px] max-md:py-12 scroll-mt-24">
+            <section
+              id="service-coverage"
+              className="page-container py-[100px] max-md:py-12 scroll-mt-24"
+            >
               <div className="text-left">
                 <div className="mb-4 flex items-center gap-2">
                   <span className="h-0.5 w-9 bg-primary" aria-hidden />
@@ -476,8 +496,16 @@ export function ServicesPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <SplitHeading
-                    before={dynamicHeading ? dynamicHeading.split(" ").slice(0, -1).join(" ") + " " : "Our "}
-                    accent={dynamicHeading ? dynamicHeading.split(" ").slice(-1)[0] : "Service Coverage"}
+                    before={
+                      dynamicHeading
+                        ? dynamicHeading.split(" ").slice(0, -1).join(" ") + " "
+                        : "Our "
+                    }
+                    accent={
+                      dynamicHeading
+                        ? dynamicHeading.split(" ").slice(-1)[0]
+                        : "Service Coverage"
+                    }
                     align="left"
                   />
                   {isAdmin && (
@@ -492,14 +520,18 @@ export function ServicesPage() {
                   )}
                 </div>
                 <p className="mt-4 max-w-[690px] text-[18px] leading-[26px] text-maseer-green-text">
-                  {dynamicSubtitle || "From the door of your residence to the door of your private jet every detail attended to."}
+                  {dynamicSubtitle ||
+                    "From the door of your residence to the door of your private jet every detail attended to."}
                 </p>
               </div>
               <div className="mt-[52px] space-y-3">
                 {COVERAGE_LARGE.length > 0 && (
                   <div className="grid grid-cols-12 gap-3">
                     {COVERAGE_LARGE.map((card) => (
-                      <div key={card.title} className={`${card.span} max-md:col-span-12 relative`}>
+                      <div
+                        key={card.title}
+                        className={`${card.span} max-md:col-span-12 relative`}
+                      >
                         {isAdmin && (
                           <button
                             type="button"
@@ -562,12 +594,16 @@ export function ServicesPage() {
                   <h2 className="font-serif text-[42px] font-semibold leading-[1.15] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.2]">
                     {itineraryHeading ? (
                       <>
-                        {itineraryHeading.split(" ").slice(0, -1).join(" ") + " "}
-                        <span className="text-primary">{itineraryHeading.split(" ").slice(-1)[0]}</span>
+                        {itineraryHeading.split(" ").slice(0, -1).join(" ") +
+                          " "}
+                        <span className="text-primary">
+                          {itineraryHeading.split(" ").slice(-1)[0]}
+                        </span>
                       </>
                     ) : (
                       <>
-                        An itinerary, <span className="text-primary">composed.</span>
+                        An itinerary,{" "}
+                        <span className="text-primary">composed.</span>
                       </>
                     )}
                   </h2>
@@ -583,7 +619,8 @@ export function ServicesPage() {
                   )}
                 </div>
                 <p className="mt-4 max-w-[560px] font-lato text-[14px] leading-[22px] text-maseer-green-text/80">
-                  {itinerarySubtitle || "Professional airport pickup and drop-off services with real-time coordination, meet and greet support, and premium chauffeur experience for business and leisure travelers."}
+                  {itinerarySubtitle ||
+                    "Professional airport pickup and drop-off services with real-time coordination, meet and greet support, and premium chauffeur experience for business and leisure travelers."}
                 </p>
               </div>
               <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
