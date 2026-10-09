@@ -1322,7 +1322,7 @@ export function HomePage() {
       <section className="bg-maseer-tint-green py-[53px]">
         <div className="page-container grid items-center gap-[97px] lg:grid-cols-[549px_1fr] max-md:gap-10">
           <GoldOffsetImage
-            src={images.home.on_wheels}
+            src={images.home.wheels}
             alt="Hospitality on wheels"
             offset="right"
           />
