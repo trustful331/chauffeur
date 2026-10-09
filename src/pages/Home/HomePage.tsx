@@ -593,10 +593,6 @@ function FeatureCardIcon({
   }
 }
 
-
-
-
-
 const faqItems = [
   {
     q: "How flexible are Maseer booking and cancellation policies?",
@@ -734,11 +730,11 @@ export function HomePage() {
   const servicesCards =
     itineraryCoverage.length > 0
       ? itineraryCoverage.map((item) => ({
-        id: item.id as number | undefined,
-        title: item.title,
-        text: item.description,
-        icon: item.icon_key || "briefcase",
-      }))
+          id: item.id as number | undefined,
+          title: item.title,
+          text: item.description,
+          icon: item.icon_key || "briefcase",
+        }))
       : fallbackServicesCards;
 
   const filteredApiReviews = customerReviews
@@ -770,16 +766,22 @@ export function HomePage() {
   const latestReviewWithTitle = customerReviews
     .slice()
     .reverse()
-    .find((r) => r.is_active !== false && r.section_title && r.section_title.trim());
+    .find(
+      (r) => r.is_active !== false && r.section_title && r.section_title.trim(),
+    );
 
   const latestReviewWithSubtitle = customerReviews
     .slice()
     .reverse()
-    .find((r) => r.is_active !== false && r.section_subtitle && r.section_subtitle.trim());
+    .find(
+      (r) =>
+        r.is_active !== false &&
+        r.section_subtitle &&
+        r.section_subtitle.trim(),
+    );
 
   const reviewHeading =
-    latestReviewWithTitle?.section_title ||
-    customerReviews[0]?.section_title;
+    latestReviewWithTitle?.section_title || customerReviews[0]?.section_title;
   const reviewSubtitle =
     latestReviewWithSubtitle?.section_subtitle ||
     customerReviews[0]?.section_subtitle;
@@ -879,7 +881,8 @@ export function HomePage() {
             and mobility services across Saudi Arabia.
           </h1>
           <p className="mt-5 max-w-[660px] font-lato text-xl font-medium leading-8 text-white max-md:text-base max-md:leading-7">
-            Premium chauffeur driven travel shaped around your time,comfort and destination.
+            Premium chauffeur driven travel shaped around your time,comfort and
+            destination.
           </p>
           <p className="mt-1 text-lg italic font-lato text-white/90 max-md:text-sm">
             Luxury in motion. Confidence at every arrival.
@@ -907,12 +910,12 @@ export function HomePage() {
                       "font-lato py-4 text-center text-[13px] font-semibold transition-colors max-md:px-2 max-md:py-3 max-md:text-[11px]",
                       isActive
                         ? [
-                          "bg-maseer-green text-white",
-                          index === 0 ? "rounded-tl-[16px]" : "",
-                          index === BOOKING_TABS.length - 1
-                            ? "rounded-tr-[32px]"
-                            : "",
-                        ].join(" ")
+                            "bg-maseer-green text-white",
+                            index === 0 ? "rounded-tl-[16px]" : "",
+                            index === BOOKING_TABS.length - 1
+                              ? "rounded-tr-[32px]"
+                              : "",
+                          ].join(" ")
                         : "bg-[#FFF9EB] text-primary",
                       !isActive && index > 0
                         ? "border-l border-primary/20"
@@ -1175,7 +1178,8 @@ export function HomePage() {
                           if (!Number.isInteger(count)) {
                             return "Children count must be a whole number";
                           }
-                          if (count < 0) return "Children count cannot be negative";
+                          if (count < 0)
+                            return "Children count cannot be negative";
                           if (count > 99) return "Maximum 99 children allowed";
                           return true;
                         },
@@ -1224,8 +1228,6 @@ export function HomePage() {
       </section>
 
       <div className="h-[240px] max-md:hidden" />
-
-
 
       {/* An itinerary, composed */}
       <section className="page-container py-16 max-md:py-12">
@@ -1320,7 +1322,7 @@ export function HomePage() {
       <section className="bg-maseer-tint-green py-[53px]">
         <div className="page-container grid items-center gap-[97px] lg:grid-cols-[549px_1fr] max-md:gap-10">
           <GoldOffsetImage
-            src={images.home.wheels}
+            src={images.home.on_wheels}
             alt="Hospitality on wheels"
             offset="right"
           />
@@ -1330,7 +1332,13 @@ export function HomePage() {
               Hospitality on <span className="text-maseer-gold">wheels.</span>
             </h2>
             <p className="mt-4 text-[14px] leading-6 text-maseer-muted">
-              Maseer provides premium chauffeur-driven transportation across Saudi Arabia for business, leisure, airport travel, events, tourism, and special occasions. With professional chauffeurs, carefully selected vehicles, and responsive coordination, every journey is planned around punctuality, comfort, safety, and discretion. From a single transfer to large event movements, Maseer adapts each service to the client’s needs.
+              Maseer provides premium chauffeur-driven transportation across
+              Saudi Arabia for business, leisure, airport travel, events,
+              tourism, and special occasions. With professional chauffeurs,
+              carefully selected vehicles, and responsive coordination, every
+              journey is planned around punctuality, comfort, safety, and
+              discretion. From a single transfer to large event movements,
+              Maseer adapts each service to the client’s needs.
             </p>
             <div className="mt-8 grid grid-cols-2 gap-x-6 gap-y-4 max-md:grid-cols-1">
               {hospitalityFeatures.map((f) => (
@@ -1457,7 +1465,9 @@ export function HomePage() {
           </div>
         ) : (
           <div className="mt-10 rounded-2xl border border-dashed border-maseer-line bg-[#FAFBF9] p-10 text-center">
-            <p className="font-lato text-sm text-maseer-muted">No featured service coverages available.</p>
+            <p className="font-lato text-sm text-maseer-muted">
+              No featured service coverages available.
+            </p>
           </div>
         )}
       </section>
@@ -1472,7 +1482,8 @@ export function HomePage() {
               </p>
             </div>
             <span className="inline-flex items-center rounded-full bg-maseer-green/5 border border-maseer-green/10 px-4 py-1.5 font-lato text-xs font-semibold text-maseer-green">
-              ✨ Premium chauffeur mobility, delivered with operational discipline.
+              ✨ Premium chauffeur mobility, delivered with operational
+              discipline.
             </span>
           </div>
 
@@ -1480,18 +1491,33 @@ export function HomePage() {
             {/* Narrative Column */}
             <div>
               <h2 className="font-serif text-[42px] font-semibold leading-[1.18] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.25]">
-                Moving People. <span className="text-primary">Elevating Experiences.</span>
+                Moving People.{" "}
+                <span className="text-primary">Elevating Experiences.</span>
               </h2>
 
               <div className="mt-6 space-y-4 font-lato text-[15px] leading-[26px] text-maseer-green-text/85">
                 <p>
-                  Maseer is a premium chauffeur mobility and ground transportation solutions company operating across Saudi Arabia. Founded in 2020, we connect guests, businesses, hotels, travel companies and event organizers with reliable, professionally managed transportation experiences.
+                  Maseer is a premium chauffeur mobility and ground
+                  transportation solutions company operating across Saudi
+                  Arabia. Founded in 2020, we connect guests, businesses,
+                  hotels, travel companies and event organizers with reliable,
+                  professionally managed transportation experiences.
                 </p>
                 <p>
-                  Our model combines premium vehicles, professional chauffeur services, technology-enabled coordination and a flexible network of strategic vehicle and operational partners. This allows us to deliver the right transportation solution for every requirement—from a single executive airport transfer to complex, multi-vehicle movements for conferences, events, delegations and group travel.
+                  Our model combines premium vehicles, professional chauffeur
+                  services, technology-enabled coordination and a flexible
+                  network of strategic vehicle and operational partners. This
+                  allows us to deliver the right transportation solution for
+                  every requirement—from a single executive airport transfer to
+                  complex, multi-vehicle movements for conferences, events,
+                  delegations and group travel.
                 </p>
                 <p>
-                  We do more than move people from one place to another. We manage the journey around the journey: the timing, the vehicle, the chauffeur, the guest experience, the communication and the operational details that make mobility feel effortless.
+                  We do more than move people from one place to another. We
+                  manage the journey around the journey: the timing, the
+                  vehicle, the chauffeur, the guest experience, the
+                  communication and the operational details that make mobility
+                  feel effortless.
                 </p>
               </div>
 
@@ -1529,17 +1555,16 @@ export function HomePage() {
                 </div>
 
                 <blockquote className="mt-6 font-serif text-[19px] font-normal leading-[1.55] text-white/95 italic">
-                  “Maseer delivers premium ground transportation and chauffeur solutions across Saudi Arabia through a professionally managed network of premium vehicles, chauffeurs and strategic partners.”
+                  “Maseer delivers premium ground transportation and chauffeur
+                  solutions across Saudi Arabia through a professionally managed
+                  network of premium vehicles, chauffeurs and strategic
+                  partners.”
                 </blockquote>
-
-         
               </div>
             </div>
           </div>
         </div>
       </section>
-
-
 
       {/* Vision, Mission & Values */}
       <section className="border-b border-maseer-line bg-white py-20 max-md:py-14">
@@ -1563,7 +1588,9 @@ export function HomePage() {
                 Vision
               </h3>
               <p className="mt-3 font-lato text-[15px] leading-[26px] text-maseer-green-text/85">
-                To become one of Saudi Arabia&apos;s most trusted premium chauffeur chauffeur transportation partners, setting a higher standard for the way people move across the Kingdom.
+                To become one of Saudi Arabia&apos;s most trusted premium
+                chauffeur chauffeur transportation partners, setting a higher
+                standard for the way people move across the Kingdom.
               </p>
             </div>
 
@@ -1577,7 +1604,9 @@ export function HomePage() {
                 Mission
               </h3>
               <p className="mt-3 font-lato text-[15px] leading-[26px] text-white/85">
-                To deliver safe, reliable and elevated ground transportation through exceptional people, premium vehicles, intelligent coordination and partnerships built for long-term value.
+                To deliver safe, reliable and elevated ground transportation
+                through exceptional people, premium vehicles, intelligent
+                coordination and partnerships built for long-term value.
               </p>
             </div>
           </div>
@@ -1603,7 +1632,8 @@ export function HomePage() {
                   </h4>
                 </div>
                 <p className="mt-3.5 font-lato text-[14px] leading-[22px] text-maseer-muted">
-                  We pursue a higher standard in every interaction, journey and operational detail.
+                  We pursue a higher standard in every interaction, journey and
+                  operational detail.
                 </p>
               </div>
 
@@ -1618,7 +1648,8 @@ export function HomePage() {
                   </h4>
                 </div>
                 <p className="mt-3.5 font-lato text-[14px] leading-[22px] text-maseer-muted">
-                  We respect time, commitments and the responsibility entrusted to us.
+                  We respect time, commitments and the responsibility entrusted
+                  to us.
                 </p>
               </div>
 
@@ -1648,7 +1679,8 @@ export function HomePage() {
                   </h4>
                 </div>
                 <p className="mt-3.5 font-lato text-[14px] leading-[22px] text-maseer-muted">
-                  We communicate clearly, act responsibly and build relationships on trust.
+                  We communicate clearly, act responsibly and build
+                  relationships on trust.
                 </p>
               </div>
 
@@ -1663,7 +1695,8 @@ export function HomePage() {
                   </h4>
                 </div>
                 <p className="mt-3.5 font-lato text-[14px] leading-[22px] text-maseer-muted">
-                  We adapt quickly to changing requirements and complex operating environments.
+                  We adapt quickly to changing requirements and complex
+                  operating environments.
                 </p>
               </div>
 
@@ -1678,15 +1711,14 @@ export function HomePage() {
                   </h4>
                 </div>
                 <p className="mt-3.5 font-lato text-[14px] leading-[22px] text-maseer-muted">
-                  We create value for clients, vendors and strategic partners through collaboration.
+                  We create value for clients, vendors and strategic partners
+                  through collaboration.
                 </p>
               </div>
             </div>
           </div>
         </div>
       </section>
-
- 
 
       {/* Best Feature */}
       <section className="page-container py-16 max-md:py-12">
@@ -1700,7 +1732,8 @@ export function HomePage() {
           Our <span className="text-primary">Best Features</span>
         </h2>
         <p className="mt-4 max-w-[550px] font-lato text-[14px] leading-[22px] text-maseer-green-text/80">
-          From the door of your residence to your destination every detail attended to.
+          From the door of your residence to your destination every detail
+          attended to.
         </p>
 
         <div className="mt-12 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
@@ -1855,7 +1888,7 @@ export function HomePage() {
           </div>
         )}
       </section>
-            {/* Our Story */}
+      {/* Our Story */}
       <section className="border-b border-maseer-line bg-[#FAF9F5] py-20 max-md:py-14">
         <div className="page-container">
           {/* Header */}
@@ -1867,7 +1900,10 @@ export function HomePage() {
               </p>
             </div>
             <h2 className="mt-4 font-serif text-[40px] font-semibold leading-[1.2] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.25]">
-              Built on a simple belief: <span className="text-primary">every journey is part of the experience.</span>
+              Built on a simple belief:{" "}
+              <span className="text-primary">
+                every journey is part of the experience.
+              </span>
             </h2>
           </div>
 
@@ -1881,7 +1917,8 @@ export function HomePage() {
               </p>
             </div>
             <blockquote className="relative z-10 mt-6 font-serif text-[24px] md:text-[30px] font-normal leading-[1.45] text-white/95 italic">
-              “Guests are not passengers. Every journey is an opportunity to deliver comfort, confidence and hospitality.”
+              “Guests are not passengers. Every journey is an opportunity to
+              deliver comfort, confidence and hospitality.”
             </blockquote>
           </div>
 
@@ -1890,12 +1927,18 @@ export function HomePage() {
             <div className="space-y-6">
               <div className="rounded-2xl border border-maseer-line/80 bg-white p-7 shadow-soft">
                 <p className="font-lato text-[15px] leading-[26px] text-maseer-green-text/85">
-                  Founded in 2020, Maseer was created with a clear ambition: to raise the standard of premium ground transportation in the Kingdom of Saudi Arabia.
+                  Founded in 2020, Maseer was created with a clear ambition: to
+                  raise the standard of premium ground transportation in the
+                  Kingdom of Saudi Arabia.
                 </p>
               </div>
               <div className="rounded-2xl border border-maseer-line/80 bg-white p-7 shadow-soft">
                 <p className="font-lato text-[15px] leading-[26px] text-maseer-green-text/85">
-                  As Saudi Arabia continues to develop into one of the world&apos;s leading destinations for business, tourism, hospitality, entertainment and major events, the need for dependable, sophisticated and scalable mobility has never been greater.
+                  As Saudi Arabia continues to develop into one of the
+                  world&apos;s leading destinations for business, tourism,
+                  hospitality, entertainment and major events, the need for
+                  dependable, sophisticated and scalable mobility has never been
+                  greater.
                 </p>
               </div>
             </div>
@@ -1903,19 +1946,27 @@ export function HomePage() {
             <div className="space-y-6">
               <div className="rounded-2xl border border-maseer-line/80 bg-white p-7 shadow-soft">
                 <p className="font-lato text-[15px] leading-[26px] text-maseer-green-text/85">
-                  Maseer has evolved to serve that need. Our approach combines the service culture of hospitality with the discipline of professional transportation operations. We work with hotels, corporations, travel companies, event planners, tourism businesses and strategic fleet partners to create chauffeur and transportation solutions that are comfortable for the passenger and simple for the client to manage.
+                  Maseer has evolved to serve that need. Our approach combines
+                  the service culture of hospitality with the discipline of
+                  professional transportation operations. We work with hotels,
+                  corporations, travel companies, event planners, tourism
+                  businesses and strategic fleet partners to create chauffeur
+                  and transportation solutions that are comfortable for the
+                  passenger and simple for the client to manage.
                 </p>
               </div>
               <div className="rounded-2xl border border-maseer-line/80 bg-white p-7 shadow-soft">
                 <p className="font-lato text-[15px] leading-[26px] text-maseer-green-text/85">
-                  Today, Maseer serves the Kingdom through a flexible operating network designed to provide premium transportation where and when it is needed.
+                  Today, Maseer serves the Kingdom through a flexible operating
+                  network designed to provide premium transportation where and
+                  when it is needed.
                 </p>
               </div>
             </div>
           </div>
         </div>
       </section>
-     {/* Our Positioning */}
+      {/* Our Positioning */}
       <section className="border-b border-maseer-line bg-gradient-to-b from-[#F7F9F7] to-[#FAF8F5] py-20 max-md:py-14">
         <div className="page-container">
           {/* Header */}
@@ -1928,10 +1979,16 @@ export function HomePage() {
 
           <div className="mt-4 max-w-4xl">
             <h2 className="font-serif text-[40px] font-semibold leading-[1.2] text-maseer-green-text max-md:text-[28px] max-md:leading-[1.25]">
-              A premium chauffeur mobility platform <span className="text-primary">built around people, vehicles and partnerships.</span>
+              A premium chauffeur mobility platform{" "}
+              <span className="text-primary">
+                built around people, vehicles and partnerships.
+              </span>
             </h2>
             <p className="mt-6 font-lato text-[16px] leading-[28px] text-maseer-green-text/90">
-              Maseer is not limited to a traditional fleet-ownership model. We operate as a premium chauffeur mobility and transportation solutions company, bringing together demand, vehicles, chauffeurs, technology and operational expertise.
+              Maseer is not limited to a traditional fleet-ownership model. We
+              operate as a premium chauffeur mobility and transportation
+              solutions company, bringing together demand, vehicles, chauffeurs,
+              technology and operational expertise.
             </p>
           </div>
 
@@ -1942,7 +1999,9 @@ export function HomePage() {
                 <UserCheck className="h-5 w-5 text-primary" />
               </div>
               <p className="mt-5 font-lato text-[14.5px] leading-[24px] text-maseer-green-text/85">
-                For clients, this means access to a scalable transportation partner without the complexity of managing every vehicle, chauffeur or operational detail themselves.
+                For clients, this means access to a scalable transportation
+                partner without the complexity of managing every vehicle,
+                chauffeur or operational detail themselves.
               </p>
             </div>
 
@@ -1951,7 +2010,9 @@ export function HomePage() {
                 <Car className="h-5 w-5 text-primary" />
               </div>
               <p className="mt-5 font-lato text-[14.5px] leading-[24px] text-maseer-green-text/85">
-                For vehicle owners and fleet operators, it means access to premium demand and professionally coordinated business opportunities.
+                For vehicle owners and fleet operators, it means access to
+                premium demand and professionally coordinated business
+                opportunities.
               </p>
             </div>
 
@@ -1960,7 +2021,9 @@ export function HomePage() {
                 <Building2 className="h-5 w-5 text-primary" />
               </div>
               <p className="mt-5 font-lato text-[14.5px] leading-[24px] text-maseer-green-text/85">
-                For hotels, travel companies, corporations and event organizers, it means one accountable partner capable of designing and coordinating transportation solutions around their requirements.
+                For hotels, travel companies, corporations and event organizers,
+                it means one accountable partner capable of designing and
+                coordinating transportation solutions around their requirements.
               </p>
             </div>
           </div>
@@ -1968,7 +2031,7 @@ export function HomePage() {
           {/* Our Ecosystem Flow Card */}
           <div className="mt-10 relative overflow-hidden rounded-3xl bg-maseer-green-deep p-8 md:p-10 text-white shadow-card">
             <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
-            
+
             <div className="flex items-center gap-2 border-b border-white/15 pb-4">
               <span className="h-0.5 w-8 bg-primary" aria-hidden />
               <p className="font-lato text-xs font-bold uppercase tracking-[0.14em] text-primary">
@@ -1983,8 +2046,12 @@ export function HomePage() {
                 </p>
               </div>
 
-              <span className="text-primary font-bold text-lg hidden md:inline">→</span>
-              <span className="text-primary font-bold text-lg md:hidden">↓</span>
+              <span className="text-primary font-bold text-lg hidden md:inline">
+                →
+              </span>
+              <span className="text-primary font-bold text-lg md:hidden">
+                ↓
+              </span>
 
               <div className="w-full md:w-auto flex-1 rounded-2xl border border-white/15 bg-white/5 p-4 text-center">
                 <p className="font-lato text-[13px] font-bold tracking-wider text-primary">
@@ -1992,8 +2059,12 @@ export function HomePage() {
                 </p>
               </div>
 
-              <span className="text-primary font-bold text-lg hidden md:inline">→</span>
-              <span className="text-primary font-bold text-lg md:hidden">↓</span>
+              <span className="text-primary font-bold text-lg hidden md:inline">
+                →
+              </span>
+              <span className="text-primary font-bold text-lg md:hidden">
+                ↓
+              </span>
 
               <div className="w-full md:w-auto flex-1 rounded-2xl border border-primary/40 bg-primary/15 p-4 text-center shadow-glow">
                 <p className="font-lato text-[13px] font-bold tracking-wider text-white">
@@ -2001,8 +2072,12 @@ export function HomePage() {
                 </p>
               </div>
 
-              <span className="text-primary font-bold text-lg hidden md:inline">→</span>
-              <span className="text-primary font-bold text-lg md:hidden">↓</span>
+              <span className="text-primary font-bold text-lg hidden md:inline">
+                →
+              </span>
+              <span className="text-primary font-bold text-lg md:hidden">
+                ↓
+              </span>
 
               <div className="w-full md:w-auto flex-1 rounded-2xl border border-white/15 bg-white/5 p-4 text-center">
                 <p className="font-lato text-[13px] font-bold tracking-wider text-primary">
@@ -2090,7 +2165,10 @@ export function HomePage() {
                 )}
               >
                 {finalReviews.map((r, index) => (
-                  <div key={`${r.name}-${index}`} className="px-1.5 sm:px-0 sm:pr-6 pb-6">
+                  <div
+                    key={`${r.name}-${index}`}
+                    className="px-1.5 sm:px-0 sm:pr-6 pb-6"
+                  >
                     <article className="relative flex flex-col justify-between h-full rounded-2xl border border-maseer-line/80 bg-white p-5 sm:p-8 shadow-soft transition-all duration-300">
                       {/* Admin edit button */}
                       {isAdmin && (
