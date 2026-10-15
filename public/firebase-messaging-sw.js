@@ -4,13 +4,13 @@ importScripts("https://www.gstatic.com/firebasejs/10.12.0/firebase-messaging-com
 
 // Firebase configuration provided by backend
 const firebaseConfig = {
-  apiKey: "AIzaSyDn7nzI170WOmF2eFPRlkFZY48w39LpmDQ",
-  authDomain: "chauffeer.firebaseapp.com",
-  projectId: "chauffeer",
-  storageBucket: "chauffeer.firebasestorage.app",
-  messagingSenderId: "680908779064",
-  appId: "1:680908779064:web:2a4e30d92e3ccb087680cd",
-  measurementId: "G-QM69DW8B0T",
+  apiKey: "AIzaSyCAmaGzh8eEbmiCokN8U4VwU7PKbiT-GRs",
+  authDomain: "maseer-bb318.firebaseapp.com",
+  projectId: "maseer-bb318",
+  storageBucket: "maseer-bb318.firebasestorage.app",
+  messagingSenderId: "33166131483",
+  appId: "1:33166131483:web:977a17abd07eb27fa913be",
+  measurementId: "G-0PK1DF72EP",
 };
 
 firebase.initializeApp(firebaseConfig);

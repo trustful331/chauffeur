@@ -11,10 +11,10 @@ export default defineConfig({
     },
   },
   server: {
-    // Proxies /api/* → https://chaufeer.vercel.app/api/* (matches src/config/env.tsx)
+    // Proxies /api/* → https://chaufeer-tau.vercel.app/api/* (matches src/config/env.tsx)
     proxy: {
       "/api": {
-        target: "https://chaufeer.vercel.app",
+        target: "https://chaufeer-tau.vercel.app",
         changeOrigin: true,
         secure: true,
       },

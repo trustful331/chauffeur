@@ -10,17 +10,32 @@ import {
 } from "firebase/messaging";
 
 export const firebaseConfig = {
-  apiKey: "AIzaSyDn7nzI170WOmF2eFPRlkFZY48w39LpmDQ",
-  authDomain: "chauffeer.firebaseapp.com",
-  projectId: "chauffeer",
-  storageBucket: "chauffeer.firebasestorage.app",
-  messagingSenderId: "680908779064",
-  appId: "1:680908779064:web:2a4e30d92e3ccb087680cd",
-  measurementId: "G-QM69DW8B0T",
+  apiKey:
+    import.meta.env.VITE_FIREBASE_API_KEY ||
+    "AIzaSyCAmaGzh8eEbmiCokN8U4VwU7PKbiT-GRs",
+  authDomain:
+    import.meta.env.VITE_FIREBASE_AUTH_DOMAIN ||
+    "maseer-bb318.firebaseapp.com",
+  projectId:
+    import.meta.env.VITE_FIREBASE_PROJECT_ID ||
+    "maseer-bb318",
+  storageBucket:
+    import.meta.env.VITE_FIREBASE_STORAGE_BUCKET ||
+    "maseer-bb318.firebasestorage.app",
+  messagingSenderId:
+    import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID ||
+    "33166131483",
+  appId:
+    import.meta.env.VITE_FIREBASE_APP_ID ||
+    "1:33166131483:web:977a17abd07eb27fa913be",
+  measurementId:
+    import.meta.env.VITE_FIREBASE_MEASUREMENT_ID ||
+    "G-0PK1DF72EP",
 };
 
 export const VAPID_KEY =
-  "BI8hMSbxTkAE_QNNp9BFeKs6ma1R5F40_E9hxKBDrETClnD8Ns91bxkPfBKjLqnCUZPiFEOc5fxranSpsznrtYI";
+  import.meta.env.VITE_FIREBASE_VAPID_KEY ||
+  "BBPPC2NwPmPZXXpVZse19Q8-yIy3Kbo1pi0mBw1N1CSTU9ROq0tSg5z2m-R7FJRslmbxcWo8AqRL5SNQvIf8M_o";
 
 // Initialize Firebase App singleton
 export const firebaseApp =
